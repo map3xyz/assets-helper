@@ -20,6 +20,7 @@ export const NetworkImagesRules: ValidationRule[] = [
         network: 'all',
         validate: async (network: string): Promise<ValidationResult> => {
             // TODO: implement
+            // size check
             return {
                 valid: true,
                 errors: []
@@ -31,6 +32,7 @@ export const NetworkImagesRules: ValidationRule[] = [
         network: 'all',
         validate: async (network: string): Promise<ValidationResult> => {
             // TODO: implement
+            // size and dimensions check
             return {
                 valid: true,
                 errors: []
@@ -38,7 +40,7 @@ export const NetworkImagesRules: ValidationRule[] = [
         }
     },
     {
-        name: `${baseName}:InfoFileLogosShouldMatchDirectory`,
+        name: `${baseName}:InfoFileLogosShouldMatchDirectoryFiles`,
         network: 'all',
         validate: async (network: string): Promise<ValidationResult> => {
             // TODO: implement
