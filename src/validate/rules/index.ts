@@ -2,12 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import { CoreFilesIntegrityRules, EditorPermissionRules, RepoStructureRules } from './core';
 import { NetworkDirectoryRules, NetworkImagesRules, NetworkSchemaRules, NetworkSpecificRules } from './network';
-const { promises: { readdir } } = fs;
+const { promises: { readdir, stat } } = fs;
+const { join } = path;
 
 export interface ValidationRule {
     name: string;
     network: 'all' | string
-    validate: (network: string) => Promise<ValidationResult>
+    validate: (network: string, repoPath: string) => Promise<ValidationResult>
 }
 
 export interface ValidationError {
@@ -26,7 +27,8 @@ const baseNetworkDirs = [
 ];
 
 const skipDirs = [
-    'schema'
+    'schema',
+    '.git'
 ]
 
 const coreRules = [
@@ -42,7 +44,7 @@ const networkRules = [
     ...NetworkSpecificRules
 ]
 
-async function validateRules(network: string, _rules: ValidationRule[]): Promise<ValidationResult> {    
+async function validateRules(network: string, _rules: ValidationRule[], repoPath: string): Promise<ValidationResult> {    
 
     if(!network || _rules.length === 0) {
         return Promise.resolve({valid: true, errors: []});
@@ -52,7 +54,7 @@ async function validateRules(network: string, _rules: ValidationRule[]): Promise
     let valid = true;
 
     await Promise.all(_rules.map(rule => {
-        return rule.validate(network).then(result => {
+        return rule.validate(network, repoPath).then(result => {
             if (!result.valid) {
                 valid = false;
                 errors.push(...result.errors);
@@ -71,11 +73,21 @@ async function validateRules(network: string, _rules: ValidationRule[]): Promise
     });
 }
 
-async function getDirectories(dir: string): Promise<string[]> {
+export async function getDirectories(dir: string): Promise<string[]> {
     try {
-        const files = await readdir(dir);
-        const dirs = files.filter(file => fs.statSync(path.join(dir, file)).isDirectory());
-        return dirs;
+        const isDirectory = (await stat(dir)).isDirectory();
+    
+        if(isDirectory) {
+            const searchResults = 
+                await Promise.all(
+                    (await readdir (dir))
+                        .map (p => getDirectories (join (dir, p)))
+                    );
+            
+            return [].concat (dir, ...searchResults)
+        } else {
+            return [];
+        }
     } catch (err) {
         console.error('GetDirectories Error: ', err);
         return [];
@@ -109,7 +121,7 @@ async function traverseAndValidateNetworks(dir: string, rules: ValidationRule[])
     if(dirsToTraverse.length === 0) {
         const network = extractNetworkFromDir(dir);
 
-        return validateRules(network, rules)
+        return validateRules(network, rules, dir)
             .then(result => {
                 return {
                     valid: result.valid,
@@ -120,7 +132,7 @@ async function traverseAndValidateNetworks(dir: string, rules: ValidationRule[])
     return Promise.all(dirsToTraverse.map(async (subDir) => {
         const network = extractNetworkFromDir(subDir);
 
-        return validateRules(network, rules)
+        return validateRules(network, rules, dir)
             .then(result => {
                 return {
                     valid: result.valid,
@@ -146,12 +158,12 @@ async function traverseAndValidateNetworks(dir: string, rules: ValidationRule[])
 }
 
 
-async function validateNetworkRules(network: string, _rules: ValidationRule[]): Promise<ValidationResult> {    
+async function validateNetworkRules(network: string, _rules: ValidationRule[], repoPath: string): Promise<ValidationResult> {    
     if(network !== 'all') {
         const rules = _rules.filter(rule => rule.network === network);
-        return validateRules(network, rules);
+        return validateRules(network, rules, repoPath);
     } else { // network === 'all'
-        return traverseAndValidateNetworks(process.env.CLONED_ASSETS_REPOSITORY_LOCATION, _rules);
+        return traverseAndValidateNetworks(repoPath, _rules);
     }
 }
 
@@ -165,8 +177,8 @@ export async function validate(network: string = 'all', repoPath: string): Promi
     const errors = [];
     let valid = true;
 
-    const coreRulesResult = await validateRules(network, coreRules);
-    const nextworkRulesResult = await validateNetworkRules(network, networkRules);
+    const coreRulesResult = await validateRules(network, coreRules, repoPath);
+    const nextworkRulesResult = await validateNetworkRules(network, networkRules, repoPath);
 
     if(!coreRulesResult.valid || 
         coreRulesResult.errors.length > 0 || 

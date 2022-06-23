@@ -2,6 +2,7 @@
 
 import { Command } from 'commander'
 import { validate } from './validate'
+import { getDirectories } from './validate/rules';
 
 const program = new Command();
 
@@ -20,7 +21,8 @@ program.command('validate')
         console.log('Repository is valid');
         process.exit(0);
       } else {
-        console.log(`Repository is invalid. Errors:\n ${result.errors.join('\n')}`);
+        console.log(`Repository is invalid. Errors:\n 
+          ${result.errors.map(e => e.source + ': ' + e.message).join('\n')}`);
         process.exit(1);
       }
     }).catch(err => { 
@@ -28,5 +30,13 @@ program.command('validate')
         process.exit(1);
     });
 });
+
+// program.command('readDirs')
+//   .option('-r, --repo <repo>', 'The repo to read')
+//   .action((options) => {
+//     getDirectories(options.repo)
+//     .then(console.log)
+//   });
+
 
 program.parse(process.argv);

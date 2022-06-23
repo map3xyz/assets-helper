@@ -6,7 +6,7 @@ export const EditorPermissionRules: ValidationRule[] = [
     {
         name: `${baseName}:IsPrMergeableRule`,
         network: 'all',
-        validate: async (network: string): Promise<ValidationResult> => {
+        validate: async (network: string, repoPath: string): Promise<ValidationResult> => {
             // TODO: implement
             return {
                 valid: true,

@@ -6,7 +6,7 @@ export const NetworkSchemaRules: ValidationRule[] = [
     {
         name: `${baseName}:InfoFileIsInstanceOfSchema`,
         network: 'all',
-        validate: async (network: string): Promise<ValidationResult> => {
+        validate: async (network: string, repoPath: string): Promise<ValidationResult> => {
             // TODO: implement
             return {
                 valid: true,
