@@ -50,6 +50,8 @@ async function validateRules(network: string, _rules: ValidationRule[], repoPath
         return Promise.resolve({valid: true, errors: []});
     }
 
+    // console.log(`Validating rules for network ${network} in ${repoPath} rules#: ${_rules.length}`);
+
     const errors = [];
     let valid = true;
 
@@ -113,10 +115,14 @@ function extractNetworkFromDir(dir: string): string {
     }
 }
 
+function getCurrentDirBase(baseDir:string, currentDir: string) {
+    return currentDir.split("/")[baseDir.split("/").length];
+}
+
 async function traverseAndValidateNetworks(dir: string, rules: ValidationRule[]): Promise<ValidationResult> {
-    const dirsToTraverse = (await getDirectories(dir))
-                .filter(dir => !skipDirs.includes(dir) 
-                        && baseNetworkDirs.includes(dir));
+    let dirsToTraverse = (await getDirectories(dir))
+                .filter(_dir => !skipDirs.includes(getCurrentDirBase(dir, _dir)) 
+                        && baseNetworkDirs.includes(getCurrentDirBase(dir, _dir)));
 
     if(dirsToTraverse.length === 0) {
         const network = extractNetworkFromDir(dir);
@@ -132,7 +138,7 @@ async function traverseAndValidateNetworks(dir: string, rules: ValidationRule[])
     return Promise.all(dirsToTraverse.map(async (subDir) => {
         const network = extractNetworkFromDir(subDir);
 
-        return validateRules(network, rules, dir)
+        return validateRules(network, rules, subDir)
             .then(result => {
                 return {
                     valid: result.valid,
@@ -159,11 +165,11 @@ async function traverseAndValidateNetworks(dir: string, rules: ValidationRule[])
 
 
 async function validateNetworkRules(network: string, _rules: ValidationRule[], repoPath: string): Promise<ValidationResult> {    
-    if(network !== 'all') {
-        const rules = _rules.filter(rule => rule.network === network);
-        return validateRules(network, rules, repoPath);
-    } else { // network === 'all'
+    if(network == 'all') {
         return traverseAndValidateNetworks(repoPath, _rules);
+    } else {
+        const rules = _rules.filter(rule => [network, 'all'].includes(rule.network));
+        return validateRules(network, rules, repoPath);
     }
 }
 

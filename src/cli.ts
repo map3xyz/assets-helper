@@ -31,12 +31,12 @@ program.command('validate')
     });
 });
 
-// program.command('readDirs')
-//   .option('-r, --repo <repo>', 'The repo to read')
-//   .action((options) => {
-//     getDirectories(options.repo)
-//     .then(console.log)
-//   });
+program.command('readDirs')
+  .option('-r, --repo <repo>', 'The repo to read')
+  .action((options) => {
+    getDirectories(options.repo)
+    .then(console.log)
+  });
 
 
 program.parse(process.argv);
