@@ -156,10 +156,10 @@ async function validateNetworkRules(network: string, _rules: ValidationRule[]): 
 }
 
 
-export async function validate(network: string = 'all'): Promise<ValidationResult> {
+export async function validate(network: string = 'all', repoPath: string): Promise<ValidationResult> {
 
-    if(!process.env.CLONED_ASSETS_REPOSITORY_LOCATION) {
-        return Promise.reject('CLONED_ASSETS_REPOSITORY_LOCATION environment variable is not set');
+    if(!fs.existsSync(repoPath)) {
+        return Promise.reject(`Passed in repo path ${repoPath} was not found for network ${network}`);
     }
 
     const errors = [];

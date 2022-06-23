@@ -8,13 +8,13 @@ const program = new Command();
 program
   .name('assets-helper')
   .description('CLI to automate the workflows on the map3.xyz assets repo')
-  .parse(process.argv)
 
 program.command('validate')
   .description('Validate that the assets repository is in a valid state')
   .option('-n --network <string>', 'specific network to validate')
+  .option('-r, --repo <repo>', 'The repo to validate')
   .action((options) => {
-    validate(options.network)
+    validate(options.network, options.repo)
     .then(result => {
       if (result.valid) {
         console.log('Repository is valid');
@@ -24,9 +24,9 @@ program.command('validate')
         process.exit(1);
       }
     }).catch(err => { 
-        console.error("Error running validate", err);
+        console.error("Error running validate\n", err);
         process.exit(1);
     });
 });
 
-program.parse();
+program.parse(process.argv);
