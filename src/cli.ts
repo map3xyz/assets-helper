@@ -3,12 +3,14 @@
 import { Command } from 'commander'
 import { validate } from './validate'
 import { getDirectories } from './validate/rules';
+var packageJson = require('./../package.json');
 
 const program = new Command();
 
 program
   .name('assets-helper')
   .description('CLI to automate the workflows on the map3.xyz assets repo')
+  .version(packageJson)
 
 program.command('validate')
   .description('Validate that the assets repository is in a valid state')
