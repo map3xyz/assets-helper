@@ -1,5 +1,5 @@
 {
-  "name": "assets-helper",
+  "name": "@map3xyz/assets-helper",
   "private": true,
   "version": "1.0.0",
   "description": "CLI for maintaining the assets repo.",
@@ -12,7 +12,9 @@
   "license": "MIT",
   "main": "./dist/cli.js",
   "types": "/dist/cli.d.ts",
-  "bin": "./dist/cli.js",
+  "bin": {
+    "assets-helper": "dist/cli.js"
+  },
   "files": [
     "dist/**/*",
     "!dist/**/*.test.js"
@@ -36,5 +38,13 @@
   "dependencies": {
     "commander": "^9.3.0"
   },
-  "packageManager": "yarn@3.2.1"
+  "packageManager": "yarn@3.2.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/map3xyz/assets-helper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/map3xyz/assets-helper/issues"
+  },
+  "homepage": "https://github.com/map3xyz/assets-helper#readme"
 }
