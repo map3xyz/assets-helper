@@ -8,6 +8,9 @@ const coreFiles = [
     '.gitignore',
     'README.md',
     'LICENSE',
+]
+
+const schemaFiles = [
     '/schema/coin.schema.json'
 ]
 
@@ -20,17 +23,29 @@ export const CoreFilesIntegrityRules: ValidationRule[] = [
                 const errors = [];
                 let valid = true;
 
-                coreFiles.forEach(dir =>{
-
-                    if(!fs.existsSync(path.join(repoPath, dir))){                    
+                coreFiles.forEach(file =>{
+                    if(!fs.existsSync(path.join(repoPath, file))){                    
                         errors.push({
                             source: `${repoPath}`,
-                            message: `Directory ${dir} is missing`
+                            message: `Core File ${file} is missing`
                         });
                         valid = false;
                     }
                 })
-
+                
+                // schema files should only be in main repo
+                if(repoPath.endsWith('/assets')) {
+                    schemaFiles.forEach(file =>{
+                        if(!fs.existsSync(path.join(repoPath, file))){                    
+                            errors.push({
+                                source: `${repoPath}`,
+                                message: `Schema File ${file} is missing`
+                            });
+                            valid = false;
+                        }
+                    })
+             }
+                
                 resolve({
                     valid: valid,
                     errors: errors

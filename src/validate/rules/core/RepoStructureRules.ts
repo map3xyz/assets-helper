@@ -16,6 +16,10 @@ export const RepoStructureRules: ValidationRule[] = [
         validate: async (network: string,  repoPath: string): Promise<ValidationResult> => {
 
             return new Promise((resolve, reject) => {
+
+                if(!repoPath.endsWith('/assets')) {
+                    return resolve({ valid: true, errors: [] })
+                }
                 const errors = [];
                 let valid = true;
 

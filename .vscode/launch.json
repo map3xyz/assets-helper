@@ -17,7 +17,7 @@
                 "${workspaceFolder}/dist/**/*.js"
             ],
             "runtimeArgs": ["-r", "./.pnp.cjs", "-r", "ts-node/register"],
-            "args": ["validate", "-r", "../assets"],
+            "args": ["validate", "-r", "../assets/networks/ethereum/tokens"],
             "cwd": "${workspaceFolder}",
             "env": {
                 "NODE_ENV": "development"
