@@ -10,7 +10,8 @@
     "starter"
   ],
   "license": "MIT",
-  "main": "./dist/index.js",
+  "main": "./dist/cli.js",
+  "types": "/dist/cli.d.ts",
   "bin": "./dist/cli.js",
   "files": [
     "dist/**/*",
@@ -20,6 +21,7 @@
     "cli": "yarn ts-node ./src/cli.ts",
     "clean": "rimraf ./dist/ ./exec/",
     "build": "yarn clean && tsc",
+    "prepublish": "yarn build",
     "test": "yarn build && ava --verbose",
     "bundle": "yarn build && pkg . --out-dir ./exec/"
   },
