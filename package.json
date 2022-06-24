@@ -20,7 +20,7 @@
     "cli": "yarn ts-node ./src/cli.ts",
     "clean": "rimraf ./dist/ ./exec/",
     "build": "yarn clean && tsc",
-    "publish": "yarn build && npm version patch --force && npm publish --access public",
+    "publish": "yarn build && npm publish --access public",
     "test": "yarn build && ava --verbose",
     "bundle": "yarn build && pkg . --out-dir ./exec/"
   },
