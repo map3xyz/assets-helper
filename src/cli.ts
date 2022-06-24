@@ -15,25 +15,34 @@ program.command('validate')
   .option('-n --network <string>', 'specific network to validate')
   .option('-r, --repo <repo>', 'The repo to validate')
   .action((options) => {
+    // default
+    if(options.repo === '.') {
+      options.repo = process.cwd();
+    }
+
     validate(options.network, options.repo)
-    .then(result => {
-      if (result.valid) {
-        console.log('Repository is valid');
-        process.exit(0);
-      } else {
-        console.log(`Repository is invalid. Errors:\n 
-          ${result.errors.map(e => e.source + ': ' + e.message).join('\n')}`);
-        process.exit(1);
-      }
-    }).catch(err => { 
-        console.error("Error running validate\n", err);
-        process.exit(1);
-    });
+      .then(result => {
+        if (result.valid) {
+          console.log('Repository is valid');
+          process.exit(0);
+        } else {
+          console.log(`Repository is invalid. Errors:\n 
+            ${result.errors.map(e => e.source + ': ' + e.message).join('\n')}`);
+          process.exit(1);
+        }
+      }).catch(err => { 
+          console.error("Error running validate\n", err);
+          process.exit(1);
+      });
 });
 
 program.command('readDirs')
   .option('-r, --repo <repo>', 'The repo to read')
   .action((options) => {
+     // default
+     if(options.repo === '.') {
+      options.repo = process.cwd();
+    }
     getDirectories(options.repo)
     .then(console.log)
   });
