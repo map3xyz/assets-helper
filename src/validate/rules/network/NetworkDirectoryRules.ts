@@ -15,8 +15,15 @@ export const NetworkDirectoryRules: ValidationRule[] = [
         network: 'all',
         validate: async (network: string, repoPath: string): Promise<ValidationResult> => {
             
-            const networkPath = path.join(repoPath, 'networks', network);
+            
             return new Promise((resolve, reject) => {
+
+                if(!network) {
+                    return resolve({valid: true, errors: []})
+                }
+
+                const networkPath = path.join(repoPath, 'networks', network);
+                
                 const errors = [];
                 let valid = true;
 

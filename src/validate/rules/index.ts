@@ -1,9 +1,7 @@
 import fs from 'fs';
-import path from 'path';
+import { getDirectories } from '../../utils/filesystem';
 import { CoreFilesIntegrityRules, EditorPermissionRules, RepoStructureRules } from './core';
-import { NetworkDirectoryRules, NetworkImagesRules, NetworkSchemaRules, NetworkSpecificRules } from './network';
-const { promises: { readdir, stat } } = fs;
-const { join } = path;
+import { NetworkDirectoryRules, NetworkImagesRules, NetworkSchemaRules, NetworkSpecificRules, NetworkSubdirectoryRules } from './network';
 
 export interface ValidationRule {
     name: string;
@@ -41,12 +39,17 @@ const networkRules = [
     ...NetworkDirectoryRules,
     ...NetworkSchemaRules,
     ...NetworkImagesRules,
-    ...NetworkSpecificRules
+    ...NetworkSpecificRules,
+    ...NetworkSubdirectoryRules
 ]
 
 async function validateRules(network: string, _rules: ValidationRule[], repoPath: string): Promise<ValidationResult> {    
 
-    if(!network || _rules.length === 0) {
+    // TODO: handle !network
+    // Examples repoPaths
+    // "../assets/networks/ethereum/tokens/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+    
+    if(_rules.length === 0) {
         return Promise.resolve({valid: true, errors: []});
     }
 
@@ -73,27 +76,6 @@ async function validateRules(network: string, _rules: ValidationRule[], repoPath
         valid: valid,
         errors: errors
     });
-}
-
-export async function getDirectories(dir: string): Promise<string[]> {
-    try {
-        const isDirectory = (await stat(dir)).isDirectory();
-    
-        if(isDirectory) {
-            const searchResults = 
-                await Promise.all(
-                    (await readdir (dir))
-                        .map (p => getDirectories (join (dir, p)))
-                    );
-            
-            return [].concat (dir, ...searchResults)
-        } else {
-            return [];
-        }
-    } catch (err) {
-        console.error('GetDirectories Error: ', err);
-        return [];
-    }
 }
 
 function extractNetworkFromDir(dir: string): string {

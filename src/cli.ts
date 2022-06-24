@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander'
+import { getDirectories } from './utils/filesystem';
 import { validate } from './validate'
-import { getDirectories } from './validate/rules';
 var packageJson = require('./../package.json');
 
 const program = new Command();
