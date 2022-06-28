@@ -34,6 +34,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["@types/node", "npm:18.0.0"],\
+            ["@uniswap/token-lists", "npm:1.0.0-beta.30"],\
             ["ava", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:4.3.0"],\
             ["axios", "npm:0.27.2"],\
             ["commander", "npm:9.3.0"],\
@@ -139,6 +140,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@map3xyz/assets-helper", "workspace:."],\
             ["@types/node", "npm:18.0.0"],\
+            ["@uniswap/token-lists", "npm:1.0.0-beta.30"],\
             ["ava", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:4.3.0"],\
             ["axios", "npm:0.27.2"],\
             ["commander", "npm:9.3.0"],\
@@ -254,6 +256,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-node-npm-18.0.0-c8497066c5-aab2b32572.zip/node_modules/@types/node/",\
           "packageDependencies": [\
             ["@types/node", "npm:18.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@uniswap/token-lists", [\
+        ["npm:1.0.0-beta.30", {\
+          "packageLocation": "./.yarn/cache/@uniswap-token-lists-npm-1.0.0-beta.30-450ec2301c-4138b15eab.zip/node_modules/@uniswap/token-lists/",\
+          "packageDependencies": [\
+            ["@uniswap/token-lists", "npm:1.0.0-beta.30"]\
           ],\
           "linkType": "HARD"\
         }]\
