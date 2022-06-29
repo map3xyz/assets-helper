@@ -2,6 +2,7 @@ import { validateJsonSchema } from "../utils/json-schema";
 import { fetchNetworkSchema } from "../validate/rules/network/NetworkSchemaRules";
 import { fetchTokenSchema } from "../validate/rules/token/TokenSchemaRule";
 import { TagName } from "./Tag";
+import { Description, Links, Logos, Verification } from "./types";
 import { getUUID, UUID } from "./UUID";
 import { Version } from "./Version";
 
@@ -16,11 +17,7 @@ export abstract class AssetRepoObject {
 
     links: Links;
 
-    logo: {
-        png: string | null;
-        svg: string | null;
-        ipfs: string | null;
-    }
+    logo: Logos;
 
     name: string;
     spam: boolean;
@@ -46,7 +43,7 @@ export abstract class AssetRepoObject {
         }
     }
 
-    async toString(): Promise<string> {
+    async deserialise(): Promise<string> {
         let parsed = JSON.parse(JSON.stringify(this));
 
         // sort keys
@@ -57,8 +54,6 @@ export abstract class AssetRepoObject {
             }, 
             {}
         );
-
-        // TODO: validate using JsonSchema
         
         let validation, schema;
 

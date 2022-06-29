@@ -1,11 +1,14 @@
-import { TokenList, TokenInfo, Tags } from '@uniswap/token-lists'
+import { TokenList, TokenInfo as ExtTokenInfo } from '@uniswap/token-lists'
 import fs from 'fs';
 import path from 'path';
-import { NetworkInfo } from '../model/NetworkInfo';
+import { REPO_BASE_URL } from '../config';
 import { getDefaultTags } from '../model/Tag';
-import { getMap3LogoUri, getLogoUriFromInfo } from '../model/utils';
+import { TokenInfo } from '../model/TokenInfo';
+import { Logos } from '../model/types';
+import { getMap3LogoUri, getLogoUriFromInfo, getNetworkInfoFromTokenlist, downloadAndPersistLogos } from '../model/utils';
 import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
+import { downloadFile } from '../utils/images';
 
 async function prepareTokenlist(directory: string, previousTokenlist?: TokenList): Promise<TokenList> {
 
@@ -25,11 +28,11 @@ async function prepareTokenlist(directory: string, previousTokenlist?: TokenList
         tokens: []
     };
 
-    const tokens: TokenInfo[] = await Promise.all<TokenInfo>(tokenDirs.map(dir => {
+    const tokens: ExtTokenInfo[] = await Promise.all<ExtTokenInfo>(tokenDirs.map(dir => {
         return new Promise(resolve => {
             const info = JSON.parse(fs.readFileSync(path.join(dir, 'info.json'), 'utf8'));
 
-            const token: TokenInfo = {
+            const token: ExtTokenInfo = {
                 chainId: info.indentifiers.chainId,
                 address: info.address,
                 name: info.name,
@@ -97,12 +100,36 @@ export async function ingestTokenList(listLocation: string, directory: string): 
     }
 }
 
-async function ingestNewTokens(newTokens: TokenInfo[], directory: string, tokenlistName: string): Promise<void> {
+async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string, tokenlistName: string): Promise<void> {
      // TODO take a list of tokens and add them if they don't already exist
+
+    await Promise.all(newTokens.map(token => {
+        return new Promise(async resolve => {
+            const tokenDir = path.join(directory, token.address.toLowerCase());
+
+            try {
+                if(fs.existsSync(tokenDir)) {
+                    resolve(undefined);
+                } else {
+                    fs.mkdirSync(tokenDir, { recursive: true });
+                }
+
+                const parsedToken = TokenInfo.fromTokenlistTokenInfo(token);
+    
+                parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
+
+                fs.writeFileSync(path.join(tokenDir, 'info.json'), await parsedToken.deserialise());
+                
+                resolve(undefined);
+            } catch (err) {
+                console.error(err);
+                resolve(undefined);
+            }
+        })
+    }));
+
+    // TODO: commit the changes on git 
+
     return Promise.resolve();
 }
 
-async function getNetworkInfoFromTokenlist(tokenlist: TokenList): Promise<NetworkInfo> {
-    // TODO: parse a tokenlist and return a Network object, getting it remotely from the master branch via HTTP
-    return Promise.resolve(null); 
-}

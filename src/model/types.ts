@@ -1,10 +1,10 @@
-interface Description {
+export interface Description {
     locale: 'en' | 'es' | 'fr' | 'de' | 'it' | 'ja' | 'ko' | 'pt' | 'ru' | 'zh';
     value: string;
     verified: boolean;
 }
 
-interface Links {
+export interface Links {
     explorer: string | null;
     research: string | null;
     website: string | null;
@@ -15,7 +15,7 @@ interface Links {
     whitepaper: string | null;
 }
 
-interface Verification {
+export interface Verification {
     verified: boolean;
     type: string; 
     timestamp: string;
@@ -29,5 +29,14 @@ interface AdminVerificationProof  {
     signature: string;
     assertion: string;
 }
+interface Logo {
+    github: string | null;
+    ipfs: string | null;
+    cdn: string | null;
+}
 
+type LogoFormats = 'png' | 'svg';
 
+export type Logos = {
+    [key in LogoFormats]: Logo;
+}
