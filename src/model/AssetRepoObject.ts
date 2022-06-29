@@ -14,11 +14,8 @@ export abstract class AssetRepoObject {
     decimals: number;
     description: Description[];
     id: UUID<string>; 
-
     links: Links;
-
     logo: Logos;
-
     name: string;
     spam: boolean;
     symbol: string;
