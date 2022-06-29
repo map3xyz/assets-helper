@@ -1,6 +1,7 @@
 import { TokenList, Version, TokenInfo, Tags } from '@uniswap/token-lists'
 import fs from 'fs';
 import path from 'path';
+import { NetworkInfo } from '../model/NetworkInfo';
 import { getDirectories } from '../utils/filesystem';
 
 async function prepareTokenlist(directory: string, previousTokenlist?: TokenList): Promise<TokenList> {
@@ -83,7 +84,7 @@ function getDefaultLogoUri(): string {
     return "";
 }
 
-export async function upsertTokenList(directory: string): Promise<void> {
+export async function needBeRegenerateTokenlist(directory: string): Promise<void> {
     
     const hasExistingTokenlist = fs.existsSync(path.join(directory, 'tokenlist.json'));
 
@@ -99,4 +100,41 @@ export async function upsertTokenList(directory: string): Promise<void> {
     const tokenList = await prepareTokenlist(directory);
 
     return fs.writeFileSync(path.join(directory, 'tokenlist.json'), JSON.stringify(tokenList, null, 2));
+}
+
+export async function ingestTokenList(listLocation: string, directory: string): Promise<void> {
+
+    try {
+        const existingTokenlist: TokenList = JSON.parse(fs.readFileSync(path.join(directory, 'tokenlist.json'), 'utf8'));
+        let newTokenlist: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
+
+        const network = await getNetworkInfoFromTokenlist(existingTokenlist);
+
+        if(!network) {
+            throw new Error('No network info found for tokenlist ' + listLocation);
+        }
+
+        const newTokens = newTokenlist.tokens.filter(
+            token => !existingTokenlist.tokens.some(
+                            existingToken => existingToken.address === token.address
+                        )
+                    && token.chainId === network.identifiers.chainId
+            );
+    
+        return newTokens.length > 0 ? 
+            ingestNewTokens(newTokens, directory, newTokenlist.name)
+            : Promise.resolve();
+    } catch (err) {
+        return Promise.reject(err);
+    }
+}
+
+async function ingestNewTokens(newTokens: TokenInfo[], directory: string, tokenlistName: string): Promise<void> {
+     // TODO take a list of tokens and add them if they don't already exist
+    return Promise.resolve();
+}
+
+async function getNetworkInfoFromTokenlist(tokenlist: TokenList): Promise<NetworkInfo> {
+    // TODO: parse a tokenlist and return a Network object, getting it remotely from the master branch via HTTP
+    return Promise.resolve(null); 
 }

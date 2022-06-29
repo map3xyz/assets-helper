@@ -42,7 +42,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["pkg", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:5.7.0"],\
             ["rimraf", "npm:3.0.2"],\
             ["ts-node", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:10.8.1"],\
-            ["typescript", "patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=7ad353"]\
+            ["typescript", "patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=7ad353"],\
+            ["uuid", "npm:8.3.2"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -148,7 +149,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["pkg", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:5.7.0"],\
             ["rimraf", "npm:3.0.2"],\
             ["ts-node", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:10.8.1"],\
-            ["typescript", "patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=7ad353"]\
+            ["typescript", "patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=7ad353"],\
+            ["uuid", "npm:8.3.2"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -3419,6 +3421,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/util-deprecate-npm-1.0.2-e3fe1a219c-474acf1146.zip/node_modules/util-deprecate/",\
           "packageDependencies": [\
             ["util-deprecate", "npm:1.0.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["uuid", [\
+        ["npm:8.3.2", {\
+          "packageLocation": "./.yarn/cache/uuid-npm-8.3.2-eca0baba53-5575a8a75c.zip/node_modules/uuid/",\
+          "packageDependencies": [\
+            ["uuid", "npm:8.3.2"]\
           ],\
           "linkType": "HARD"\
         }]\

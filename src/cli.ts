@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander'
-import { upsertTokenList } from './tokenlist';
+import { needBeRegenerateTokenlist } from './tokenlist';
 import { getDirectories } from './utils/filesystem';
 import { validate } from './validate'
 var packageJson = require('./../package.json');
@@ -48,7 +48,7 @@ program.command('tokenlist')
       options.repo = process.cwd();
     }
 
-    upsertTokenList(options.directory).then(result => {
+    needBeRegenerateTokenlist(options.directory).then(result => {
       process.exit(0);
     })
     .catch(err => {

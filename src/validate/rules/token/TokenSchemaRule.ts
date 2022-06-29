@@ -2,55 +2,43 @@ import { ValidationResult, ValidationRule } from "..";
 import axios from 'axios';
 import fs from "fs";
 import { validateJsonSchema } from "../../../utils/json-schema";
-const baseName = 'NetworkSchemaRules';
+const baseName = 'TokenSchemaRules';
 
-let networkSchema;
+let tokenSchema;
 
-export async function fetchNetworkSchema(): Promise<any> {
-    if(networkSchema) {
-        return networkSchema;
+export async function fetchTokenSchema(): Promise<any> {
+    if(tokenSchema) {
+        return tokenSchema;
     }
 
     try {
-        networkSchema = (await axios.get('https://raw.githubusercontent.com/map3xyz/assets/master/schema/coin.schema.json')).data;
+        tokenSchema = (await axios.get('https://raw.githubusercontent.com/map3xyz/assets/master/schema/token.schema.json')).data;
     } catch (err) {
-        console.error('needBeFetchSchemas', err);
+        console.error('fetchTokenSchema', err);
         throw err;
     }
 
-    return Promise.resolve(networkSchema);
+    return Promise.resolve(tokenSchema);
 }
 export const NetworkSchemaRules: ValidationRule[] = [
     {
         name: `${baseName}:InfoFilesAreInstanceOfSchema`,
         network: 'all',
-        validate: async (network: string, repoPath: string): Promise<ValidationResult> => {
+        validate: async (token: string, repoPath: string): Promise<ValidationResult> => {
             
-            let directoryShouldHaveInfoFile = false;
-
-            // Note: this relies on the fact that in the case of 
-            // tokens such as ethereum/tokens/{usdc_contract_address}
-            // the directory structure contains a '/' 
-            // before the variable token or testnet id/name
-
-            if(repoPath.endsWith(network) 
-                || repoPath.includes(`${network}/tokens/`)
-                || repoPath.includes(`${network}/testnets/`)
-                ) {
-                    directoryShouldHaveInfoFile = true;
-            }
+            const directoryShouldHaveInfoFile = repoPath.endsWith(token);
 
             if(!directoryShouldHaveInfoFile) {
                 return { valid: true, errors: []};
             }
 
             try {
-                await fetchNetworkSchema();
+                await fetchTokenSchema();
                 const infoFile = await JSON.parse(fs.readFileSync(`${repoPath}/info.json`, 'utf-8'));
 
-                const result = infoFile.type = 'coin' ? 
-                    validateJsonSchema(infoFile, networkSchema) : 
-                    { valid: true, errors: []}; // TODO; implement for token type
+                const result = infoFile.type = 'token' ? 
+                    validateJsonSchema(infoFile, tokenSchema) : 
+                    { valid: true, errors: []};
 
                 return {
                     valid: result.valid,
