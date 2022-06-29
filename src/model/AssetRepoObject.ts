@@ -1,6 +1,7 @@
 import { validateJsonSchema } from "../utils/json-schema";
 import { fetchNetworkSchema } from "../validate/rules/network/NetworkSchemaRules";
 import { fetchTokenSchema } from "../validate/rules/token/TokenSchemaRule";
+import { TagName } from "./Tag";
 import { getUUID, UUID } from "./UUID";
 import { Version } from "./Version";
 
@@ -24,7 +25,7 @@ export abstract class AssetRepoObject {
     name: string;
     spam: boolean;
     symbol: string;
-    tags: Tag[];
+    tags: TagName[];
     type: ObjectType;
     verifications: Verification[];
     version: Version;

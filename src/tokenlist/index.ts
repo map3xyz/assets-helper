@@ -1,7 +1,10 @@
-import { TokenList, Version, TokenInfo, Tags } from '@uniswap/token-lists'
+import { TokenList, TokenInfo, Tags } from '@uniswap/token-lists'
 import fs from 'fs';
 import path from 'path';
 import { NetworkInfo } from '../model/NetworkInfo';
+import { getDefaultTags } from '../model/Tag';
+import { getMap3LogoUri, getLogoUriFromInfo } from '../model/utils';
+import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
 
 async function prepareTokenlist(directory: string, previousTokenlist?: TokenList): Promise<TokenList> {
@@ -15,14 +18,10 @@ async function prepareTokenlist(directory: string, previousTokenlist?: TokenList
     let tokenList: TokenList = {
         name: `@Map3/${directory.split("/")[directory.split("/").length - 1]}`,
         timestamp: new Date().toISOString(),
-        version: previousTokenlist? previousTokenlist.version : {
-            major: 0,
-            minor: 0,
-            patch: 1
-        },
+        version: previousTokenlist? previousTokenlist.version : Version.getNew(),
         keywords: previousTokenlist? previousTokenlist.keywords : ['map3 tokens'],
         tags: getDefaultTags(),
-        logoURI: getDefaultLogoUri(),
+        logoURI: getMap3LogoUri(),
         tokens: []
     };
 
@@ -50,38 +49,6 @@ async function prepareTokenlist(directory: string, previousTokenlist?: TokenList
     tokenList.tokens.push(...tokens);
 
     return tokenList;
-}
-
-function getLogoUriFromInfo(info: any, dir: string): string {
-    // TODO
-    return "";
-}
-
-function getDefaultTags(): Tags {
-    // TODO populate
-    return {
-        "wrapped": {
-            "name": "wrapped",
-            "description": "Asset wrapped using wormhole bridge"
-          },
-          "leveraged": {
-            "name": "leveraged",
-            "description": "Leveraged asset"
-          },
-          "bull": {
-            "name": "bull",
-            "description": "Leveraged Bull asset"
-          },
-          "bear": {
-            "name": "bear",
-            "description": "Leveraged Bear asset"
-          }
-    };
-}
-
-function getDefaultLogoUri(): string {
-    // TODO
-    return "";
 }
 
 export async function needBeRegenerateTokenlist(directory: string): Promise<void> {
@@ -116,7 +83,7 @@ export async function ingestTokenList(listLocation: string, directory: string): 
 
         const newTokens = newTokenlist.tokens.filter(
             token => !existingTokenlist.tokens.some(
-                            existingToken => existingToken.address === token.address
+                            existingToken => existingToken.address.toLowerCase() === token.address.toLowerCase()
                         )
                     && token.chainId === network.identifiers.chainId
             );
@@ -124,6 +91,7 @@ export async function ingestTokenList(listLocation: string, directory: string): 
         return newTokens.length > 0 ? 
             ingestNewTokens(newTokens, directory, newTokenlist.name)
             : Promise.resolve();
+            
     } catch (err) {
         return Promise.reject(err);
     }

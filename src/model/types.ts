@@ -15,11 +15,6 @@ interface Links {
     whitepaper: string | null;
 }
 
-enum Tag {
-    STABLECOIN = 'stablecoin',
-    STAKING = 'staking'
-}
-
 interface Verification {
     verified: boolean;
     type: string; 
