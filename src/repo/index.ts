@@ -1,6 +1,6 @@
 
 import fs from 'fs';
-import { REPO_CLONE_URL } from '../config';
+import { REPO_CLONE_URL } from '../utils/config';
 import { getDirectories } from '../utils/filesystem';
 import { clone, pull, push, updateSubmodulesRecursive } from '../utils/git';
 

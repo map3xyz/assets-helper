@@ -1,5 +1,5 @@
 import { TokenList } from "@uniswap/token-lists";
-import { REPO_BASE_URL } from "../config";
+import { REPO_BASE_URL } from "../utils/config";
 import { downloadFile } from "../utils/images";
 import { AssetRepoObject } from "./AssetRepoObject";
 import { NetworkInfo } from "./NetworkInfo";
