@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander'
-import { needBeRegenerateTokenlist } from './tokenlist';
-import { getDirectories } from './utils/filesystem';
+import { pushAssetsRepoModuleChangesAndCreatePullRequests, regenerateTokenlists } from './repo';
+import { ingestTokenList } from './tokenlist';
 import { validate } from './validate'
 var packageJson = require('./../package.json');
 
@@ -39,8 +39,8 @@ program.command('validate')
       });
 });
 
-program.command('tokenlist')
-  .description('Generate or update a tokenlist.json file for a given tokenlist repo')
+program.command('tokenlists')
+  .description('Generate or update a tokenlist.json file for base repo')
   .option('-d --directory <string>', 'repository to generate a tokenlist for')
   .action(options => {
     // default
@@ -48,25 +48,60 @@ program.command('tokenlist')
       options.repo = process.cwd();
     }
 
-    needBeRegenerateTokenlist(options.directory).then(result => {
+    regenerateTokenlists(options.directory).then(result => {
       process.exit(0);
     })
     .catch(err => {
-      console.error("Error generating or iupdating tokenlist\n", err);
+      console.error("Error generating or updating tokenlist\n", err);
       process.exit(1);
     });
 });
 
-program.command('readDirs')
-  .option('-r, --repo <repo>', 'The repo to read')
-  .action((options) => {
-     // default
-     if(options.repo === '.') {
+program.command('commit')
+  .description('Push all changes to the assets repository and its submodules')
+  .option('-d --directory <string>', 'repository to push changes for')
+  .action(options => {
+    // default
+    if(options.directory === '.') {
       options.repo = process.cwd();
     }
-    getDirectories(options.repo)
-    .then(console.log)
-  });
 
+    pushAssetsRepoModuleChangesAndCreatePullRequests(options.directory).then(result => {
+      process.exit(0);
+    })
+    .catch(err => {
+      console.error("Error committing the changes to the assets repo and/or its submodules \n", err);
+      process.exit(1);
+    });
+});
+
+program.command('ingest')
+  .description('Ingest the following tokenlist to the assets repo')
+  .option('-l --list <string>', 'file location of the new tokenlist to ingest')
+  .option('-d --directory <string>', 'repository to push changes for')
+  .option('-b --branch <string>', 'The name of the branch that you want to push to origin')
+  .action(options => {
+    // defaults 
+    if(options.directory === '.') {
+      options.repo = process.cwd();
+    }
+
+     if(options.list === '.') {
+      options.list = process.cwd();
+    }
+
+    if(!options.list.endsWith('tokenlist.json')) {
+      console.error('The tokenlist file must be a tokenlist.json one');
+      process.exit(1);
+    }
+
+    ingestTokenList(options.list, options.directory, options.branch).then(result => {
+      process.exit(0);
+    })
+    .catch(err => {
+      console.error("Error ingesting the passed on tokenlist", err);
+      process.exit(1);
+    });
+});
 
 program.parse(process.argv);
