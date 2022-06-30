@@ -44,7 +44,7 @@ export function readAndParseJson(file: string): any {
     }
 }
 
-export function persistJsonFileIntempDir(data: any, name?: string): string {
+export function persistJsonFileInTempDir(data: any, name?: string): string {
     const file = path.join(DEFAULT_TEMP_DIR, `${name? name : (Math.random() + 1).toString(36).substring(10)}.tokenlist.json`);
     fs.writeFileSync(file, JSON.stringify(data));
     return file;
