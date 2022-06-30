@@ -1,14 +1,12 @@
 import { TokenList, TokenInfo as ExtTokenInfo } from '@uniswap/token-lists'
 import fs from 'fs';
 import path from 'path';
-import { REPO_BASE_URL } from '../config';
 import { getDefaultTags } from '../model/Tag';
 import { TokenInfo } from '../model/TokenInfo';
-import { Logos } from '../model/types';
 import { getMap3LogoUri, getLogoUriFromInfo, getNetworkInfoFromTokenlist, downloadAndPersistLogos } from '../model/utils';
 import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
-import { downloadFile } from '../utils/images';
+import { branch, commit } from '../utils/git';
 
 async function prepareTokenlist(directory: string, previousTokenlist?: TokenList): Promise<TokenList> {
 
@@ -72,7 +70,38 @@ export async function needBeRegenerateTokenlist(directory: string): Promise<void
     return fs.writeFileSync(path.join(directory, 'tokenlist.json'), JSON.stringify(tokenList, null, 2));
 }
 
-export async function ingestTokenList(listLocation: string, directory: string): Promise<void> {
+async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Promise<void> {
+    // take a list of tokens and add them to the repo if they don't already exist
+
+   await Promise.all(newTokens.map<Promise<void>>(token => {
+       return new Promise(async resolve => {
+           const tokenDir = path.join(directory, token.address.toLowerCase());
+
+           try {
+               if(fs.existsSync(tokenDir)) {
+                   return resolve();
+               } else {
+                   fs.mkdirSync(tokenDir, { recursive: true });
+               }
+
+               const parsedToken = TokenInfo.fromTokenlistTokenInfo(token);
+               parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
+
+               fs.writeFileSync(path.join(tokenDir, 'info.json'), await parsedToken.deserialise());
+               
+               resolve();
+           } catch (err) {
+               console.error(err);
+               // TODO; if directory was created but info.json or logos weren't delete it
+               resolve();
+           }
+       })
+   }));
+
+   return Promise.resolve();
+}
+
+export async function ingestTokenList(listLocation: string, directory: string, branchName: string): Promise<void> {
 
     try {
         const existingTokenlist: TokenList = JSON.parse(fs.readFileSync(path.join(directory, 'tokenlist.json'), 'utf8'));
@@ -91,45 +120,16 @@ export async function ingestTokenList(listLocation: string, directory: string): 
                     && token.chainId === network.identifiers.chainId
             );
     
-        return newTokens.length > 0 ? 
-            ingestNewTokens(newTokens, directory, newTokenlist.name)
-            : Promise.resolve();
-            
+        if(newTokens.length > 0) {
+            await branch(directory, branchName);
+            await ingestNewTokens(newTokens, directory);
+            await needBeRegenerateTokenlist(directory);
+            await commit(directory, `Indexing new ${network.name} tokens from ${newTokenlist.name}`);
+        }
+
+        return Promise.resolve();
     } catch (err) {
         return Promise.reject(err);
     }
-}
-
-async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string, tokenlistName: string): Promise<void> {
-     // TODO take a list of tokens and add them if they don't already exist
-
-    await Promise.all(newTokens.map(token => {
-        return new Promise(async resolve => {
-            const tokenDir = path.join(directory, token.address.toLowerCase());
-
-            try {
-                if(fs.existsSync(tokenDir)) {
-                    resolve(undefined);
-                } else {
-                    fs.mkdirSync(tokenDir, { recursive: true });
-                }
-
-                const parsedToken = TokenInfo.fromTokenlistTokenInfo(token);
-    
-                parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
-
-                fs.writeFileSync(path.join(tokenDir, 'info.json'), await parsedToken.deserialise());
-                
-                resolve(undefined);
-            } catch (err) {
-                console.error(err);
-                resolve(undefined);
-            }
-        })
-    }));
-
-    // TODO: commit the changes on git 
-
-    return Promise.resolve();
 }
 
