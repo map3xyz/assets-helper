@@ -1,5 +1,6 @@
 import shell from 'shelljs';
 import { NetworkInfo } from '../model/NetworkInfo';
+import fs from 'fs';
 
 export async function commit(repo: string, message: string): Promise<void> {
     try {
@@ -78,5 +79,22 @@ export async function pull(repo: string, origin: string): Promise<void> {
         return shell(cmd);
     } catch (err) {
         throw err;
+    }
+}
+
+export async function cloneOrPullRepoAndUpdateSubmodules(repo: string, dir: string, hasSubmodules: boolean, branch = 'master'): Promise<void> {
+    try {
+        if(!fs.existsSync(dir)) {
+            await pull(dir, branch);
+        } else {
+            await clone(repo, dir);
+        }
+    
+        if(hasSubmodules) {
+            await updateSubmodulesRecursive(dir);
+        }
+        return Promise.resolve();
+    } catch (err) {
+        throw err
     }
 }

@@ -2,20 +2,10 @@
 import fs from 'fs';
 import { REPO_CLONE_URL } from '../utils/config';
 import { getDirectories } from '../utils/filesystem';
-import { clone, pull, push, updateSubmodulesRecursive } from '../utils/git';
+import { clone, cloneOrPullRepoAndUpdateSubmodules, pull, push, updateSubmodulesRecursive } from '../utils/git';
 
 export async function cloneAssetsRepoAndPullSubmodules(dir: string) {
-    try {
-        if(!fs.existsSync(dir)) {
-            await pull(dir, 'master');
-        } else {
-            await clone(REPO_CLONE_URL, dir);
-        }
-    
-        return updateSubmodulesRecursive(dir);
-    } catch (err) {
-        throw err
-    }
+    return cloneOrPullRepoAndUpdateSubmodules(REPO_CLONE_URL, dir, true, 'master');
 }
 
 export async function pushAssetsRepoModuleChangesAndCreatePullRequests(dir: string) {
