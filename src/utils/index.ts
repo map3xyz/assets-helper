@@ -4,3 +4,4 @@ export function isDev() {
 
 export * from "./filesystem";
 export * from "./git";
+export * from "./images";

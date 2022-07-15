@@ -82,10 +82,21 @@ export async function pull(repo: string, origin: string): Promise<void> {
     }
 }
 
+async function forceCheckoutBranch(repo: string, branch: string) {
+    try {
+        const cmd = `cd ${repo} ;` +
+                    ` git stash ${branch}` + 
+                    ` git checkout ${branch}` + 
+                    ` git pull origin ${branch}`;
+        return shell(cmd);
+    } catch (err) {
+        throw err;
+    }
+}
 export async function cloneOrPullRepoAndUpdateSubmodules(repo: string, dir: string, hasSubmodules: boolean, branch = 'master'): Promise<void> {
     try {
-        if(!fs.existsSync(dir)) {
-            await pull(dir, branch);
+        if(fs.existsSync(dir)) {
+            await forceCheckoutBranch(repo, branch);
         } else {
             await clone(repo, dir);
         }

@@ -101,7 +101,7 @@ async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Pr
    return Promise.resolve();
 }
 
-export async function ingestTokenList(listLocation: string, directory: string, branchName: string): Promise<void> {
+export async function ingestTokenList(listLocation: string, directory: string, branchName: string, source?: string): Promise<void> {
 
     try {
         const existingTokenlist: TokenList = JSON.parse(fs.readFileSync(path.join(directory, 'tokenlist.json'), 'utf8'));
@@ -124,7 +124,7 @@ export async function ingestTokenList(listLocation: string, directory: string, b
             await branch(directory, branchName);
             await ingestNewTokens(newTokens, directory);
             await needBeRegenerateTokenlist(directory);
-            await commit(directory, `Indexing new ${network.name} tokens from ${newTokenlist.name}`);
+            await commit(directory, `Indexing ${newTokenlist.tokens.length} new ${network.name} tokens from ${source || newTokenlist.name}`);
         }
 
         return Promise.resolve();
