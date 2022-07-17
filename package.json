@@ -1,23 +1,22 @@
 {
   "name": "@map3xyz/assets-helper",
   "version": "1.0.33",
-  "description": "CLI for maintaining the assets repo.",
+  "description": "A library for maintaining the assets repo.",
   "author": "pellicceama",
   "keywords": [
     "typescript",
-    "cli",
     "starter"
   ],
   "license": "MIT",
-  "main": "./dist/cli.js",
-  "types": "/dist/cli.d.ts",
-  "bin": "dist/cli.js",
+  "main": "./dist/index.js",
+  "types": "/dist/index.d.ts",
+  "bin": "dist/index.js",
   "files": [
     "dist/**/*",
     "!dist/**/*.test.js"
   ],
   "scripts": {
-    "cli": "yarn ts-node ./src/cli.ts",
+    "index": "yarn ts-node ./src/index.ts",
     "clean": "rimraf ./dist/ ./exec/",
     "build": "yarn clean && tsc",
     "preparePublish": "yarn build && npm version patch",
