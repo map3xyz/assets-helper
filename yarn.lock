@@ -89,7 +89,6 @@ __metadata:
     "@uniswap/token-lists": ^1.0.0-beta.30
     ava: ^4.3.0
     axios: ^0.27.2
-    commander: ^9.3.0
     jsonschema: ^1.4.1
     pkg: ^5.7.0
     rimraf: ^3.0.2
@@ -751,13 +750,6 @@ __metadata:
   dependencies:
     delayed-stream: ~1.0.0
   checksum: 49fa4aeb4916567e33ea81d088f6584749fc90c7abec76fd516bf1c5aa5c79f3584b5ba3de6b86d26ddd64bae5329c4c7479343250cfe71c75bb366eae53bb7c
-  languageName: node
-  linkType: hard
-
-"commander@npm:^9.3.0":
-  version: 9.3.0
-  resolution: "commander@npm:9.3.0"
-  checksum: d421ce66fee25792a1470c69aa8d1b86434bf873a96483aa92c8267f81a6f20c6f7c426f5e82f88ac50a8ec4855d3f2787aebcdef8aa559e1080a2337a95a217
   languageName: node
   linkType: hard
 
