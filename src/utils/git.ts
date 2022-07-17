@@ -8,7 +8,7 @@ export async function commit(repo: string, message: string): Promise<void> {
     try {
         const cmd = `cd ${repo} ;` + 
                     ` git add . &&` + 
-                    ` git commit -m ${message} &&`;
+                    ` git commit -m ${message}`;
 
         return shell.exec(cmd);
 
@@ -86,9 +86,9 @@ export async function pull(directory: string, origin: string): Promise<void> {
 async function forceCheckoutBranch(directory: string, branch: string) {
     try {
         const cmd = `cd ${directory} ;` +
-                    ` git stash` + 
-                    ` git checkout ${branch}` + 
-                    ` git pull origin ${branch}`;
+                    ` git stash ;` + 
+                    ` git checkout ${branch} ;` + 
+                    ` git pull origin ${branch} ;`;
         return shell.exec(cmd);
     } catch (err) {
         throw err;
