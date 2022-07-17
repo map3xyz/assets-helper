@@ -1,8 +1,11 @@
 import shell from 'shelljs';
 import { NetworkInfo } from '../model/NetworkInfo';
 import fs from 'fs';
+import { isDev } from '.';
 
-shell.set('+v');
+if(isDev()) {
+    shell.set('+v');
+}
 
 export async function commit(repo: string, message: string): Promise<void> {
     try {
