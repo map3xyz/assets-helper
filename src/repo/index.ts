@@ -1,8 +1,7 @@
 
-import fs from 'fs';
 import { REPO_CLONE_URL } from '../utils/config';
 import { getDirectories } from '../utils/filesystem';
-import { clone, cloneOrPullRepoAndUpdateSubmodules, pull, push, updateSubmodulesRecursive } from '../utils/git';
+import { cloneOrPullRepoAndUpdateSubmodules, push } from '../utils/git';
 
 export async function cloneAssetsRepoAndPullSubmodules(dir: string) {
     return cloneOrPullRepoAndUpdateSubmodules(REPO_CLONE_URL, dir, true, 'master');

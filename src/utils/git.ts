@@ -2,6 +2,8 @@ import shell from 'shelljs';
 import { NetworkInfo } from '../model/NetworkInfo';
 import fs from 'fs';
 
+shell.set('+v');
+
 export async function commit(repo: string, message: string): Promise<void> {
     try {
         const cmd = `cd ${repo} ;` + 
@@ -15,12 +17,12 @@ export async function commit(repo: string, message: string): Promise<void> {
     }
 }
 
-export async function branch(repo: string, branch: string): Promise<void> {
+export async function branch(directory: string, branch: string): Promise<void> {
 
     try {
 
         const checkBranchCmd = `git rev-parse --abbrev-ref HEAD`;
-        const createBranchCmd = `cd ${repo} ;` + 
+        const createBranchCmd = `cd ${directory} ;` + 
                                 ` git checkout -b ${branch}`;
 
         const gitBranch = shell.exec(checkBranchCmd).stdout.trim();
@@ -35,9 +37,9 @@ export async function branch(repo: string, branch: string): Promise<void> {
     }
 }
 
-export async function push(repo: string, origin?: string): Promise<void> {
+export async function push(directory: string, origin?: string): Promise<void> {
     try {
-        const cmd = `cd ${repo} ;` + 
+        const cmd = `cd ${directory} ;` + 
                     ` git push ` + origin? `origin ${origin}` : '';
 
         return shell.exec(cmd);
@@ -61,9 +63,9 @@ export async function clone(repo: string, directory: string): Promise<void> {
     }
 }
 
-export async function updateSubmodulesRecursive(repo: string): Promise<void> {
+export async function updateSubmodulesRecursive(directory: string): Promise<void> {
     try {
-        const cmd = `cd ${repo} ;` + 
+        const cmd = `cd ${directory} ;` + 
                     ` git submodule update --recursive --remote`;
         return shell.exec(cmd);
     } catch (err) {
@@ -71,9 +73,9 @@ export async function updateSubmodulesRecursive(repo: string): Promise<void> {
     }
 }
 
-export async function pull(repo: string, origin: string): Promise<void> {
+export async function pull(directory: string, origin: string): Promise<void> {
     try {
-        const cmd = `cd ${repo} ;` + 
+        const cmd = `cd ${directory} ;` + 
                     ` git pull origin ${origin}`;
         return shell.exec(cmd);
     } catch (err) {
@@ -81,9 +83,9 @@ export async function pull(repo: string, origin: string): Promise<void> {
     }
 }
 
-async function forceCheckoutBranch(repo: string, branch: string) {
+async function forceCheckoutBranch(directory: string, branch: string) {
     try {
-        const cmd = `cd ${repo} ;` +
+        const cmd = `cd ${directory} ;` +
                     ` git stash ${branch}` + 
                     ` git checkout ${branch}` + 
                     ` git pull origin ${branch}`;
@@ -95,7 +97,7 @@ async function forceCheckoutBranch(repo: string, branch: string) {
 export async function cloneOrPullRepoAndUpdateSubmodules(repo: string, dir: string, hasSubmodules: boolean, branch = 'master'): Promise<void> {
     try {
         if(fs.existsSync(dir)) {
-            await forceCheckoutBranch(repo, branch);
+            await forceCheckoutBranch(dir, branch);
         } else {
             await clone(repo, dir);
         }
