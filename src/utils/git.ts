@@ -86,7 +86,7 @@ export async function pull(directory: string, origin: string): Promise<void> {
 async function forceCheckoutBranch(directory: string, branch: string) {
     try {
         const cmd = `cd ${directory} ;` +
-                    ` git stash ${branch}` + 
+                    ` git stash` + 
                     ` git checkout ${branch}` + 
                     ` git pull origin ${branch}`;
         return shell.exec(cmd);
