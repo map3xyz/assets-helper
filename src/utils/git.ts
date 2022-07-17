@@ -8,7 +8,7 @@ export async function commit(repo: string, message: string): Promise<void> {
                     ` git add . &&` + 
                     ` git commit -m ${message} &&`;
 
-        return shell(cmd);
+        return shell.exec(cmd);
 
     } catch (err) {
         throw err;
@@ -23,10 +23,10 @@ export async function branch(repo: string, branch: string): Promise<void> {
         const createBranchCmd = `cd ${repo} ;` + 
                                 ` git checkout -b ${branch}`;
 
-        const gitBranch = shell(checkBranchCmd).stdout.trim();
+        const gitBranch = shell.exec(checkBranchCmd).stdout.trim();
 
         if(gitBranch !== branch) {
-            return shell(createBranchCmd);
+            return shell.exec(createBranchCmd);
         }
 
         return Promise.resolve();
@@ -40,7 +40,7 @@ export async function push(repo: string, origin?: string): Promise<void> {
         const cmd = `cd ${repo} ;` + 
                     ` git push ` + origin? `origin ${origin}` : '';
 
-        return shell(cmd);
+        return shell.exec(cmd);
 
     } catch (err) {
         throw err;
@@ -56,7 +56,7 @@ export async function clone(repo: string, directory: string): Promise<void> {
     try {
         const cmd = `cd ${repo} ;` + 
                     ` git clone ${repo} ${directory}`;
-        return shell(cmd);
+        return shell.exec(cmd);
     } catch (err) {
         throw err;
     }
@@ -66,7 +66,7 @@ export async function updateSubmodulesRecursive(repo: string): Promise<void> {
     try {
         const cmd = `cd ${repo} ;` + 
                     ` git submodule update --recursive --remote`;
-        return shell(cmd);
+        return shell.exec(cmd);
     } catch (err) {
         throw err;
     }
@@ -76,7 +76,7 @@ export async function pull(repo: string, origin: string): Promise<void> {
     try {
         const cmd = `cd ${repo} ;` + 
                     ` git pull origin ${origin}`;
-        return shell(cmd);
+        return shell.exec(cmd);
     } catch (err) {
         throw err;
     }
@@ -88,7 +88,7 @@ async function forceCheckoutBranch(repo: string, branch: string) {
                     ` git stash ${branch}` + 
                     ` git checkout ${branch}` + 
                     ` git pull origin ${branch}`;
-        return shell(cmd);
+        return shell.exec(cmd);
     } catch (err) {
         throw err;
     }
