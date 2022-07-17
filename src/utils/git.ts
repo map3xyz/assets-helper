@@ -54,8 +54,7 @@ export function getRandomBranchNameForNetwork(network: NetworkInfo): string {
 
 export async function clone(repo: string, directory: string): Promise<void> {
     try {
-        const cmd = `cd ${repo} ;` + 
-                    ` git clone ${repo} ${directory}`;
+        const cmd = `git clone ${repo} ${directory}`;
         return shell.exec(cmd);
     } catch (err) {
         throw err;
