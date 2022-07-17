@@ -1,6 +1,7 @@
 # Ignore generated directories
 dist/
 exec/
+/tmp/**/
 
 # Logs
 logs
