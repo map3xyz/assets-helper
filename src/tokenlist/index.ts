@@ -101,17 +101,28 @@ async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Pr
 export async function ingestTokenList(listLocation: string, directory: string, branchName: string, source?: string): Promise<void> {
 
     try {
-        const existingTokenlist: TokenList = JSON.parse(fs.readFileSync(path.join(directory, 'tokenlist.json'), 'utf8'));
-        let newTokenlist: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
+        const tokenlistLocation = path.join(directory, 'tokenlist.json');
 
-        const network = await getNetworkInfoFromTokenlist(existingTokenlist);
+        const previousListToParse: TokenList = 
+            fs.existsSync(tokenlistLocation) ?
+            JSON.parse(fs.readFileSync(tokenlistLocation, 'utf8')) 
+            : {
+                name: '',
+                timestamp: '',
+                version: '',
+                tokens: []
+            };
+
+        let listToIngest: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
+
+        const network = await getNetworkInfoFromTokenlist(previousListToParse);
 
         if(!network) {
             throw new Error('No network info found for tokenlist ' + listLocation);
         }
 
-        const newTokens = newTokenlist.tokens.filter(
-            token => !existingTokenlist.tokens.some(
+        const newTokens = listToIngest.tokens.filter(
+            token => !previousListToParse.tokens.some(
                             existingToken => existingToken.address.toLowerCase() === token.address.toLowerCase()
                         )
                     && token.chainId === network.identifiers.chainId
@@ -121,7 +132,7 @@ export async function ingestTokenList(listLocation: string, directory: string, b
             await branch(directory, branchName);
             await ingestNewTokens(newTokens, directory);
             await needBeRegenerateTokenlist(directory);
-            await commit(directory, `Indexing ${newTokenlist.tokens.length} new ${network.name} tokens from ${source || newTokenlist.name}`);
+            await commit(directory, `Indexing ${listToIngest.tokens.length} new ${network.name} tokens from ${source || listToIngest.name}`);
         }
 
         return Promise.resolve();
