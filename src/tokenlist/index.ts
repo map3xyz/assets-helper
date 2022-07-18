@@ -12,9 +12,7 @@ async function prepareTokenlist(directory: string, previousTokenlist?: TokenList
 
     const subDirs: string[] = await getDirectories(directory);
 
-    const dirsWithTokens = await Promise.all(subDirs.map(dir => fs.existsSync(path.join(dir, 'info.json'))));
-
-    const tokenDirs = subDirs.filter((_v, index) => dirsWithTokens[index]);
+    const tokenDirs = subDirs.filter(dir => fs.existsSync(path.join(dir, 'info.json')));
 
     let tokenList: TokenList = {
         name: `@Map3/${directory.split("/")[directory.split("/").length - 1]}`,
@@ -54,20 +52,19 @@ async function prepareTokenlist(directory: string, previousTokenlist?: TokenList
 
 export async function needBeRegenerateTokenlist(directory: string): Promise<void> {
     
-    const hasExistingTokenlist = fs.existsSync(path.join(directory, 'tokenlist.json'));
+    const FILE_NAME = 'tokenlist.json';
+    const hasExistingTokenlist = fs.existsSync(path.join(directory, FILE_NAME));
 
     let tokenlist; 
 
     if(hasExistingTokenlist) {
-        const previousTokenlist = JSON.parse(fs.readFileSync(path.join(directory, 'tokenlist.json'), 'utf8'));
+        const previousTokenlist = JSON.parse(fs.readFileSync(path.join(directory, FILE_NAME), 'utf8'));
         tokenlist = await prepareTokenlist(directory, previousTokenlist);
     } else {
         tokenlist = await prepareTokenlist(directory);
     }
 
-    const tokenList = await prepareTokenlist(directory);
-
-    return fs.writeFileSync(path.join(directory, 'tokenlist.json'), JSON.stringify(tokenList, null, 2));
+    return fs.writeFileSync(path.join(directory, FILE_NAME), JSON.stringify(tokenlist, null, 2));
 }
 
 async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Promise<void> {
