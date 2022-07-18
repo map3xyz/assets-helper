@@ -18,7 +18,7 @@ export async function getNetworks(dir?: string): Promise<NetworkInfo[]> {
         directories.forEach(directory => {
             const split = directory.split('/');
 
-            if(split[split.length - 2] === 'networks') {
+            if(split[split.length - 2] === 'networks' && !directory.includes('.git')) {
                 // const networkName = split[split.length - 1];
                 res.push(readAndParseJson(`${directory}/info.json`));
             }

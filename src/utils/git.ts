@@ -68,6 +68,12 @@ export async function clone(repo: string, directory: string): Promise<void> {
 
 export async function updateSubmodulesRecursive(directory: string): Promise<void> {
     try {
+        const gitConfig = fs.readFileSync(`${directory}/.git/config`, 'utf8');
+
+        if(!gitConfig.includes('submodule')) {
+            // initialise it 
+            await shell.exec(`cd ${directory} ; git submodule update --init --recursive`);
+        }
         const cmd = `cd ${directory} ;` + 
                     ` git submodule update --recursive --remote`;
         return shell.exec(cmd);
