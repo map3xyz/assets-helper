@@ -16,11 +16,6 @@ export function getLogoUriFromInfo(info: AssetRepoObject, dir: string): string {
     return "";
 }
 
-export async function getNetworkInfoFromTokenlist(tokenlist: TokenList): Promise<NetworkInfo> {
-    // TODO: parse a tokenlist and return a Network object, getting it remotely from the master branch via HTTP
-    return Promise.resolve(null); 
-}
-
 export async function downloadAndPersistLogos(logo: Logos, directory: string): Promise<Logos> {
     let res = {
         ...logo

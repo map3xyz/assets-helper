@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { getDefaultTags } from '../model/Tag';
 import { TokenInfo } from '../model/TokenInfo';
-import { getMap3LogoUri, getLogoUriFromInfo, getNetworkInfoFromTokenlist, downloadAndPersistLogos } from '../model/utils';
+import { getMap3LogoUri, getLogoUriFromInfo, downloadAndPersistLogos } from '../model/utils';
 import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
 import { branch, commit } from '../utils/git';
@@ -115,24 +115,24 @@ export async function ingestTokenList(listLocation: string, directory: string, b
 
         let listToIngest: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
 
-        const network = await getNetworkInfoFromTokenlist(previousListToParse);
+        const chainId = listToIngest.tokens.find(t => t.chainId !== undefined)?.chainId;
 
-        if(!network) {
-            throw new Error('No network info found for tokenlist ' + listLocation);
+        if(!chainId) {
+            throw new Error('No chainId info found for tokenlist ' + listLocation);
         }
 
         const newTokens = listToIngest.tokens.filter(
             token => !previousListToParse.tokens.some(
                             existingToken => existingToken.address.toLowerCase() === token.address.toLowerCase()
                         )
-                    && token.chainId === network.identifiers.chainId
+                    && token.chainId === chainId
             );
     
         if(newTokens.length > 0) {
             await branch(directory, branchName);
             await ingestNewTokens(newTokens, directory);
             await needBeRegenerateTokenlist(directory);
-            await commit(directory, `Indexing ${listToIngest.tokens.length} new ${network.name} tokens from ${source || listToIngest.name}`);
+            await commit(directory, `Indexing ${listToIngest.tokens.length} new tokens from ${source || listToIngest.name}`);
         }
 
         return Promise.resolve();
