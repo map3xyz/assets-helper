@@ -1,5 +1,5 @@
 import shell from 'shelljs';
-import { NetworkInfo } from '../model/NetworkInfo';
+import { NetworkInfo as string } from '../model/NetworkInfo';
 import fs from 'fs';
 import { isDev } from '.';
 
@@ -52,8 +52,8 @@ export async function push(directory: string, origin?: string): Promise<void> {
     }
 }
 
-export function getRandomBranchNameForNetwork(network: NetworkInfo): string {
-    const name = network.name.split(" ").join("-");
+export function getRandomBranchNameForNetworkName(networkName: string): string {
+    const name = networkName.split(" ").join("-");
     return `${name}-tokens-update-${(Math.random() + 1).toString(36).substring(10)}`;
 }
 
