@@ -15,14 +15,14 @@ export async function getNetworks(dir?: string): Promise<NetworkInfo[]> {
 
         const directories = await getDirectories(dir);
 
-        for(const directory in directories) {
+        directories.forEach(directory => {
             const split = directory.split('/');
 
             if(split[split.length - 2] === 'networks') {
                 // const networkName = split[split.length - 1];
                 res.push(readAndParseJson(`${directory}/info.json`));
             }
-        }
+        });
 
         return res;
    } catch (err) {  
