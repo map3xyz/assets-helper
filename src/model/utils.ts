@@ -5,6 +5,8 @@ import { AssetRepoObject } from "./AssetRepoObject";
 import { NetworkInfo } from "./NetworkInfo";
 import { TokenInfo } from "./TokenInfo";
 import { Logos } from "./types";
+import fs from 'fs';
+import path from 'path';
 
 export function getMap3LogoUri(): string {
     // TODO
@@ -23,7 +25,9 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
 
     try {
         if(logo.png.github) {
-            await downloadFile(logo.png.github, directory, 'logo.png');
+            if(!fs.existsSync(path.join(directory, "logo.png"))) {
+                await downloadFile(logo.png.github, directory, 'logo.png');
+            }
             res.png.github = `${REPO_BASE_URL}/networks${directory.split("/networks")[1]}/logo.png`;
             res.png.ipfs = null;
             res.png.cdn = null;
@@ -31,7 +35,9 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
         }
     
         if(logo.svg.github) {
-            await downloadFile(logo.svg.github, directory, 'logo.svg');
+            if(!fs.existsSync(path.join(directory, "logo.svg"))) {
+                await downloadFile(logo.svg.github, directory, 'logo.svg');
+            }
             res.svg.github = `${REPO_BASE_URL}/networks${directory.split("/networks")[1]}/logo.svg`;
             res.png.ipfs = null;
             res.png.cdn = null;

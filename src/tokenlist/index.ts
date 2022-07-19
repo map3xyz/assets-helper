@@ -83,17 +83,18 @@ async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Pr
            const tokenDir = path.join(directory, token.address.toLowerCase());
 
            try {
-               if(fs.existsSync(tokenDir)) {
-                   return resolve();
-               } else {
-                   fs.mkdirSync(tokenDir, { recursive: true });
-               }
+               if(!fs.existsSync(tokenDir)) {
+                fs.mkdirSync(tokenDir, { recursive: true });
+               } 
 
                const parsedToken = TokenInfo.fromTokenlistTokenInfo(token);
                parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
 
                console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));
-               fs.writeFileSync(path.join(tokenDir, 'info.json'), await parsedToken.deserialise());
+
+               if(!fs.existsSync(path.join(tokenDir, 'info.json'))) {
+                fs.writeFileSync(path.join(tokenDir, 'info.json'), await parsedToken.deserialise());
+               }
                
                resolve();
            } catch (err) {
