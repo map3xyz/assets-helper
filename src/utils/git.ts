@@ -9,6 +9,7 @@ if(isDev()) {
 
 export async function commit(repo: string, message: string): Promise<void> {
     try {
+        console.log(`Committing ${repo} msg = ${message}`);
         const cmd = `cd ${repo} ;` + 
                     ` git add . &&` + 
                     ` git commit -m ${message}`;
@@ -24,6 +25,7 @@ export async function branch(directory: string, branch: string): Promise<void> {
 
     try {
 
+        console.log(`Branching ${directory} to ${branch}`);
         const checkBranchCmd = `git rev-parse --abbrev-ref HEAD`;
         const createBranchCmd = `cd ${directory} ;` + 
                                 ` git checkout -b ${branch}`;
@@ -42,6 +44,7 @@ export async function branch(directory: string, branch: string): Promise<void> {
 
 export async function push(directory: string, origin?: string): Promise<void> {
     try {
+        console.log(`Git pushing to ${origin}`);
         const cmd = `cd ${directory} ;` + 
                     ` git push ` + origin? `origin ${origin}` : '';
 
@@ -59,6 +62,7 @@ export function getRandomBranchNameForNetworkName(networkName: string): string {
 
 export async function clone(repo: string, directory: string): Promise<void> {
     try {
+        console.log(`Cloning ${repo} to ${directory}`);
         const cmd = `git clone ${repo} ${directory}`;
         return shell.exec(cmd);
     } catch (err) {
@@ -68,6 +72,7 @@ export async function clone(repo: string, directory: string): Promise<void> {
 
 export async function updateSubmodulesRecursive(directory: string): Promise<void> {
     try {
+        console.log(`Updating submodules in ${directory}`);
         const gitConfig = fs.readFileSync(`${directory}/.git/config`, 'utf8');
 
         if(!gitConfig.includes('submodule')) {
@@ -84,6 +89,7 @@ export async function updateSubmodulesRecursive(directory: string): Promise<void
 
 export async function pull(directory: string, origin: string): Promise<void> {
     try {
+        console.log(`Git pulling dir ${directory} from ${origin}`);
         const cmd = `cd ${directory} ;` + 
                     ` git pull origin ${origin}`;
         return shell.exec(cmd);
@@ -94,6 +100,7 @@ export async function pull(directory: string, origin: string): Promise<void> {
 
 async function forceCheckoutBranch(directory: string, branch: string) {
     try {
+        console.log(`Checking out branch ${branch} in ${directory}`);
         const cmd = `cd ${directory} ;` +
                     ` git stash ;` + 
                     ` git checkout ${branch} ;` + 

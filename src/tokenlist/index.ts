@@ -145,4 +145,3 @@ export async function ingestTokenList(listLocation: string, directory: string, b
         return Promise.reject(err);
     }
 }
-
