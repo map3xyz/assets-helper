@@ -47,6 +47,7 @@ async function prepareTokenlist(directory: string, previousTokenlist?: TokenList
     }))).filter(t => t != null);
 
     if(JSON.stringify(tokens) === JSON.stringify(previousTokenlist? previousTokenlist.tokens : [])) {
+        console.log(`No new tokens found in tokenlist ${directory}, defaulting to previous one`);
         return previousTokenlist;
     }
 
@@ -60,16 +61,18 @@ export async function needBeRegenerateTokenlist(directory: string): Promise<void
     const FILE_NAME = 'tokenlist.json';
     const hasExistingTokenlist = fs.existsSync(path.join(directory, FILE_NAME));
 
-    let tokenlist; 
+    let tokenlist: TokenList; 
 
     if(hasExistingTokenlist) {
+        console.log('Found existing tokenlist, checking if it needs to be regenerated');
         const previousTokenlist = JSON.parse(fs.readFileSync(path.join(directory, FILE_NAME), 'utf8'));
         tokenlist = await prepareTokenlist(directory, previousTokenlist);
     } else {
         tokenlist = await prepareTokenlist(directory);
     }
 
-    return fs.writeFileSync(path.join(directory, FILE_NAME), JSON.stringify(tokenlist, null, 2));
+    console.log(`Saving Tokenlist: ${JSON.stringify(tokenlist)}`);
+    return fs.writeFileSync(path.join(directory, FILE_NAME), JSON.stringify(tokenlist, undefined, 2));
 }
 
 async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Promise<void> {
