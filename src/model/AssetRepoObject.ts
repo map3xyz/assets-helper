@@ -52,28 +52,28 @@ export abstract class AssetRepoObject {
             {}
         );
         
-        let validation, schema;
+        // let validation, schema;
 
-        try {
-            switch(this.type) {
-                case 'network':
-                    schema = await fetchNetworkSchema();
-                    validation = validateJsonSchema(parsed, schema);
-                    break;
-                case 'token':
-                    schema = await fetchTokenSchema();
-                    validation = validateJsonSchema(parsed, schema);
-                    break;
-                default:
-                    throw new Error('Unknown object type ' + this.type);
-            }    
-        } catch (err) {
-            throw new Error('Failed to validate object: ' + err.message);
-        }
+        // try {
+        //     switch(this.type) {
+        //         case 'network':
+        //             schema = await fetchNetworkSchema();
+        //             validation = validateJsonSchema(parsed, schema);
+        //             break;
+        //         case 'token':
+        //             schema = await fetchTokenSchema();
+        //             validation = validateJsonSchema(parsed, schema);
+        //             break;
+        //         default:
+        //             throw new Error('Unknown object type ' + this.type);
+        //     }    
+        // } catch (err) {
+        //     throw new Error('Failed to validate object: ' + err.message);
+        // }
 
-        if(!validation.valid) {
-            throw new Error('Failed to validate object. Errors: ' + JSON.stringify(validation.errors));
-        }
+        // if(!validation.valid) {
+        //     throw new Error('Failed to validate object. Errors: ' + JSON.stringify(validation.errors));
+        // }
         
         return JSON.stringify(parsed, null, 2);
     }
