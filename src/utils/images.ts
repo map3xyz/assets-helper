@@ -11,10 +11,14 @@ function getP2PUrl(hash) {
 export async function downloadFile (fileUrl: string, fileDestination: string, fileName: string): Promise<void> {
 
   return new Promise(async (resolve, reject) => {
+    if(!fileUrl || !fileDestination || !fileName) {
+      reject(new Error(`Cannot download empty file Url, dest or name. Dest: ${fileDestination} ${fileName}`));
+    }
     const localFilePath = path.resolve(fileDestination, fileName);
 
     const isP2P = fileUrl.includes('ipfs://') || fileUrl.includes('ipns://');
 
+    // TODO: resolve ENS entries alongside IPFS
     const url = isP2P ? getP2PUrl(fileUrl): fileUrl;
 
     try {
