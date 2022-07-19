@@ -30,7 +30,7 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
             // TODO: upload PNG to IPFS and get link.
         }
     
-        if(logo.svg) {
+        if(logo.svg.github) {
             await downloadFile(logo.svg.github, directory, 'logo.svg');
             res.svg.github = `${REPO_BASE_URL}/networks${directory.split("/networks")[1]}/logo.svg`;
             res.png.ipfs = null;
