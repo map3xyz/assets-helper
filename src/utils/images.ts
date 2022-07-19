@@ -19,7 +19,7 @@ export async function downloadFile (fileUrl: string, fileDestination: string, fi
     const isP2P = fileUrl.includes('ipfs://') || fileUrl.includes('ipns://');
 
     // TODO: resolve ENS entries alongside IPFS
-    const url = isP2P ? getP2PUrl(fileUrl): fileUrl;
+    const url = isP2P ? getP2PUrl(fileUrl.split('//')[1]): fileUrl;
 
     try {
         const response = await axios({
