@@ -12,7 +12,7 @@ export async function commit(repo: string, message: string): Promise<void> {
         console.log(`Committing ${repo} msg = ${message}`);
         const cmd = `cd ${repo} ;` + 
                     ` git add . &&` + 
-                    ` git commit -m ${message}`;
+                    ` git commit -m "${message}"`;
 
         return shell.exec(cmd);
 
