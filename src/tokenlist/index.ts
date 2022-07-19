@@ -46,7 +46,7 @@ async function prepareTokenlist(directory: string, previousTokenlist?: TokenList
         })
     }))).filter(t => t != null);
 
-    if(JSON.stringify(tokens) === JSON.stringify(previousTokenlist? previousTokenlist.tokens : [])) {
+    if(previousTokenlist && JSON.stringify(tokens) === JSON.stringify(previousTokenlist? previousTokenlist.tokens : [])) {
         console.log(`No new tokens found in tokenlist ${directory}, defaulting to previous one`);
         return previousTokenlist;
     }
