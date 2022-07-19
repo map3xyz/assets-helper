@@ -34,7 +34,7 @@ export async function downloadFile (fileUrl: string, fileDestination: string, fi
         });
 
     } catch (err) { 
-            reject(err);
+        reject(err);
     }
   });
 }; 

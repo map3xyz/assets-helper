@@ -24,22 +24,27 @@ async function prepareTokenlist(directory: string, previousTokenlist?: TokenList
         tokens: []
     };
 
-    const tokens: ExtTokenInfo[] = await Promise.all<ExtTokenInfo>(tokenDirs.map(dir => {
+    const tokens: ExtTokenInfo[] = (await Promise.all<ExtTokenInfo>(tokenDirs.map(dir => {
         return new Promise(resolve => {
-            const info = JSON.parse(fs.readFileSync(path.join(dir, 'info.json'), 'utf8'));
+            try {
+                const info = JSON.parse(fs.readFileSync(path.join(dir, 'info.json'), 'utf8'));
 
-            const token: ExtTokenInfo = {
-                chainId: info.indentifiers.chainId,
-                address: info.address,
-                name: info.name,
-                decimals: info.decimals,
-                symbol: info.symbol,
-                logoURI: getLogoUriFromInfo(info, dir),
-                tags: info.tags
-            };
-            resolve(token);
+                const token: ExtTokenInfo = {
+                    chainId: info.indentifiers?.chainId,
+                    address: info.address,
+                    name: info.name,
+                    decimals: info.decimals,
+                    symbol: info.symbol,
+                    logoURI: getLogoUriFromInfo(info, dir),
+                    tags: info.tags
+                };
+                resolve(token);
+            } catch (err) {
+                console.error(`PrepareTokenlist Error processing token in dir ${dir}. Skipping...`, err);
+                resolve(null);
+            }
         })
-    }));
+    }))).filter(t => t != null);
 
     if(JSON.stringify(tokens) === JSON.stringify(previousTokenlist? previousTokenlist.tokens : [])) {
         return previousTokenlist;
