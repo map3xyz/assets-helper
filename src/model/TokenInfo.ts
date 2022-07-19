@@ -20,12 +20,12 @@ export class TokenInfo extends AssetRepoObject {
     static fromTokenlistTokenInfo(info: TokenInfoExt): TokenInfo {
         const logo: Logos = {
             png: {
-                github: info.logoURI.endsWith('.png')? info.logoURI : null,
-                ipfs: info.logoURI.startsWith('ipfs://')? info.logoURI : null,
+                github: info.logoURI?.endsWith('.png')? info.logoURI : null,
+                ipfs: info.logoURI?.startsWith('ipfs://')? info.logoURI : null,
                 cdn: null
             },
             svg: { 
-                github: info.logoURI.endsWith('.svg')? info.logoURI : null,
+                github: info.logoURI?.endsWith('.svg')? info.logoURI : null,
                 ipfs: null, // TODO: check file exstension within IPFS link to see if its SVG
                 cdn: null
             }

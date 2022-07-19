@@ -94,7 +94,7 @@ async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Pr
                resolve();
            } catch (err) {
                console.error(err);
-               // TODO; if directory was created but info.json or logos weren't delete it
+               // TODO; if directory was created but info.json or logos weren't, delete it
                resolve();
            }
        })
