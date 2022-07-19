@@ -92,6 +92,7 @@ async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Pr
                const parsedToken = TokenInfo.fromTokenlistTokenInfo(token);
                parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
 
+               console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));
                fs.writeFileSync(path.join(tokenDir, 'info.json'), await parsedToken.deserialise());
                
                resolve();
