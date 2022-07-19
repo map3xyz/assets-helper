@@ -46,7 +46,7 @@ export async function push(directory: string, origin?: string): Promise<void> {
     try {
         console.log(`Git pushing to ${origin}`);
         const cmd = `cd ${directory} ;` + 
-                    ` git push `;
+                    `git push origin ${origin}`;
 
         return shell.exec(cmd);
 
