@@ -75,7 +75,7 @@ export async function needBeRegenerateTokenlist(directory: string): Promise<void
     return fs.writeFileSync(path.join(directory, FILE_NAME), JSON.stringify(tokenlist, undefined, 2));
 }
 
-async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Promise<void> {
+async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string, source?: string): Promise<void> {
     // take a list of tokens and add them to the repo if they don't already exist
 
    await Promise.all(newTokens.map<Promise<void>>(token => {
@@ -87,7 +87,7 @@ async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Pr
                 fs.mkdirSync(tokenDir, { recursive: true });
                } 
 
-               const parsedToken = TokenInfo.fromTokenlistTokenInfo(token);
+               const parsedToken = TokenInfo.fromTokenlistTokenInfo(token, source);
                parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
 
                console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));
@@ -140,7 +140,7 @@ export async function ingestTokenList(listLocation: string, directory: string, b
     
         if(newTokens.length > 0) {
             await branch(directory, branchName);
-            await ingestNewTokens(newTokens, directory);
+            await ingestNewTokens(newTokens, directory, source);
             await needBeRegenerateTokenlist(directory);
             await commit(directory, `Indexing ${listToIngest.tokens.length} new tokens from ${source || listToIngest.name}`);
         }

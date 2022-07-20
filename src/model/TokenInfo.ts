@@ -3,6 +3,7 @@ import {TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
 import { TagName } from "./Tag";
 import { Logos } from "./types";
 
+
 export class TokenInfo extends AssetRepoObject {
 
     address: string;
@@ -17,7 +18,7 @@ export class TokenInfo extends AssetRepoObject {
         this.address = info.address;
     }
 
-    static fromTokenlistTokenInfo(info: TokenInfoExt): TokenInfo {
+    static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<TokenInfo> {
         const logo: Logos = {
             png: {
                 github: info.logoURI?.endsWith('.png')? info.logoURI : null,
@@ -31,13 +32,32 @@ export class TokenInfo extends AssetRepoObject {
             }
         }
         
-        return new TokenInfo({
+        const baseToken: TokenInfo = {
             address: info.address,
             name: info.name,
             symbol: info.symbol,
             decimals: info.decimals,
             logo: logo,
             tags: info.tags as TagName[]
-        });
+        };
+
+        return enhanceExtTokenInfoWithSourceData(baseToken, source);
     }
 }
+
+async function enhanceExtTokenInfoWithSourceData(baseToken: TokenInfo, source?: string): Promise<TokenInfo> {
+    if(!source) {
+        return baseToken;
+    }
+
+
+    switch(source) {
+        case 'trustwallet': 
+            return getTwaTokenInfo(baseToken);
+        default:
+            console.error(`enhanceExtTokenInfoWithSourceData Unknown source ${source}`);
+            break;
+    }
+    return baseToken;
+}
+
