@@ -90,7 +90,7 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
                const parsedToken = await AssetInfo.fromTokenlistTokenInfo(token, source);
                parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
 
-               console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));
+            //    console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));
 
                if(!fs.existsSync(path.join(tokenDir, 'info.json'))) {
                 fs.writeFileSync(path.join(tokenDir, 'info.json'), await parsedToken.deserialise());
