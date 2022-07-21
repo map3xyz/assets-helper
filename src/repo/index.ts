@@ -12,7 +12,7 @@ export async function pushAssetsRepoModuleChangesAndCreatePullRequests(dir: stri
         const directories = await getDirectories(dir);
 
         for (const directory of directories) {
-            if(dir.endsWith('/tokens')) {
+            if(dir.endsWith('/assets')) {
                 const tokenListDirs = await getDirectories(directory);
 
                 for (const tokenListDir of tokenListDirs) {
@@ -33,7 +33,7 @@ export async function regenerateTokenlists(dir: string) {
         const directories = await getDirectories(dir);
 
         for (const directory of directories) {
-            if(dir.endsWith('/tokens')) {
+            if(dir.endsWith('/assets')) {
                 const tokenListDirs = await getDirectories(directory);
 
                 for (const tokenListDir of tokenListDirs) {

@@ -3,7 +3,7 @@ import { REPO_BASE_URL } from "../utils/config";
 import { downloadFile } from "../utils/images";
 import { AssetsRepoObject } from "./AssetsRepoObject";
 import { NetworkInfo } from "./NetworkInfo";
-import { TokenInfo } from "./TokenInfo";
+import { AssetInfo } from "./AssetInfo";
 import { Logos } from "./types";
 import fs from 'fs';
 import path from 'path';

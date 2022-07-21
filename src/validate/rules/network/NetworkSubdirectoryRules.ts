@@ -58,14 +58,14 @@ export const NetworkSubdirectoryRules: ValidationRule[] = [
         }
     }, 
     {
-        name: `${baseName}:TokensDirectoryFileRule`,
+        name: `${baseName}:AssetsDirectoryFileRule`,
         network: 'all',
         validate: async (network: string, repoPath: string): Promise<ValidationResult> => {
-            if(!repoPath.endsWith('/tokens')) {
+            if(!repoPath.endsWith('/assets')) {
                 return { valid: true, errors: []}
             }
 
-             // ensure that only tokens directory only has subdirectories and a tokenlist.json file
+             // ensure that only assets directory only has subdirectories and a tokenlist.json file
 
              try {
 
@@ -83,8 +83,8 @@ export const NetworkSubdirectoryRules: ValidationRule[] = [
                         valid: false,
                         errors: [
                             {
-                                source: `${baseName}:TokensDirectoryFileRule ${repoPath}`,
-                                message: 'tokens directories should only contain subdirectories for tokens and a tokenlist.json file'
+                                source: `${baseName}:AssetsDirectoryFileRule ${repoPath}`,
+                                message: 'assets directories should only contain subdirectories for assets and a tokenlist.json file'
                             }
                         ]
                     }
@@ -95,7 +95,7 @@ export const NetworkSubdirectoryRules: ValidationRule[] = [
                     valid: false,
                     errors: [
                         {
-                            source: `${baseName}:TokensDirectoryFileRule ${repoPath}`,
+                            source: `${baseName}:AssetsDirectoryFileRule ${repoPath}`,
                             message: err.message
                         }
                     ]

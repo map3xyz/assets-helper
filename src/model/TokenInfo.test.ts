@@ -1,7 +1,7 @@
 
 
 import test from 'ava';
-import { TokenInfo } from './TokenInfo';
+import { AssetInfo } from './AssetInfo';
 
 const token = {
     // https://wispy-bird-88a7.uniswap.workers.dev/?url=http://stablecoin.cmc.eth.link
@@ -15,7 +15,7 @@ const token = {
 
 test('Converting existing uniswap tokenlist token', async t => {
     try {
-        const parsed = await TokenInfo.fromTokenlistTokenInfo(token);
+        const parsed = await AssetInfo.fromTokenlistTokenInfo(token);
         t.deepEqual(token.address, parsed.address);
         t.deepEqual(token.symbol, parsed.symbol);
         t.deepEqual(token.name, parsed.name);

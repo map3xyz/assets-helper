@@ -5,21 +5,21 @@ import { Logos } from "./types";
 import { getTwaTokenInfo } from "../trustwallet";
 
 
-export class TokenInfo extends AssetsRepoObject {
+export class AssetInfo extends AssetsRepoObject {
 
     address: string;
     type: 'asset';
 
-    constructor(info: Partial<TokenInfo>) {
+    constructor(info: Partial<AssetInfo>) {
         super(info);
 
         if(!info.address) {
-           throw new Error('TokenInfo requires an address');
+           throw new Error('AssetInfo requires an address');
         }
         this.address = info.address;
     }
 
-    static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<TokenInfo> {
+    static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<AssetInfo> {
         const logo: Logos = {
             png: {
                 url: info.logoURI?.endsWith('.png')? info.logoURI : null,
@@ -31,7 +31,7 @@ export class TokenInfo extends AssetsRepoObject {
             }
         }
         
-        const baseToken: TokenInfo = new TokenInfo({
+        const baseToken: AssetInfo = new AssetInfo({
             address: info.address,
             name: info.name,
             symbol: info.symbol,
@@ -44,7 +44,7 @@ export class TokenInfo extends AssetsRepoObject {
     }
 }
 
-async function enhanceExtTokenInfoWithSourceData(baseToken: TokenInfo, chainId: number, source?: string): Promise<TokenInfo> {
+async function enhanceExtTokenInfoWithSourceData(baseToken: AssetInfo, chainId: number, source?: string): Promise<AssetInfo> {
     if(!source) {
         return baseToken;
     }

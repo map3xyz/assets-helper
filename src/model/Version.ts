@@ -9,17 +9,17 @@ export class Version {
         this.patch = patch;
     }
 
-    handleEvent(event: AssetEvent): Version {
+    handleEvent(event: RepoEvent): Version {
         // source: https://github.com/Uniswap/token-lists#semantic-versioning
 
         switch(event) {
-            case TokensEvent.TOKENS_REMOVED:
+            case AssetEvent.ASSETS_REMOVED:
             case NetworkEvent.NETWORKS_REMOVED:
                 this.major++; break;
-            case TokensEvent.TOKENS_ADDED:
+            case AssetEvent.ASSETS_ADDED:
             case NetworkEvent.NETWORKS_ADDED:
                 this.minor++; break;
-            case TokensEvent.TOKENS_DETAILS_CHANGED:
+            case AssetEvent.ASSETS_DETAILS_CHANGED:
             case NetworkEvent.NETWORKS_DETAILS_CHANGED:
                 this.patch++; break;
             default:
@@ -43,10 +43,10 @@ export class Version {
     }
 }
 
-enum TokensEvent {
-    TOKENS_REMOVED,
-    TOKENS_ADDED,
-    TOKENS_DETAILS_CHANGED
+enum AssetEvent {
+    ASSETS_REMOVED,
+    ASSETS_ADDED,
+    ASSETS_DETAILS_CHANGED
 }
 
 enum NetworkEvent {
@@ -55,4 +55,4 @@ enum NetworkEvent {
     NETWORKS_DETAILS_CHANGED
 }
 
-type AssetEvent = TokensEvent | NetworkEvent;
+type RepoEvent = AssetEvent | NetworkEvent;

@@ -47,7 +47,7 @@ async function validateRules(network: string, _rules: ValidationRule[], repoPath
 
     // TODO: handle !network
     // Examples repoPaths
-    // "../assets/networks/ethereum/tokens/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+    // "../assets/networks/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
     
     if(_rules.length === 0) {
         return Promise.resolve({valid: true, errors: []});

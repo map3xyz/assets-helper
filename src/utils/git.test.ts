@@ -7,7 +7,7 @@ test('cloning assets repo clones and pulls submodules', async t => {
     const DEFAULT_REPO_DISK_LOCATION = './tmp/map3xyz-assets';
     try {
         await cloneOrPullRepoAndUpdateSubmodules(REPO_CLONE_URL, DEFAULT_REPO_DISK_LOCATION, true, 'master');
-        const ethereumTokenlistclonedReadme = fs.existsSync(`${DEFAULT_REPO_DISK_LOCATION}/networks/ethereum/tokens/ethereum-tokenlist/README.md`);
+        const ethereumTokenlistclonedReadme = fs.existsSync(`${DEFAULT_REPO_DISK_LOCATION}/networks/ethereum/assets/ethereum-tokenlist/README.md`);
         t.true(ethereumTokenlistclonedReadme);
     } catch (err) {
         t.fail(err);

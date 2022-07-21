@@ -1,4 +1,4 @@
-import { TokenInfo } from "../model";
+import { AssetInfo } from "../model";
 import fs from 'fs';
 import path from 'path';
 import { DEFAULT_TWA_DISK_LOCATION } from "../utils/config";
@@ -49,7 +49,7 @@ function chainIdToTwaNetwork(chainId: number): string {
         chainId === 137? 'polygon' : undefined
 }
 
-export async function getTwaTokenInfo(t: TokenInfo, chainId: number): Promise<TokenInfo> {
+export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<AssetInfo> {
     
     const network = chainIdToTwaNetwork(chainId);
 
