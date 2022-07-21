@@ -30,9 +30,8 @@ interface AdminVerificationProof  {
     assertion: string;
 }
 interface Logo {
-    github: string | null;
+    url: string | null;
     ipfs: string | null;
-    cdn: string | null;
 }
 
 type LogoFormats = 'png' | 'svg';

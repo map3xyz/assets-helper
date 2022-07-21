@@ -1,4 +1,4 @@
-export * from "./AssetRepoObject";
+export * from "./AssetsRepoObject";
 export * from "./NetworkInfo";
 export * from "./Tag";
 export * from "./TokenInfo";

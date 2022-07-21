@@ -1,13 +1,14 @@
-import { AssetRepoObject } from "./AssetRepoObject";
+import { AssetsRepoObject } from "./AssetsRepoObject";
 import {TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
 import { TagName } from "./Tag";
 import { Logos } from "./types";
+import { getTwaTokenInfo } from "../trustwallet";
 
 
-export class TokenInfo extends AssetRepoObject {
+export class TokenInfo extends AssetsRepoObject {
 
     address: string;
-    type: 'token';
+    type: 'asset';
 
     constructor(info: Partial<TokenInfo>) {
         super(info);
@@ -21,31 +22,29 @@ export class TokenInfo extends AssetRepoObject {
     static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<TokenInfo> {
         const logo: Logos = {
             png: {
-                github: info.logoURI?.endsWith('.png')? info.logoURI : null,
+                url: info.logoURI?.endsWith('.png')? info.logoURI : null,
                 ipfs: info.logoURI?.startsWith('ipfs://')? info.logoURI : null,
-                cdn: null
             },
             svg: { 
-                github: info.logoURI?.endsWith('.svg')? info.logoURI : null,
+                url: info.logoURI?.endsWith('.svg')? info.logoURI : null,
                 ipfs: null, // TODO: check file exstension within IPFS link to see if its SVG
-                cdn: null
             }
         }
         
-        const baseToken: TokenInfo = {
+        const baseToken: TokenInfo = new TokenInfo({
             address: info.address,
             name: info.name,
             symbol: info.symbol,
             decimals: info.decimals,
             logo: logo,
-            tags: info.tags as TagName[]
-        };
+            tags: info.tags as TagName[],
+        });
 
-        return enhanceExtTokenInfoWithSourceData(baseToken, source);
+        return enhanceExtTokenInfoWithSourceData(baseToken, info.chainId, source);
     }
 }
 
-async function enhanceExtTokenInfoWithSourceData(baseToken: TokenInfo, source?: string): Promise<TokenInfo> {
+async function enhanceExtTokenInfoWithSourceData(baseToken: TokenInfo, chainId: number, source?: string): Promise<TokenInfo> {
     if(!source) {
         return baseToken;
     }
@@ -53,7 +52,7 @@ async function enhanceExtTokenInfoWithSourceData(baseToken: TokenInfo, source?: 
 
     switch(source) {
         case 'trustwallet': 
-            return getTwaTokenInfo(baseToken);
+            return getTwaTokenInfo(baseToken, chainId);
         default:
             console.error(`enhanceExtTokenInfoWithSourceData Unknown source ${source}`);
             break;

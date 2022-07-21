@@ -87,7 +87,7 @@ async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string, sou
                 fs.mkdirSync(tokenDir, { recursive: true });
                } 
 
-               const parsedToken = TokenInfo.fromTokenlistTokenInfo(token, source);
+               const parsedToken = await TokenInfo.fromTokenlistTokenInfo(token, source);
                parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
 
                console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));

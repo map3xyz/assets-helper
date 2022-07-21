@@ -15,7 +15,7 @@ const token = {
 
 test('Converting existing uniswap tokenlist token', async t => {
     try {
-        const parsed = TokenInfo.fromTokenlistTokenInfo(token);
+        const parsed = await TokenInfo.fromTokenlistTokenInfo(token);
         t.deepEqual(token.address, parsed.address);
         t.deepEqual(token.symbol, parsed.symbol);
         t.deepEqual(token.name, parsed.name);

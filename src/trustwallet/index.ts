@@ -49,9 +49,9 @@ function chainIdToTwaNetwork(chainId: number): string {
         chainId === 137? 'polygon' : undefined
 }
 
-export async function getTwaTokenInfo(t: TokenInfo): Promise<TokenInfo> {
+export async function getTwaTokenInfo(t: TokenInfo, chainId: number): Promise<TokenInfo> {
     
-    const network = chainIdToTwaNetwork(t.identifiers?.chainId);
+    const network = chainIdToTwaNetwork(chainId);
 
     if(!network) {
         throw 'Cannot find TWA network based on token ChainId'

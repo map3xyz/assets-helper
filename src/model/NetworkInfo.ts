@@ -1,6 +1,6 @@
-import { AssetRepoObject } from "./AssetRepoObject";
+import { AssetsRepoObject } from "./AssetsRepoObject";
 
-export class NetworkInfo extends AssetRepoObject {
+export class NetworkInfo extends AssetsRepoObject {
     identifiers: {
         bip44: number | null;
         chainId: number | null;

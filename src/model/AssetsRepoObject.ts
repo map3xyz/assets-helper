@@ -1,16 +1,13 @@
-import { validateJsonSchema } from "../utils/json-schema";
-import { fetchNetworkSchema } from "../validate/rules/network/NetworkSchemaRules";
-import { fetchTokenSchema } from "../validate/rules/token/TokenSchemaRule";
 import { TagName } from "./Tag";
 import { Description, Links, Logos, Verification } from "./types";
 import { getUUID, UUID } from "./UUID";
 import { Version } from "./Version";
 
-export type ObjectType = 'network' | 'token';
+export type ObjectType = 'network' | 'asset';
 
-export abstract class AssetRepoObject {
+export abstract class AssetsRepoObject {
     active: boolean;
-    color: string | null;
+    color: null;
     decimals: number;
     description: Description[];
     id: UUID<string>; 
@@ -24,20 +21,34 @@ export abstract class AssetRepoObject {
     verifications: Verification[];
     version: Version;
 
-    constructor(info: any) {
-        Object.assign(this, info);
-
-        if(!this.id) {
-            this.id = getUUID();
+    constructor(info: Partial<AssetsRepoObject>) {
+        this.active = info.active || true;
+        this.color = info.color || null;
+        
+        if(!info.decimals) {
+            throw new Error('decimals is required to initialise an AssetsRepoObject. Passed: ' + JSON.stringify(info));
         }
+        this.decimals = info.decimals;
+        this.description = info.description || [];
+        this.id = info.id? info.id as UUID<string> : getUUID();
 
-        if(!this.version) {
-            this.version = Version.getNew();
-        }
+        this.links = info.links || getEmptyBaseLinks();
+        this.logo = info.logo || getEmptyLogoLinks();
 
-        if(!info.spam) {
-            this.spam = false;
+        if(!info.name) {
+            throw new Error('name is required to initialise an AssetsRepoObject Passed: ' + JSON.stringify(info));
         }
+        this.name = info.name;
+        this.spam = info.spam || false;
+
+        if(!info.symbol) {
+            throw new Error('symbol is required to initialise an AssetsRepoObject Passed: ' + JSON.stringify(info));
+        }
+        this.symbol = info.symbol;
+        this.tags = info.tags || [];
+        this.type = info.type;
+        this.verifications = info.verifications || [];
+        this.version = info.version? info.version : Version.getNew();        
     }
 
     async deserialise(): Promise<string> {
@@ -76,6 +87,32 @@ export abstract class AssetRepoObject {
         // }
         
         return JSON.stringify(parsed, null, 2);
+    }
+}
+
+function getEmptyBaseLinks(): Links {
+    return {
+        explorer: null,
+        research: null,
+        website: null,
+        github: null,
+        medium: null,
+        twitter: null,
+        reddit: null,
+        whitepaper: null  
+    }
+}
+
+function getEmptyLogoLinks(): Logos {
+    return {
+        png: {
+            url: null,
+            ipfs: null
+        }, 
+        svg: {
+            url: null,
+            ipfs: null
+        }
     }
 }
 
