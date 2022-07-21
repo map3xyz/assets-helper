@@ -29,6 +29,9 @@ const skipDirs = [
     '.git'
 ]
 
+// TODO; check that assetIds / /assets/{address}/info.json ids are unique. 
+// Also check that networkIds are unique
+
 const coreRules = [
     ...EditorPermissionRules,
     ...RepoStructureRules,

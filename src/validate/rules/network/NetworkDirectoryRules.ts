@@ -35,6 +35,8 @@ export const NetworkDirectoryRules: ValidationRule[] = [
                     valid = false;
                 }
 
+                // TODO: check that the networkId in the info.json file matches the directory name. 
+                
                 if(!fs.existsSync(path.join(repoPath, 'logo.png'))
                 && !fs.existsSync(path.join(repoPath, 'logo.svg'))){
                     errors.push({
