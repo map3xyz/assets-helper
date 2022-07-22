@@ -10,7 +10,6 @@ export abstract class AssetsRepoObject {
     color: null;
     decimals: number;
     description: Description[];
-    id: UUID<string>; 
     links: Links;
     logo: Logos;
     name: string;
@@ -30,7 +29,6 @@ export abstract class AssetsRepoObject {
         }
         this.decimals = info.decimals;
         this.description = info.description || [];
-        this.id = info.id? info.id as UUID<string> : getUUID();
 
         this.links = info.links || getEmptyBaseLinks();
         this.logo = info.logo || getEmptyLogoLinks();

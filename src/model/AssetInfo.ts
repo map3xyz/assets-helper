@@ -3,10 +3,12 @@ import {TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
 import { TagName } from "./Tag";
 import { Logos } from "./types";
 import { getTwaTokenInfo } from "../trustwallet";
+import { getUUID, UUID } from "./UUID";
 
 
 export class AssetInfo extends AssetsRepoObject {
 
+    id: UUID<string>; 
     address: string;
     type: 'asset';
 
@@ -16,6 +18,8 @@ export class AssetInfo extends AssetsRepoObject {
         if(!info.address) {
            throw new Error('AssetInfo requires an address');
         }
+
+        this.id = info.id? info.id as UUID<string> : getUUID();
         this.address = info.address;
     }
 
@@ -53,6 +57,8 @@ async function enhanceExtTokenInfoWithSourceData(baseToken: AssetInfo, chainId: 
     switch(source) {
         case 'trustwallet': 
             return getTwaTokenInfo(baseToken, chainId);
+        case 'tokenlist': 
+            break;
         default:
             console.error(`enhanceExtTokenInfoWithSourceData Unknown source ${source}`);
             break;
