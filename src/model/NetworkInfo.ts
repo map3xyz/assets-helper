@@ -1,5 +1,6 @@
 import { toHyphenCase } from "../utils";
 import { AssetsRepoObject } from "./AssetsRepoObject";
+import { getUUID, UUID } from "./UUID";
 
 export class NetworkInfo extends AssetsRepoObject {
     identifiers: {
@@ -13,6 +14,7 @@ export class NetworkInfo extends AssetsRepoObject {
 
     type: 'network';
     id: string;
+    assetId: UUID<string>;
 
     constructor(info: Partial<NetworkInfo>) {
         super(info);
@@ -22,6 +24,8 @@ export class NetworkInfo extends AssetsRepoObject {
         }
 
         this.id = info.id;
+        this.assetId = info.assetId? info.assetId : getUUID();
+
         if(!info.identifiers) {
             this.identifiers = {
                 bip44:  null,
