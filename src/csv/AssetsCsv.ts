@@ -1,20 +1,20 @@
-import { AssetsCsvRow, IAssetsCsvRow } from "./AssetsCsvRow";
+import { AssetsCsvRow } from "./AssetsCsvRow";
 import { RepoPointer } from "./types";
 import fs from 'fs';
 import { getNetworks } from "../networks";
 
 const HEADER_ROW_START = 'primaryId,primaryNetwork';
 
-export interface IAssetsCsv {
-    rows: IAssetsCsvRow[];
-    append: (row: IAssetsCsvRow) => void;
+interface IAssetsCsv {
+    rows: AssetsCsvRow[];
+    append: (row: AssetsCsvRow) => void;
     remove: (primaryId: RepoPointer) => void;
 }
 
 export class AssetsCsv implements IAssetsCsv {
-    rows: IAssetsCsvRow[] = [];
+    rows: AssetsCsvRow[] = [];
     
-    append (row: IAssetsCsvRow): void {
+    append (row: AssetsCsvRow): void {
         this.rows.push(row);
     };
 
@@ -22,7 +22,7 @@ export class AssetsCsv implements IAssetsCsv {
         this.rows = this.rows.filter(row => row.primaryId !== primaryId);
     }
 
-    replace(row: IAssetsCsvRow): void {
+    replace(row: AssetsCsvRow): void {
         this.rows = this.rows.map(_row => {
             if(_row.primaryId === row.primaryId) {
                 return row;

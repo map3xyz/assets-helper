@@ -1,7 +1,7 @@
 import { getNetworks } from "../networks";
 import { RepoPointer } from "./types";
 
-export interface IAssetsCsvRow {
+interface IAssetsCsvRow {
     primaryId: RepoPointer;
     primaryNetwork: string;
     networks: {
