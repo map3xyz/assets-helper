@@ -1,31 +1,39 @@
 import shell from 'shelljs';
-import { NetworkInfo } from '../model/NetworkInfo';
+import { NetworkInfo as string } from '../model/NetworkInfo';
+import fs from 'fs';
+import { isDev } from '.';
+
+if(isDev()) {
+    shell.set('+v');
+}
 
 export async function commit(repo: string, message: string): Promise<void> {
     try {
+        console.log(`Committing ${repo} msg = ${message}`);
         const cmd = `cd ${repo} ;` + 
                     ` git add . &&` + 
-                    ` git commit -m ${message} &&`;
+                    ` git commit -m "${message}"`;
 
-        return shell(cmd);
+        return shell.exec(cmd);
 
     } catch (err) {
         throw err;
     }
 }
 
-export async function branch(repo: string, branch: string): Promise<void> {
+export async function branch(directory: string, branch: string): Promise<void> {
 
     try {
 
+        console.log(`Branching ${directory} to ${branch}`);
         const checkBranchCmd = `git rev-parse --abbrev-ref HEAD`;
-        const createBranchCmd = `cd ${repo} ;` + 
+        const createBranchCmd = `cd ${directory} ;` + 
                                 ` git checkout -b ${branch}`;
 
-        const gitBranch = shell(checkBranchCmd).stdout.trim();
+        const gitBranch = shell.exec(checkBranchCmd).stdout.trim();
 
         if(gitBranch !== branch) {
-            return shell(createBranchCmd);
+            return shell.exec(createBranchCmd);
         }
 
         return Promise.resolve();
@@ -34,49 +42,87 @@ export async function branch(repo: string, branch: string): Promise<void> {
     }
 }
 
-export async function push(repo: string, origin?: string): Promise<void> {
+export async function push(directory: string, origin?: string): Promise<void> {
     try {
-        const cmd = `cd ${repo} ;` + 
-                    ` git push ` + origin? `origin ${origin}` : '';
+        console.log(`Git pushing to ${origin}`);
+        const cmd = `cd ${directory} ;` + 
+                    `git push origin ${origin}`;
 
-        return shell(cmd);
+        return shell.exec(cmd);
 
     } catch (err) {
         throw err;
     }
 }
 
-export function getRandomBranchNameForNetwork(network: NetworkInfo): string {
-    const name = network.name.split(" ").join("-");
-    return `${name}-tokens-update-${(Math.random() + 1).toString(36).substring(10)}`;
+export function getRandomBranchNameForNetworkName(networkName: string): string {
+    const name = networkName.split(" ").join("-");
+    return `${name}-assets-update-${(Math.random() + 1).toString(36).substring(10)}`;
 }
 
 export async function clone(repo: string, directory: string): Promise<void> {
     try {
-        const cmd = `cd ${repo} ;` + 
-                    ` git clone ${repo} ${directory}`;
-        return shell(cmd);
+        console.log(`Cloning ${repo} to ${directory}`);
+        const cmd = `git clone ${repo} ${directory}`;
+        return shell.exec(cmd);
     } catch (err) {
         throw err;
     }
 }
 
-export async function updateSubmodulesRecursive(repo: string): Promise<void> {
+export async function updateSubmodulesRecursive(directory: string): Promise<void> {
     try {
-        const cmd = `cd ${repo} ;` + 
+        console.log(`Updating submodules in ${directory}`);
+        const gitConfig = fs.readFileSync(`${directory}/.git/config`, 'utf8');
+
+        if(!gitConfig.includes('submodule')) {
+            // initialise it 
+            await shell.exec(`cd ${directory} ; git submodule update --init --recursive`);
+        }
+        const cmd = `cd ${directory} ;` + 
                     ` git submodule update --recursive --remote`;
-        return shell(cmd);
+        return shell.exec(cmd);
     } catch (err) {
         throw err;
     }
 }
 
-export async function pull(repo: string, origin: string): Promise<void> {
+export async function pull(directory: string, origin: string): Promise<void> {
     try {
-        const cmd = `cd ${repo} ;` + 
+        console.log(`Git pulling dir ${directory} from ${origin}`);
+        const cmd = `cd ${directory} ;` + 
                     ` git pull origin ${origin}`;
-        return shell(cmd);
+        return shell.exec(cmd);
     } catch (err) {
         throw err;
+    }
+}
+
+async function forceCheckoutBranch(directory: string, branch: string) {
+    try {
+        console.log(`Checking out branch ${branch} in ${directory}`);
+        const cmd = `cd ${directory} ;` +
+                    ` git stash ;` + 
+                    ` git checkout ${branch} ;` + 
+                    ` git pull origin ${branch} ;`;
+        return shell.exec(cmd);
+    } catch (err) {
+        throw err;
+    }
+}
+export async function cloneOrPullRepoAndUpdateSubmodules(repo: string, dir: string, hasSubmodules: boolean, branch = 'master'): Promise<void> {
+    try {
+        if(fs.existsSync(dir)) {
+            await forceCheckoutBranch(dir, branch);
+        } else {
+            await clone(repo, dir);
+        }
+    
+        if(hasSubmodules) {
+            await updateSubmodulesRecursive(dir);
+        }
+        return Promise.resolve();
+    } catch (err) {
+        throw err
     }
 }

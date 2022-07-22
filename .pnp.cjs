@@ -37,7 +37,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@uniswap/token-lists", "npm:1.0.0-beta.30"],\
             ["ava", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:4.3.0"],\
             ["axios", "npm:0.27.2"],\
-            ["commander", "npm:9.3.0"],\
             ["jsonschema", "npm:1.4.1"],\
             ["pkg", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:5.7.0"],\
             ["rimraf", "npm:3.0.2"],\
@@ -145,7 +144,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@uniswap/token-lists", "npm:1.0.0-beta.30"],\
             ["ava", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:4.3.0"],\
             ["axios", "npm:0.27.2"],\
-            ["commander", "npm:9.3.0"],\
             ["jsonschema", "npm:1.4.1"],\
             ["pkg", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:5.7.0"],\
             ["rimraf", "npm:3.0.2"],\
@@ -727,7 +725,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         ["npm:5.0.1", {\
           "packageLocation": "./.yarn/cache/chalk-npm-5.0.1-6afcb94227-7b45300372.zip/node_modules/chalk/",\
           "packageDependencies": [\
-            ["chalk", "npm:5.0.1"]\
+            ["chalk", "npm:5.0.1"],\
+            ["#ansi-styles", [\
+              "ansi-styles",\
+              "npm:6.1.0"\
+            ]],\
+            ["#supports-color", [\
+              "supports-color",\
+              "npm:9.2.2"\
+            ]]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -894,15 +900,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["combined-stream", "npm:1.0.8"],\
             ["delayed-stream", "npm:1.0.0"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["commander", [\
-        ["npm:9.3.0", {\
-          "packageLocation": "./.yarn/cache/commander-npm-9.3.0-1393a6e1f6-d421ce66fe.zip/node_modules/commander/",\
-          "packageDependencies": [\
-            ["commander", "npm:9.3.0"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -3236,6 +3233,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["supports-color", "npm:7.2.0"],\
             ["has-flag", "npm:4.0.0"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:9.2.2", {\
+          "packageLocation": "./.yarn/cache/supports-color-npm-9.2.2-d003069e84-976d848774.zip/node_modules/supports-color/",\
+          "packageDependencies": [\
+            ["supports-color", "npm:9.2.2"]\
           ],\
           "linkType": "HARD"\
         }]\
