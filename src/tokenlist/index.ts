@@ -2,8 +2,8 @@ import { TokenList, TokenInfo as ExtTokenInfo } from '@uniswap/token-lists'
 import fs from 'fs';
 import path from 'path';
 import { getDefaultTags } from '../model/Tag';
-import { TokenInfo } from '../model/TokenInfo';
-import { getMap3LogoUri, getLogoUriFromInfo, getNetworkInfoFromTokenlist, downloadAndPersistLogos } from '../model/utils';
+import { AssetInfo } from '../model/AssetInfo';
+import { getMap3LogoUri, getLogoUriFromInfo, downloadAndPersistLogos } from '../model/utils';
 import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
 import { branch, commit } from '../utils/git';
@@ -12,87 +12,94 @@ async function prepareTokenlist(directory: string, previousTokenlist?: TokenList
 
     const subDirs: string[] = await getDirectories(directory);
 
-    const dirsWithTokens = await Promise.all(subDirs.map(dir => fs.existsSync(path.join(dir, 'info.json'))));
-
-    const tokenDirs = subDirs.filter((_v, index) => dirsWithTokens[index]);
+    const tokenDirs = subDirs.filter(dir => fs.existsSync(path.join(dir, 'info.json')));
 
     let tokenList: TokenList = {
         name: `@Map3/${directory.split("/")[directory.split("/").length - 1]}`,
         timestamp: new Date().toISOString(),
         version: previousTokenlist? previousTokenlist.version : Version.getNew(),
-        keywords: previousTokenlist? previousTokenlist.keywords : ['map3 tokens'],
+        keywords: previousTokenlist? previousTokenlist.keywords : ['map3 assets'],
         tags: getDefaultTags(),
         logoURI: getMap3LogoUri(),
         tokens: []
     };
 
-    const tokens: ExtTokenInfo[] = await Promise.all<ExtTokenInfo>(tokenDirs.map(dir => {
+    const assets: ExtTokenInfo[] = (await Promise.all<ExtTokenInfo>(tokenDirs.map(dir => {
         return new Promise(resolve => {
-            const info = JSON.parse(fs.readFileSync(path.join(dir, 'info.json'), 'utf8'));
+            try {
+                const info = JSON.parse(fs.readFileSync(path.join(dir, 'info.json'), 'utf8'));
 
-            const token: ExtTokenInfo = {
-                chainId: info.indentifiers.chainId,
-                address: info.address,
-                name: info.name,
-                decimals: info.decimals,
-                symbol: info.symbol,
-                logoURI: getLogoUriFromInfo(info, dir),
-                tags: info.tags
-            };
-            resolve(token);
+                const token: ExtTokenInfo = {
+                    chainId: info.indentifiers?.chainId,
+                    address: info.address,
+                    name: info.name,
+                    decimals: info.decimals,
+                    symbol: info.symbol,
+                    logoURI: getLogoUriFromInfo(info, dir),
+                    tags: info.tags
+                };
+                resolve(token);
+            } catch (err) {
+                console.error(`PrepareTokenlist Error processing token in dir ${dir}. Skipping...`, err);
+                resolve(null);
+            }
         })
-    }));
+    }))).filter(t => t != null);
 
-    if(JSON.stringify(tokens) === JSON.stringify(previousTokenlist? previousTokenlist.tokens : [])) {
+    if(previousTokenlist && JSON.stringify(assets) === JSON.stringify(previousTokenlist? previousTokenlist.tokens : [])) {
+        console.log(`No new assets found in tokenlist ${directory}, defaulting to previous one`);
         return previousTokenlist;
     }
 
-    tokenList.tokens.push(...tokens);
+    tokenList.tokens.push(...assets);
 
     return tokenList;
 }
 
 export async function needBeRegenerateTokenlist(directory: string): Promise<void> {
     
-    const hasExistingTokenlist = fs.existsSync(path.join(directory, 'tokenlist.json'));
+    const FILE_NAME = 'tokenlist.json';
+    const hasExistingTokenlist = fs.existsSync(path.join(directory, FILE_NAME));
 
-    let tokenlist; 
+    let tokenlist: TokenList; 
 
     if(hasExistingTokenlist) {
-        const previousTokenlist = JSON.parse(fs.readFileSync(path.join(directory, 'tokenlist.json'), 'utf8'));
+        console.log('Found existing tokenlist, checking if it needs to be regenerated');
+        const previousTokenlist = JSON.parse(fs.readFileSync(path.join(directory, FILE_NAME), 'utf8'));
         tokenlist = await prepareTokenlist(directory, previousTokenlist);
     } else {
         tokenlist = await prepareTokenlist(directory);
     }
 
-    const tokenList = await prepareTokenlist(directory);
-
-    return fs.writeFileSync(path.join(directory, 'tokenlist.json'), JSON.stringify(tokenList, null, 2));
+    console.log(`Saving Tokenlist: ${JSON.stringify(tokenlist)}`);
+    return fs.writeFileSync(path.join(directory, FILE_NAME), JSON.stringify(tokenlist, undefined, 2));
 }
 
-async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Promise<void> {
+async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, source?: string): Promise<void> {
     // take a list of tokens and add them to the repo if they don't already exist
 
-   await Promise.all(newTokens.map<Promise<void>>(token => {
+   await Promise.all(newAssets.map<Promise<void>>(token => {
        return new Promise(async resolve => {
            const tokenDir = path.join(directory, token.address.toLowerCase());
 
            try {
-               if(fs.existsSync(tokenDir)) {
-                   return resolve();
-               } else {
-                   fs.mkdirSync(tokenDir, { recursive: true });
-               }
+               if(!fs.existsSync(tokenDir)) {
+                fs.mkdirSync(tokenDir, { recursive: true });
+               } 
 
-               const parsedToken = TokenInfo.fromTokenlistTokenInfo(token);
+               const parsedToken = await AssetInfo.fromTokenlistTokenInfo(token, source);
                parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
 
-               fs.writeFileSync(path.join(tokenDir, 'info.json'), await parsedToken.deserialise());
+            //    console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));
+
+               if(!fs.existsSync(path.join(tokenDir, 'info.json'))) {
+                fs.writeFileSync(path.join(tokenDir, 'info.json'), await parsedToken.deserialise());
+               }
                
                resolve();
            } catch (err) {
                console.error(err);
-               // TODO; if directory was created but info.json or logos weren't delete it
+               // TODO; if directory was created but info.json or logos weren't, delete it
                resolve();
            }
        })
@@ -101,30 +108,41 @@ async function ingestNewTokens(newTokens: ExtTokenInfo[], directory: string): Pr
    return Promise.resolve();
 }
 
-export async function ingestTokenList(listLocation: string, directory: string, branchName: string): Promise<void> {
+export async function ingestTokenList(listLocation: string, directory: string, branchName: string, source?: string): Promise<void> {
 
     try {
-        const existingTokenlist: TokenList = JSON.parse(fs.readFileSync(path.join(directory, 'tokenlist.json'), 'utf8'));
-        let newTokenlist: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
+        const tokenlistLocation = path.join(directory, 'tokenlist.json');
 
-        const network = await getNetworkInfoFromTokenlist(existingTokenlist);
+        const previousListToParse: TokenList = 
+            fs.existsSync(tokenlistLocation) ?
+            JSON.parse(fs.readFileSync(tokenlistLocation, 'utf8')) 
+            : {
+                name: '',
+                timestamp: '',
+                version: '',
+                tokens: []
+            };
 
-        if(!network) {
-            throw new Error('No network info found for tokenlist ' + listLocation);
+        let listToIngest: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
+
+        const chainId = listToIngest.tokens.find(t => t.chainId !== undefined)?.chainId;
+
+        if(!chainId) {
+            throw new Error('No chainId info found for tokenlist ' + listLocation);
         }
 
-        const newTokens = newTokenlist.tokens.filter(
-            token => !existingTokenlist.tokens.some(
+        const newAssets = listToIngest.tokens.filter(
+            token => !previousListToParse.tokens.some(
                             existingToken => existingToken.address.toLowerCase() === token.address.toLowerCase()
                         )
-                    && token.chainId === network.identifiers.chainId
+                    && token.chainId === chainId
             );
     
-        if(newTokens.length > 0) {
+        if(newAssets.length > 0) {
             await branch(directory, branchName);
-            await ingestNewTokens(newTokens, directory);
+            await ingestNewAssets(newAssets, directory, source);
             await needBeRegenerateTokenlist(directory);
-            await commit(directory, `Indexing new ${network.name} tokens from ${newTokenlist.name}`);
+            await commit(directory, `Indexing ${listToIngest.tokens.length} new assets from ${listToIngest.name || source}`);
         }
 
         return Promise.resolve();
@@ -132,4 +150,3 @@ export async function ingestTokenList(listLocation: string, directory: string, b
         return Promise.reject(err);
     }
 }
-

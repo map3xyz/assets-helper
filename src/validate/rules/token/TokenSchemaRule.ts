@@ -2,23 +2,23 @@ import { ValidationResult, ValidationRule } from "..";
 import axios from 'axios';
 import fs from "fs";
 import { validateJsonSchema } from "../../../utils/json-schema";
-const baseName = 'TokenSchemaRules';
+const baseName = 'AssetSchemaRules';
 
-let tokenSchema;
+let assetsSchema;
 
-export async function fetchTokenSchema(): Promise<any> {
-    if(tokenSchema) {
-        return tokenSchema;
+export async function fetchAssetSchema(): Promise<any> {
+    if(assetsSchema) {
+        return assetsSchema;
     }
 
     try {
-        tokenSchema = (await axios.get('https://raw.githubusercontent.com/map3xyz/assets/master/schema/token.schema.json')).data;
+        assetsSchema = (await axios.get('https://raw.githubusercontent.com/map3xyz/assets/master/schema/asset.schema.json')).data;
     } catch (err) {
         console.error('fetchTokenSchema', err);
         throw err;
     }
 
-    return Promise.resolve(tokenSchema);
+    return Promise.resolve(assetsSchema);
 }
 export const NetworkSchemaRules: ValidationRule[] = [
     {
@@ -33,11 +33,11 @@ export const NetworkSchemaRules: ValidationRule[] = [
             }
 
             try {
-                await fetchTokenSchema();
+                await fetchAssetSchema();
                 const infoFile = await JSON.parse(fs.readFileSync(`${repoPath}/info.json`, 'utf-8'));
 
                 const result = infoFile.type = 'token' ? 
-                    validateJsonSchema(infoFile, tokenSchema) : 
+                    validateJsonSchema(infoFile, assetsSchema) : 
                     { valid: true, errors: []};
 
                 return {
