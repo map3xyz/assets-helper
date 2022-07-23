@@ -3,7 +3,7 @@ import { RepoPointer } from "./types";
 import fs from 'fs';
 import { getNetworks } from "../networks";
 
-const HEADER_ROW_START = 'primaryId,primaryNetwork';
+const HEADER_ROW_START = 'primaryId,primaryNetwork,name,symbol';
 
 interface IAssetsCsv {
     rows: AssetsCsvRow[];
@@ -14,14 +14,15 @@ interface IAssetsCsv {
 export class AssetsCsv implements IAssetsCsv {
     rows: AssetsCsvRow[] = [];
     
-    append (row: AssetsCsvRow): void {
+    append (row: AssetsCsvRow): AssetsCsvRow {
         this.rows.push(row);
+        return row;
     };
 
     remove(primaryId: RepoPointer): AssetsCsvRow {
         let index; 
         const row = this.rows.find((_row, i) => {
-            if(_row.primaryId === primaryId) {
+            if(_row.primaryId.toLowerCase() === primaryId.toLowerCase()) {
                 index = i;
                 return true;
             }
@@ -32,17 +33,23 @@ export class AssetsCsv implements IAssetsCsv {
         return row;
     }
 
-    replace(row: AssetsCsvRow): void {
+    replace(row: AssetsCsvRow): AssetsCsvRow {
         this.rows = this.rows.map(_row => {
             if(_row.primaryId === row.primaryId) {
                 return row;
             }
         });
+        return row;
     }
 
     get(primaryId: RepoPointer): AssetsCsvRow {
-        return this.rows.find(row => row.primaryId === primaryId);
+        return this.rows.find(row => row.primaryId.toLowerCase() === primaryId.toLowerCase());
     };
+
+    assetExistsWithNameOrSymbol(name: string, symbol: string): boolean {
+        return this.rows.some(row => row.name.toLowerCase() === name.toLowerCase() 
+            || row.symbol.toLowerCase() === symbol.toLowerCase());
+    }
     
     static async parse(csvLocation: string): Promise<AssetsCsv> {
         try {
@@ -53,6 +60,8 @@ export class AssetsCsv implements IAssetsCsv {
     
             for (const row in rows.slice(1)) {
                 const primaryId = row[0] as RepoPointer;
+                const name = row[2] as string;
+                const symbol = row[3] as string;
                 const primaryNetwork = row[1];
                 const networks = {};
     
@@ -61,7 +70,7 @@ export class AssetsCsv implements IAssetsCsv {
                 }
                 );
     
-                assetsCsv.append(await AssetsCsvRow.prepare(primaryId, primaryNetwork, networks));
+                assetsCsv.append(await AssetsCsvRow.prepare(primaryId, primaryNetwork, name, symbol, networks));
             }
         
             return assetsCsv;    
