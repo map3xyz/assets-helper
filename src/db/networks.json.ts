@@ -1,4 +1,4 @@
-const NETWORKS = [
+const MOCK_NETWORKS = [
     // ethereum
     {
         "active": true,
