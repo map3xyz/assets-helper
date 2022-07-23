@@ -18,8 +18,18 @@ export class AssetsCsv implements IAssetsCsv {
         this.rows.push(row);
     };
 
-    remove(primaryId: RepoPointer): void {
-        this.rows = this.rows.filter(row => row.primaryId !== primaryId);
+    remove(primaryId: RepoPointer): AssetsCsvRow {
+        let index; 
+        const row = this.rows.find((_row, i) => {
+            if(_row.primaryId === primaryId) {
+                index = i;
+                return true;
+            }
+            return false;
+        });
+        
+        this.rows = this.rows.splice(index, 1);
+        return row;
     }
 
     replace(row: AssetsCsvRow): void {
@@ -29,7 +39,10 @@ export class AssetsCsv implements IAssetsCsv {
             }
         });
     }
-    
+
+    get(primaryId: RepoPointer): AssetsCsvRow {
+        return this.rows.find(row => row.primaryId === primaryId);
+    };
     
     static async parse(csvLocation: string): Promise<AssetsCsv> {
         try {

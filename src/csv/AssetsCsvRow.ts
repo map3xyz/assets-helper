@@ -1,6 +1,8 @@
 import { getNetworks } from "../networks";
 import { RepoPointer } from "./types";
 
+let networkDirs = [];
+
 interface IAssetsCsvRow {
     primaryId: RepoPointer;
     primaryNetwork: string;
@@ -31,7 +33,9 @@ export class AssetsCsvRow implements IAssetsCsvRow {
 
     static async prepare(primaryId: RepoPointer, primaryNetwork: string, networks: { [network: string]: RepoPointer[];}): Promise<AssetsCsvRow> {
         try {
-            const networkDirs = (await getNetworks()).map(network => network.id);
+            if(networkDirs.length === 0) {
+                networkDirs = (await getNetworks()).map(network => network.id);
+            }
 
             if(!networkDirs.includes(primaryNetwork)) {
                 throw new Error(`AssetsCsvRow primaryNetwork ${primaryNetwork} must be a valid network`);
