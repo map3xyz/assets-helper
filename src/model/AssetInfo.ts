@@ -23,14 +23,19 @@ export class AssetInfo extends AssetsRepoObject {
     }
 
     static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<AssetInfo> {
+        const logoHttp = info.logoURI?.startsWith('http://');
+        const logoIpfs = info.logoURI?.startsWith('ipfs://');
+        const logoPng = info.logoURI?.endsWith('.png');
+        const logoSvg = info.logoURI?.endsWith('.svg');
+
         const logo: Logos = {
             png: {
-                url: info.logoURI?.endsWith('.png')? info.logoURI : null,
-                ipfs: info.logoURI?.startsWith('ipfs://')? info.logoURI : null,
+                url: logoHttp && logoPng? info.logoURI : null,
+                ipfs: logoIpfs && logoPng? info.logoURI : null,
             },
             svg: { 
-                url: info.logoURI?.endsWith('.svg')? info.logoURI : null,
-                ipfs: null, // TODO: check file exstension within IPFS link to see if its SVG
+                url: logoHttp && logoSvg? info.logoURI : null,
+                ipfs: logoIpfs && logoSvg? info.logoURI : null
             }
         }
         
