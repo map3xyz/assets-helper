@@ -1,10 +1,10 @@
 import { AssetInfo, NetworkInfo } from "../model";
 import { ETHEREUM_ASSETS, POLYGON_ASSETS } from "./assets.json";
 
-export async function getMockAssets(network?: string): Promise<AssetInfo[]> {
+export async function getMockAssets(networkId?: string): Promise<AssetInfo[]> {
     let res = [];
 
-    switch(network) {
+    switch(networkId) {
         case 'ethereum':
             res = ETHEREUM_ASSETS; break;
         case 'polygon':
@@ -16,8 +16,8 @@ export async function getMockAssets(network?: string): Promise<AssetInfo[]> {
     return res as AssetInfo[];    
 }
 
-export async function getMockNetworks(network?: string): Promise<NetworkInfo[]> {
+export async function getMockNetworks(networkId?: string): Promise<NetworkInfo[]> {
     // @ts-ignore
-    return (network? MOCK_NETWORKS.filter(n => n.networkId === network) : MOCK_NETWORKS) as NetworkInfo[];
+    return (networkId? MOCK_NETWORKS.filter(n => n.networkId === networkId) : MOCK_NETWORKS) as NetworkInfo[];
 }
 

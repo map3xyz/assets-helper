@@ -2,7 +2,7 @@ const MOCK_NETWORKS = [
     // ethereum
     {
         "active": true,
-        "assetId": "da5eb9b1-7e2b-4976-a260-07a3eab89618",
+        "id": "da5eb9b1-7e2b-4976-a260-07a3eab89618",
         "color": "#3c3c3d",
         "decimals": 18,
         "description": [
@@ -50,7 +50,7 @@ const MOCK_NETWORKS = [
       // polygon
       {
         "active": true,
-        "assetId": "d6bffe69-071d-4fa8-9038-d90fac19bf77",
+        "id": "d6bffe69-071d-4fa8-9038-d90fac19bf77",
         "color": "#8247e5",
         "decimals": 18,
         "description": [

@@ -13,8 +13,6 @@ export class NetworkInfo extends AssetsRepoObject {
     }
 
     type: 'network';
-    id: string;
-    assetId: UUID<string>;
 
     constructor(info: Partial<NetworkInfo>) {
         super(info);
@@ -22,9 +20,6 @@ export class NetworkInfo extends AssetsRepoObject {
         if(!this.name || toHyphenCase(this.name) !== info.id) {
             throw new Error('NetworkInfo requires a name that is the hyphencase version of the id');
         }
-
-        this.id = info.id;
-        this.assetId = info.assetId? info.assetId : getUUID();
 
         if(!info.identifiers) {
             this.identifiers = {

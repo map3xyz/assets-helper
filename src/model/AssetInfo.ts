@@ -7,7 +7,6 @@ import { getUUID, UUID } from "./UUID";
 
 export class AssetInfo extends AssetsRepoObject {
 
-    id: UUID<string>; 
     address: string;
     type: 'asset';
 
@@ -18,7 +17,6 @@ export class AssetInfo extends AssetsRepoObject {
            throw new Error('AssetInfo requires an address');
         }
 
-        this.id = info.id? info.id as UUID<string> : getUUID();
         this.address = info.address;
     }
 
