@@ -2,6 +2,7 @@ import { AssetInfo } from "../model";
 import fs from 'fs';
 import path from 'path';
 import { DEFAULT_TWA_DISK_LOCATION } from "../utils/config";
+import { chainIdToTwaNetwork } from "../utils/chainId";
 
 function getLinks(input: any) {
     let links: any = {};
@@ -37,16 +38,6 @@ function getLinks(input: any) {
     }
 
     return links;
-}
-
-function chainIdToTwaNetwork(chainId: number): string {
-    // TODO, make dynamic
-    if(!chainId) {
-        return undefined;
-    }
-
-    return chainId === 1? 'ethereum' : 
-        chainId === 137? 'polygon' : undefined
 }
 
 export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<AssetInfo> {

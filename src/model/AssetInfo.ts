@@ -3,7 +3,7 @@ import {TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
 import { TagName } from "./Tag";
 import { Logos } from "./types";
 import { getTwaTokenInfo } from "../trustwallet";
-import { getUUID, UUID } from "./UUID";
+import { chainIdToMap3Network } from "../utils/chainId";
 
 export class AssetInfo extends AssetsRepoObject {
 
@@ -38,6 +38,7 @@ export class AssetInfo extends AssetsRepoObject {
         }
         
         const baseToken: AssetInfo = new AssetInfo({
+            networkId: chainIdToMap3Network(info.chainId),
             address: info.address,
             name: info.name,
             symbol: info.symbol,

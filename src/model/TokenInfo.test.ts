@@ -21,6 +21,6 @@ test('Converting existing uniswap tokenlist token', async t => {
         t.deepEqual(token.name, parsed.name);
         t.deepEqual(token.decimals, parsed.decimals);
     } catch (err) {
-        t.fail(err);
+        t.fail(err.message);
     }
 });

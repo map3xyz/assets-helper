@@ -1,7 +1,7 @@
 import { AssetInfo } from "../model";
 import { getAssetsForNetwork, getNetworks } from "../networks";
 import { AssetsCsv, AssetsCsvRow } from "./";
-import { EXAMPLE_ASSET_MAP } from "./tempdata.json";
+import { EXAMPLE_ASSET_MAP } from "./tmp-maps.json";
 
 /*
     For every network and asset within each network in the repo, 
@@ -50,7 +50,7 @@ export class RepoFileGenerator {
                     assetsCsv.append(await AssetsCsvRow.prepare(`id:${network.id}`, network.id, network.name, network.symbol, networksMap));
                 }
     
-                const networkAssets: AssetInfo[] = await getAssetsForNetwork(network.networkId);
+                const networkAssets: AssetInfo[] = await getAssetsForNetwork(network.networkId, repoLoc);
     
                 if(!networkAssets || networkAssets.length === 0) {
                     continue;
