@@ -10,6 +10,6 @@ test('cloning assets repo clones and pulls submodules', async t => {
         const ethereumTokenlistclonedReadme = fs.existsSync(`${DEFAULT_REPO_DISK_LOCATION}/networks/ethereum/assets/ethereum-tokenlist/README.md`);
         t.true(ethereumTokenlistclonedReadme);
     } catch (err) {
-        t.fail(err);
+        t.fail(err.message);
     }
 });

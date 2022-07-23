@@ -3,11 +3,10 @@ import {TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
 import { TagName } from "./Tag";
 import { Logos } from "./types";
 import { getTwaTokenInfo } from "../trustwallet";
-import { getUUID, UUID } from "./UUID";
+import { chainIdToMap3Network } from "../utils/chainId";
 
 export class AssetInfo extends AssetsRepoObject {
 
-    id: UUID<string>; 
     address: string;
     type: 'asset';
 
@@ -18,23 +17,28 @@ export class AssetInfo extends AssetsRepoObject {
            throw new Error('AssetInfo requires an address');
         }
 
-        this.id = info.id? info.id as UUID<string> : getUUID();
         this.address = info.address;
     }
 
     static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<AssetInfo> {
+        const logoHttp = info.logoURI?.startsWith('http://');
+        const logoIpfs = info.logoURI?.startsWith('ipfs://');
+        const logoPng = info.logoURI?.endsWith('.png');
+        const logoSvg = info.logoURI?.endsWith('.svg');
+
         const logo: Logos = {
             png: {
-                url: info.logoURI?.endsWith('.png')? info.logoURI : null,
-                ipfs: info.logoURI?.startsWith('ipfs://')? info.logoURI : null,
+                url: logoHttp && logoPng? info.logoURI : null,
+                ipfs: logoIpfs && logoPng? info.logoURI : null,
             },
             svg: { 
-                url: info.logoURI?.endsWith('.svg')? info.logoURI : null,
-                ipfs: null, // TODO: check file exstension within IPFS link to see if its SVG
+                url: logoHttp && logoSvg? info.logoURI : null,
+                ipfs: logoIpfs && logoSvg? info.logoURI : null
             }
         }
         
         const baseToken: AssetInfo = new AssetInfo({
+            networkId: chainIdToMap3Network(info.chainId),
             address: info.address,
             name: info.name,
             symbol: info.symbol,

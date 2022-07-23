@@ -6,6 +6,8 @@ import { Version } from "./Version";
 export type ObjectType = 'network' | 'asset';
 
 export abstract class AssetsRepoObject {
+    id: string;
+    networkId: string;
     active: boolean;
     color: null;
     decimals: number;
@@ -21,6 +23,12 @@ export abstract class AssetsRepoObject {
     version: Version;
 
     constructor(info: Partial<AssetsRepoObject>) {
+        this.id = info.id? info.id : getUUID();
+        if(!info.networkId) {
+            throw new Error('AssetsRepoObject requires a networkId');
+        }
+        this.networkId = info.networkId;
+
         this.active = info.active || true;
         this.color = info.color || null;
         
