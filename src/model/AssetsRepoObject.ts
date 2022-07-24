@@ -1,6 +1,6 @@
 import { TagName } from "./Tag";
 import { Description, Links, Logos, Verification } from "./types";
-import { getUUID, UUID } from "./UUID";
+import { getUUID } from "./UUID";
 import { Version } from "./Version";
 
 export type ObjectType = 'network' | 'asset';
@@ -20,7 +20,7 @@ export abstract class AssetsRepoObject {
     tags: TagName[];
     type: ObjectType;
     verifications: Verification[];
-    version: Version;
+    version: Version | string;
 
     constructor(info: Partial<AssetsRepoObject>) {
         this.id = info.id? info.id : getUUID();
@@ -54,10 +54,11 @@ export abstract class AssetsRepoObject {
         this.tags = info.tags || [];
         this.type = info.type;
         this.verifications = info.verifications || [];
-        this.version = info.version? info.version : Version.getNew();        
+        this.version = info.version? (typeof info.version === 'string' ? Version.fromString(info.version) : info.version ) : Version.getNew();        
     }
 
     async deserialise(): Promise<string> {
+        this.version = this.version.toString();
         let parsed = JSON.parse(JSON.stringify(this));
 
         // sort keys

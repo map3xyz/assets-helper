@@ -21,8 +21,8 @@ export class AssetsCsvRow implements IAssetsCsvRow {
     networks: { [network: string]: RepoPointer[]; };
 
     private constructor(primaryId: RepoPointer, primaryNetwork: string, name: string, symbol: string, networks: { [network: string]: RepoPointer[]; }) {
-        if(!primaryId.startsWith('id:') && !primaryId.startsWith('address:')) {
-            throw new Error(`AssetsCsvRow primaryId ${primaryId} must start with 'id:' or 'address:'`);
+        if(!primaryId.startsWith('id:')) {
+            throw new Error(`AssetsCsvRow primaryId ${primaryId} must start with 'id:'`);
         }
 
         this.primaryId = primaryId;
@@ -40,7 +40,7 @@ export class AssetsCsvRow implements IAssetsCsvRow {
     static async prepare(primaryId: RepoPointer, primaryNetwork: string, name: string, symbol: string, networks: { [network: string]: RepoPointer[];}): Promise<AssetsCsvRow> {
         try {
             if(networkDirs.length === 0) {
-                networkDirs = (await getNetworks()).map(network => network.id);
+                networkDirs = (await getNetworks()).map(network => network.networkId);
             }
 
             if(!networkDirs.includes(primaryNetwork)) {
@@ -52,6 +52,10 @@ export class AssetsCsvRow implements IAssetsCsvRow {
                     throw new Error(`AssetsCsvRow network ${n} in networks list must be a valid network`);
                 }
             });
+
+            if(!networks[primaryNetwork].includes(primaryId)) {
+                networks[primaryNetwork].push(primaryId);
+            }
         
             return new AssetsCsvRow(primaryId, primaryNetwork, name, symbol, networks);
         } catch (err) {

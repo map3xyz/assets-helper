@@ -85,7 +85,7 @@ export class AssetsCsv implements IAssetsCsv {
                 throw `AssetsCsv.deserialise: persistDir ${persistDir} does not exist`;
             }
 
-            const networkDirs = (await getNetworks()).map(network => network.id);
+            const networkDirs = (await getNetworks()).map(network => network.networkId);
 
             let csv = `${HEADER_ROW_START},${networkDirs.sort().join(',')}\n`;
 
@@ -93,7 +93,7 @@ export class AssetsCsv implements IAssetsCsv {
                 csv += `${row.primaryId},${row.primaryNetwork},${networkDirs.sort().map(network => row.networks[network].join(';')).join(',')}\n`;
             });
 
-            return fs.promises.writeFile(persistDir, csv);
+            return fs.promises.writeFile(`${persistDir}.csv`, csv);
         } catch (err) {
             throw err;
         }

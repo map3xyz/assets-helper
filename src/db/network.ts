@@ -3,7 +3,7 @@ import { NetworkInfo } from "../model";
 
 type NetworkInfoCallback = (networkInfo: NetworkInfo) => Promise<void>;
 
-export async function forEach(db: Database, callback: NetworkInfoCallback, complete?: () => Promise<void>) {
+export async function networksForEach(db: Database, callback: NetworkInfoCallback, complete?: () => Promise<void>) {
   const networks = await getMockNetworks();
 
   networks.map(async (network) => await callback(network));
@@ -12,7 +12,7 @@ export async function forEach(db: Database, callback: NetworkInfoCallback, compl
   }
 }
 
-async function getMockNetworks(networkId?: string): Promise<NetworkInfo[]> {
+export async function getMockNetworks(networkId?: string): Promise<NetworkInfo[]> {
   // @ts-ignore
   return (networkId ? MOCK_NETWORKS.filter((n) => n.networkId === networkId) : MOCK_NETWORKS) as NetworkInfo[];
 }

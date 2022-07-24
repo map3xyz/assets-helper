@@ -21,22 +21,21 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
     }
 
     try {
-        if(logo.png.url) {
+        if(logo.png.url || logo.png.ipfs) {
             if(!fs.existsSync(path.join(directory, "logo.png"))) {
-                await downloadFile(logo.png.url, directory, 'logo.png');
+                await downloadFile(logo.png.url || logo.png.ipfs, directory, 'logo.png');
             }
             res.png.url = `${REPO_BASE_URL}/networks${directory.split("/networks")[1]}/logo.png`;
-            res.png.ipfs = null;
-            // TODO: upload PNG to IPFS and get link.
+            // TODO: upload PNG to IPFS and get link in order to replace the possibly existing copy
         }
     
-        if(logo.svg.url) {
+        if(logo.svg.url || logo.svg.ipfs) {
             if(!fs.existsSync(path.join(directory, "logo.svg"))) {
-                await downloadFile(logo.svg.url, directory, 'logo.svg');
+                await downloadFile(logo.svg.url || logo.svg.ipfs, directory, 'logo.svg');
             }
             res.svg.url = `${REPO_BASE_URL}/networks${directory.split("/networks")[1]}/logo.svg`;
             res.png.ipfs = null;
-            // TODO: upload SVG to IPFS and get link.
+            // TODO: upload SVG to IPFS and get link in order to replace the possibly existing copy
         }
 
         return res;

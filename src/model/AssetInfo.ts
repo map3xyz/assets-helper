@@ -21,7 +21,7 @@ export class AssetInfo extends AssetsRepoObject {
     }
 
     static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<AssetInfo> {
-        const logoHttp = info.logoURI?.startsWith('http://');
+        const logoHttp = info.logoURI?.startsWith('http://') || info.logoURI?.startsWith('https://');
         const logoIpfs = info.logoURI?.startsWith('ipfs://');
         const logoPng = info.logoURI?.endsWith('.png');
         const logoSvg = info.logoURI?.endsWith('.svg');
