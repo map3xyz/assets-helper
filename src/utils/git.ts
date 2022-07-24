@@ -1,10 +1,9 @@
 import shell from 'shelljs';
-import { NetworkInfo as string } from '../model/NetworkInfo';
 import fs from 'fs';
 import { isDev } from '.';
 
-if(isDev()) {
-    shell.set('+v');
+if(!isDev()) {
+    shell.config.silent = true;
 }
 
 export async function commit(repo: string, message: string): Promise<void> {
@@ -113,7 +112,16 @@ async function forceCheckoutBranch(directory: string, branch: string) {
 export async function cloneOrPullRepoAndUpdateSubmodules(repo: string, dir: string, hasSubmodules: boolean, branch = 'master'): Promise<void> {
     try {
         if(fs.existsSync(dir)) {
-            await forceCheckoutBranch(dir, branch);
+            const lastPull = await shell.exec(`cd ${dir} ; stat -f "%Sm" .git/FETCH_HEAD`);
+            const lastPullDate = new Date(lastPull.stdout.trim());
+            const oneMinuteAgo = new Date( Date.now() - 1000 * (60 * 1) )
+
+            if(lastPullDate < oneMinuteAgo) {
+                await forceCheckoutBranch(dir, branch);
+            } else {
+                return;
+            }
+            
         } else {
             await clone(repo, dir);
         }

@@ -12,15 +12,15 @@ export * from './csv';
 
 
 // TODO remove temp async IIFE
-// (async () => {
-//     try {
-//         const csv = await RepoFileGenerator.generate();
+(async () => {
+    try {
+        const csv = await RepoFileGenerator.generate();
 
-//         csv.deserialise(DEFAULT_TEMP_DIR);
-//         console.log('success')
-//     } catch (err) {
-//          console.error(err);
-//     }
-//   })();
+        csv.deserialise(DEFAULT_TEMP_DIR);
+        console.log('success')
+    } catch (err) {
+         console.error(err);
+    }
+  })();
 
   

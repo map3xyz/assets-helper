@@ -21,8 +21,8 @@ export class AssetsCsvRow implements IAssetsCsvRow {
     networks: { [network: string]: RepoPointer[]; };
 
     private constructor(primaryId: RepoPointer, primaryNetwork: string, name: string, symbol: string, networks: { [network: string]: RepoPointer[]; }) {
-        if(!primaryId.startsWith('id:') && !primaryId.startsWith('address:')) {
-            throw new Error(`AssetsCsvRow primaryId ${primaryId} must start with 'id:' or 'address:'`);
+        if(!primaryId.startsWith('id:')) {
+            throw new Error(`AssetsCsvRow primaryId ${primaryId} must start with 'id:'`);
         }
 
         this.primaryId = primaryId;

@@ -14,21 +14,22 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Run Debug",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/src/index.ts",
+            // "program": "${workspaceFolder}/src/index.ts",
+            "runtimeExecutable": "yarn",
             "preLaunchTask": "build",
-            "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
-            ],
-            "runtimeArgs": ["-r", "./.pnp.cjs", "-r", "ts-node/register"],
+            // "outFiles": [
+            //     "${workspaceFolder}/dist/**/*.js"
+            // ],
+            "runtimeArgs": ["index", "-r", "ts-node/register"],
+            "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}",
             "env": {
                 "NODE_ENV": "development"
-              },
-              "trace": true
+              }
         }
     ]
 }
