@@ -1,6 +1,7 @@
 import { AssetInfo } from "../model";
 import { getAssetsForNetwork, getNetworks } from "../networks";
 import { shallowClone } from "../utils";
+import { DEFAULT_REPO_DISK_LOCATION } from "../utils/config";
 import { AssetsCsv, AssetsCsvRow } from "./";
 import { EXAMPLE_ASSET_MAP } from "./tmp-maps.json";
 
@@ -15,6 +16,10 @@ export class RepoFileGenerator {
     static async generate(repoLoc?: string): Promise<AssetsCsv> {
 
         const assetsCsv = new AssetsCsv();
+
+        if(!repoLoc) {
+            repoLoc = DEFAULT_REPO_DISK_LOCATION
+        }
 
         try {
             const networks = await getNetworks(repoLoc);

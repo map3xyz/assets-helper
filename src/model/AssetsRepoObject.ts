@@ -9,17 +9,17 @@ export abstract class AssetsRepoObject {
     id: string;
     networkId: string;
     active: boolean;
-    color: null;
+    color: string | null;
     decimals: number;
-    description: Description[];
-    links: Links;
-    logo: Logos;
+    description: Description[];// foreign keys
+    links: Links; // foreign keys
+    logo: Logos; // foreign keys
     name: string;
     spam: boolean;
     symbol: string;
-    tags: TagName[];
-    type: ObjectType;
-    verifications: Verification[];
+    tags: TagName[]; // foreign keys
+    type: ObjectType; // not persisted
+    verifications: Verification[]; // foreign keys
     version: Version | string;
 
     constructor(info: Partial<AssetsRepoObject>) {

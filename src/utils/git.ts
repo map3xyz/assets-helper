@@ -1,6 +1,7 @@
 import shell from 'shelljs';
 import fs from 'fs';
 import { isDev } from '.';
+import { ASSETS_REPO_CACHE_MINUTES } from './config';
 
 if(!isDev()) {
     shell.config.silent = true;
@@ -114,9 +115,9 @@ export async function cloneOrPullRepoAndUpdateSubmodules(repo: string, dir: stri
         if(fs.existsSync(dir)) {
             const lastPull = await shell.exec(`cd ${dir} ; stat -f "%Sm" .git/FETCH_HEAD`);
             const lastPullDate = new Date(lastPull.stdout.trim());
-            const oneMinuteAgo = new Date( Date.now() - 1000 * (60 * 1) )
+            const configuredMinutesUntilCacheBursting = new Date( Date.now() - 1000 * (60 * ASSETS_REPO_CACHE_MINUTES) )
 
-            if(lastPullDate < oneMinuteAgo) {
+            if(lastPullDate < configuredMinutesUntilCacheBursting) {
                 await forceCheckoutBranch(dir, branch);
             } else {
                 return;

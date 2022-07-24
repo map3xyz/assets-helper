@@ -1,16 +1,43 @@
 import { Database } from "sqlite3";
 import { AssetInfo } from "../model";
+import { getAssetsForNetwork, getNetworks } from "../networks";
 import { ETHEREUM_ASSETS, POLYGON_ASSETS } from "./assets.json";
+import { fetchAssetsCsv } from "./utils";
 
 type AssetInfoCallback = (assetInfo: AssetInfo) => Promise<void>;
 
 export async function assetsForEach(db: Database, callback: AssetInfoCallback, complete?: () => Promise<void>) {
-  const assets = await getMockAssets();
+  try {
+    const networks = await getNetworks();
+    await Promise.all(networks.map(async network => {
+      const assets = await getAssetsForNetwork(network.networkId);
+      return Promise.all(assets.map(async asset => {
+        return callback(asset);
+      }));
+    }));
 
-  await Promise.all(assets.map(async (asset) => await callback(asset)));
+    if (complete) {
+      await complete();
+    }
 
-  if (complete) {
-    await complete();
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function assetForId(db: Database, id: string, callback: AssetInfoCallback) {
+  try {
+    const assets = await fetchAssetsCsv();
+    const assetCsvRow = assets.get(`id:${id}`);
+
+    if(!assetCsvRow) {
+      return callback(null);
+    } 
+    const asset = (await getAssetsForNetwork(assetCsvRow.primaryNetwork)).find((asset) => asset.id === id);
+
+    return callback(asset);  
+  } catch (err) {
+    throw err;
   }
 }
 
@@ -20,13 +47,16 @@ export async function findAssetByNetworkIdAndAddress(
   address: string,
   callback: AssetInfoCallback
 ) {
-  const assets = await getMockAssets();
-  const asset = assets.find((asset) => asset.networkId === networkId && asset.address === address);
-
-  return callback(asset);
+  
+  try {
+    const asset = (await getAssetsForNetwork(networkId)).find((asset) => asset.address === address);
+    return callback(asset);
+  } catch (err) {
+    throw err;
+  }
 }
 
-export async function getMockAssets(networkId?: string): Promise<AssetInfo[]> {
+async function getMockAssets(networkId?: string): Promise<AssetInfo[]> {
   let res = [];
 
   switch (networkId) {
