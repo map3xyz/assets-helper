@@ -2,6 +2,7 @@
 dist/
 exec/
 /tmp/**/
+tmp.csv
 
 # Logs
 logs

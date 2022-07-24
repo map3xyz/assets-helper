@@ -1,5 +1,6 @@
 import { AssetInfo } from "../model";
 import { getAssetsForNetwork, getNetworks } from "../networks";
+import { shallowClone } from "../utils";
 import { AssetsCsv, AssetsCsvRow } from "./";
 import { EXAMPLE_ASSET_MAP } from "./tmp-maps.json";
 
@@ -24,30 +25,37 @@ export class RepoFileGenerator {
     
             // TODO; add support for testnets fetching
             for (const network of networks) {
-    
-                const mainNetworkAssetMappedTo = EXAMPLE_ASSET_MAP.find(a => a.fromNetwork === network.networkId && a.fromAsset.startsWith('id:'));
-    
+                
+                const mainNetworkAssetMappedTo = EXAMPLE_ASSET_MAP.find(a => a.fromNetwork === network.networkId && a.fromAsset === `id:${network.id}`);
+                
                 let row = assetsCsv.get(`id:${network.id}`);
     
                 if(mainNetworkAssetMappedTo) {
                     if(row) {
-                        // delete the row
+                        // delete the row and replace it with the mapped one
                         row = assetsCsv.remove(`id:${network.id}`);
+                        row = assetsCsv.get(mainNetworkAssetMappedTo.toAsset)
+                    } else {
+
+                        row = assetsCsv.get(mainNetworkAssetMappedTo.toAsset);
+                        if(!row) {
+                            // handle case where the asset its mapped to does not exist, yet.
+                            const assetInfo = networks.find(n => n.networkId === mainNetworkAssetMappedTo.toAsset.split(':')[1])
+                                            ||  (await getAssetsForNetwork(mainNetworkAssetMappedTo.toNetwork, repoLoc)).find(a => a.id === mainNetworkAssetMappedTo.toAsset.split(":")[1]);
+                            row = assetsCsv.append(await AssetsCsvRow.prepare(`id:${assetInfo.id}`, assetInfo.networkId, assetInfo.name, assetInfo.symbol, shallowClone(networksMap)));
+                        }
                     }
-                    // @ts-ignore
-                    row = assetsCsv.get(mainNetworkAssetMappedTo.toAsset)
-                    // @ts-ignore
                     row.networks[mainNetworkAssetMappedTo.fromNetwork].push(mainNetworkAssetMappedTo.fromAsset);
                     row = assetsCsv.replace(row); 
                 } else if (!row) {
                     
                     // ignore and log if there is one with the same symbol or name? 
                     if(assetsCsv.assetExistsWithNameOrSymbol(network.name, network.symbol)) {
-                        console.log(`Skipping network asset ${network.id} because it has the same name or symbol as another asset`);
-                        continue;
+                        console.log(`Skipping network ${network.id} because it has the same name or symbol as another asset`);
+                    } else {
+                        // create the network asset
+                        assetsCsv.append(await AssetsCsvRow.prepare(`id:${network.id}`, network.networkId, network.name, network.symbol, shallowClone(networksMap)));
                     }
-                    // create the network asset
-                    assetsCsv.append(await AssetsCsvRow.prepare(`id:${network.id}`, network.networkId, network.name, network.symbol, networksMap));
                 }
     
                 const networkAssets: AssetInfo[] = await getAssetsForNetwork(network.networkId, repoLoc);
@@ -56,29 +64,36 @@ export class RepoFileGenerator {
                     continue;
                 }
                 
-                for(const asset of networkAssets) {
-    
-                    const assetMappedToAnotherOne = EXAMPLE_ASSET_MAP.find(a => a.fromNetwork === network.networkId && a.fromAsset === `address:${asset.address}`);
+                for(const asset of networkAssets) {   
+                    const assetMappedToAnotherOne = EXAMPLE_ASSET_MAP.find(a => a.fromNetwork === network.networkId && a.fromAsset === `id:${asset.id}`);
+                    let row = assetsCsv.get(`id:${asset.id}`);
     
                     if(assetMappedToAnotherOne) {
-                        let row = assetsCsv.get(asset.id);
-    
                         if(row) {
-                            // delete the row
-                            row = assetsCsv.remove(asset.id);
+                            // delete the row and replace it with the mapped one
+                            row = assetsCsv.remove(`id:${asset.id}`);
+                            row = assetsCsv.get(assetMappedToAnotherOne.toAsset)
+                        } else {
+                            row = assetsCsv.get(assetMappedToAnotherOne.toAsset);
+
+                            if(!row) {
+                                // handle case where the asset its mapped to does not exist, yet.
+                                const assetInfo = networks.find(n => n.networkId === mainNetworkAssetMappedTo.toAsset.split(':')[1])
+                                                    || (await getAssetsForNetwork(assetMappedToAnotherOne.toNetwork, repoLoc)).find(a => a.id === assetMappedToAnotherOne.toAsset.split(":")[1]);
+                                row = assetsCsv.append(await AssetsCsvRow.prepare(`id:${assetInfo.id}`, assetInfo.networkId, assetInfo.name, assetInfo.symbol, shallowClone(networksMap)));
+                            }
                         }
-                        // @ts-ignore
-                        row = assetsCsv.get(assetMappedToAnotherOne.toAsset)
-                        // @ts-ignore
                         row.networks[assetMappedToAnotherOne.fromNetwork].push(assetMappedToAnotherOne.fromAsset);
-                        row = assetsCsv.replace(row);
-                    } else if(!row) {
-                         // ignore and log if there is one with the same symbol or name? 
+                        row = assetsCsv.replace(row); 
+                    } else if (!row) {
+                        
+                        // ignore and log if there is one with the same symbol or name? 
                         if(assetsCsv.assetExistsWithNameOrSymbol(asset.name, asset.symbol)) {
-                            console.log(`Skipping asset ${asset.address} because it has the same name or symbol as another asset`);
+                            console.log(`Skipping asset ${asset.id} because it has the same name or symbol as another asset`);
                             continue;
                         }
-                        assetsCsv.append(await AssetsCsvRow.prepare(`id:${asset.id}`, network.networkId, network.name, network.symbol, networksMap));
+                        // create the network asset
+                        assetsCsv.append(await AssetsCsvRow.prepare(`id:${asset.id}`, asset.networkId, asset.name, asset.symbol, shallowClone(networksMap)));
                     }
                 }
             }
