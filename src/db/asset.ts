@@ -13,6 +13,13 @@ export async function assetsForEach(db: Database, callback: AssetInfoCallback, c
   }
 }
 
+export async function assetForId(db: Database, id: string, callback: AssetInfoCallback) {
+  const assets = await getMockAssets();
+  const asset = assets.find((asset) => asset.id === id);
+
+  return callback(asset);
+}
+
 export async function getMockAssets(networkId?: string): Promise<AssetInfo[]> {
   let res = [];
 
