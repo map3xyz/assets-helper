@@ -20,6 +20,12 @@ export class AssetsCsv implements IAssetsCsv {
         if(!row || !row.primaryId) {
             throw new Error('AssetsCsv.append: row has no primaryId '  + JSON.stringify(row));
         }
+
+        const existing = this.get(row.primaryId);
+        if(existing) {
+            throw new Error('AssetsCsv.append: row already exists. Existing: '  + JSON.stringify(existing) + ' New: ' + JSON.stringify(row));
+        }
+        
         this.rows.push(row);
         return row;
     };

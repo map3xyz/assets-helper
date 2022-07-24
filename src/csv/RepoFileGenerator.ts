@@ -36,9 +36,14 @@ export class RepoFileGenerator {
                         row = assetsCsv.remove(`id:${network.id}`);
                         row = assetsCsv.get(mainNetworkAssetMappedTo.toAsset)
                     } else {
-                        // handle case where the asset its mapped to does not exist, yet.
-                        const assetInfo = (await getAssetsForNetwork(mainNetworkAssetMappedTo.toNetwork, repoLoc)).find(a => a.id === mainNetworkAssetMappedTo.toAsset.split(":")[1]);
-                        row = assetsCsv.append(await AssetsCsvRow.prepare(`id:${assetInfo.id}`, assetInfo.networkId, assetInfo.name, assetInfo.symbol, shallowClone(networksMap)));
+
+                        row = assetsCsv.get(mainNetworkAssetMappedTo.toAsset);
+                        if(!row) {
+                            // handle case where the asset its mapped to does not exist, yet.
+                            const assetInfo = networks.find(n => n.networkId === mainNetworkAssetMappedTo.toAsset.split(':')[1])
+                                            ||  (await getAssetsForNetwork(mainNetworkAssetMappedTo.toNetwork, repoLoc)).find(a => a.id === mainNetworkAssetMappedTo.toAsset.split(":")[1]);
+                            row = assetsCsv.append(await AssetsCsvRow.prepare(`id:${assetInfo.id}`, assetInfo.networkId, assetInfo.name, assetInfo.symbol, shallowClone(networksMap)));
+                        }
                     }
                     row.networks[mainNetworkAssetMappedTo.fromNetwork].push(mainNetworkAssetMappedTo.fromAsset);
                     row = assetsCsv.replace(row); 
@@ -69,11 +74,12 @@ export class RepoFileGenerator {
                             row = assetsCsv.remove(`id:${asset.id}`);
                             row = assetsCsv.get(assetMappedToAnotherOne.toAsset)
                         } else {
-                            row = assetsCsv.get(`id:${assetMappedToAnotherOne.toAsset}`);
+                            row = assetsCsv.get(assetMappedToAnotherOne.toAsset);
 
                             if(!row) {
                                 // handle case where the asset its mapped to does not exist, yet.
-                                const assetInfo = (await getAssetsForNetwork(assetMappedToAnotherOne.toNetwork, repoLoc)).find(a => a.id === assetMappedToAnotherOne.toAsset.split(":")[1]);
+                                const assetInfo = networks.find(n => n.networkId === mainNetworkAssetMappedTo.toAsset.split(':')[1])
+                                                    || (await getAssetsForNetwork(assetMappedToAnotherOne.toNetwork, repoLoc)).find(a => a.id === assetMappedToAnotherOne.toAsset.split(":")[1]);
                                 row = assetsCsv.append(await AssetsCsvRow.prepare(`id:${assetInfo.id}`, assetInfo.networkId, assetInfo.name, assetInfo.symbol, shallowClone(networksMap)));
                             }
                         }
