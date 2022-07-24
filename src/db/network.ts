@@ -24,7 +24,7 @@ export async function networksForEach(db: Database, callback: NetworkInfoCallbac
 export async function networkForId(db: Database, id: string, callback: NetworkInfoCallback) {
     try {
       const networks = await getNetworks();
-      const network = networks.find((network) => network.networkId === id);
+      const network = networks.find((network) => network.id === id);
       return callback(network);
 
     } catch (err) {
@@ -33,10 +33,14 @@ export async function networkForId(db: Database, id: string, callback: NetworkIn
 }
 
 export async function findNetworkByNetworkId(db: Database, networkId: string, callback: NetworkInfoCallback) {
-  const networks = await getMockNetworks();
-  const network = networks.find((network) => network.networkId === networkId);
+  try {
+    const networks = await getNetworks();
+    const network = networks.find((network) => network.networkId === networkId);
+    return callback(network);
 
-  return callback(network);
+  } catch (err) {
+    throw err;
+  }
 }
 
 async function getMockNetworks(networkId?: string): Promise<NetworkInfo[]> {

@@ -1,4 +1,3 @@
-import { fstat } from "fs";
 import { Database } from "sqlite3";
 import { AssetInfo } from "../model";
 import { getAssetsForNetwork, getNetworks } from "../networks";
@@ -48,10 +47,13 @@ export async function findAssetByNetworkIdAndAddress(
   address: string,
   callback: AssetInfoCallback
 ) {
-  const assets = await getMockAssets();
-  const asset = assets.find((asset) => asset.networkId === networkId && asset.address === address);
-
-  return callback(asset);
+  
+  try {
+    const asset = (await getAssetsForNetwork(networkId)).find((asset) => asset.address === address);
+    return callback(asset);
+  } catch (err) {
+    throw err;
+  }
 }
 
 async function getMockAssets(networkId?: string): Promise<AssetInfo[]> {
