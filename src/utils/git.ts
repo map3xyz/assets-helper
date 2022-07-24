@@ -57,7 +57,7 @@ export async function push(directory: string, origin?: string): Promise<void> {
 
 export function getRandomBranchNameForNetworkName(networkName: string): string {
     const name = networkName.split(" ").join("-");
-    return `${name}-assets-update-${(Math.random() + 1).toString(36).substring(10)}`;
+    return `${name}-assets-update-${new Date().toISOString().split('T')[0] + '-' + (Math.random() + 1).toString(36).substring(10)}`;
 }
 
 export async function clone(repo: string, directory: string): Promise<void> {
