@@ -47,7 +47,7 @@ export class RepoFileGenerator {
                         continue;
                     }
                     // create the network asset
-                    assetsCsv.append(await AssetsCsvRow.prepare(`id:${network.id}`, network.networkId, network.name, network.symbol, networksMap));
+                    assetsCsv.append(await AssetsCsvRow.prepare(`id:${network.id}`, network.networkId, network.name, network.symbol, structuredClone(networksMap)));
                 }
     
                 const networkAssets: AssetInfo[] = await getAssetsForNetwork(network.networkId, repoLoc);
@@ -78,7 +78,7 @@ export class RepoFileGenerator {
                             console.log(`Skipping asset ${asset.address} because it has the same name or symbol as another asset`);
                             continue;
                         }
-                        assetsCsv.append(await AssetsCsvRow.prepare(`id:${asset.id}`, network.networkId, network.name, network.symbol, networksMap));
+                        assetsCsv.append(await AssetsCsvRow.prepare(`id:${asset.id}`, network.networkId, network.name, network.symbol, structuredClone(networksMap)));
                     }
                 }
             }

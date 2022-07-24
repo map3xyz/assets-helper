@@ -1,9 +1,9 @@
 export const EXAMPLE_ASSET_MAP =  [
     {
         // matic on the polygon network to matic on the ethereum network
-        "fromAsset": "d6bffe69-071d-4fa8-9038-d90fac19bf77",
+        "fromAsset": "id:d6bffe69-071d-4fa8-9038-d90fac19bf77",
         'fromNetwork': 'polygon',
-        "toAsset": "address:0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
+        "toAsset": "id:287bd359-17a3-4bba-9e20-a1569f955452",
         'toNetwork': 'ethereum',
         "type": "contract",
         "verifications": [
@@ -15,9 +15,9 @@ export const EXAMPLE_ASSET_MAP =  [
     },
     {
         // USDC on polygon to USDC on ETH
-        "fromAsset": "address:0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "fromAsset": "id:597c0c0d-dd22-4b7a-81bd-ce1e6656a10f",
         'fromNetwork': 'polygon',
-        "toAsset": "address:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "toAsset": "id:cb16073d-069f-4f8a-b87c-9a9af5e2c97e",
         'toNetwork': 'ethereum',
         "type": "direct_issuance",
         "verifications": [
