@@ -17,7 +17,7 @@ export async function assetForId(db: Database, id: string, callback: AssetInfoCa
   const assets = await getMockAssets();
   const asset = assets.find((asset) => asset.id === id);
 
-  await callback(asset);
+  return callback(asset);
 }
 
 export async function getMockAssets(networkId?: string): Promise<AssetInfo[]> {
