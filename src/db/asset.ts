@@ -2,7 +2,6 @@ import { fstat } from "fs";
 import { Database } from "sqlite3";
 import { AssetInfo } from "../model";
 import { getAssetsForNetwork, getNetworks } from "../networks";
-import { ASSETS_CSV_TMP_FILE, DEFAULT_REPO_DISK_LOCATION } from "../utils/config";
 import { ETHEREUM_ASSETS, POLYGON_ASSETS } from "./assets.json";
 import { fetchAssetsCsv } from "./utils";
 
@@ -41,6 +40,18 @@ export async function assetForId(db: Database, id: string, callback: AssetInfoCa
   } catch (err) {
     throw err;
   }
+}
+
+export async function findAssetByNetworkIdAndAddress(
+  db: Database,
+  networkId: string,
+  address: string,
+  callback: AssetInfoCallback
+) {
+  const assets = await getMockAssets();
+  const asset = assets.find((asset) => asset.networkId === networkId && asset.address === address);
+
+  return callback(asset);
 }
 
 async function getMockAssets(networkId?: string): Promise<AssetInfo[]> {

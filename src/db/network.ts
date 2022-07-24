@@ -32,6 +32,13 @@ export async function networkForId(db: Database, id: string, callback: NetworkIn
     }
 }
 
+export async function findNetworkByNetworkId(db: Database, networkId: string, callback: NetworkInfoCallback) {
+  const networks = await getMockNetworks();
+  const network = networks.find((network) => network.networkId === networkId);
+
+  return callback(network);
+}
+
 async function getMockNetworks(networkId?: string): Promise<NetworkInfo[]> {
   // @ts-ignore
   return (networkId ? MOCK_NETWORKS.filter((n) => n.networkId === networkId) : MOCK_NETWORKS) as NetworkInfo[];
