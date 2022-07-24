@@ -1,6 +1,5 @@
 import { toHyphenCase } from "../utils";
 import { AssetsRepoObject } from "./AssetsRepoObject";
-import { getUUID, UUID } from "./UUID";
 
 export class NetworkInfo extends AssetsRepoObject {
     identifiers: {

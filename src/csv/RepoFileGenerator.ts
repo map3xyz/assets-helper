@@ -17,15 +17,15 @@ export class RepoFileGenerator {
 
         try {
             const networks = await getNetworks(repoLoc);
-            const networksMap = networks.map(n => n.id)
-                .reduce((accumulator, value) => {
-                    return {...accumulator, [value]: ''};
-                }, {})
+            let networksMap = {};
+            networks.map(n => n.networkId).forEach(networkId => {
+                networksMap[networkId] = [];
+            });
     
             // TODO; add support for testnets fetching
             for (const network of networks) {
     
-                const mainNetworkAssetMappedTo = EXAMPLE_ASSET_MAP.find(a => a.fromNetwork === network.id && a.fromAsset.startsWith('id:'));
+                const mainNetworkAssetMappedTo = EXAMPLE_ASSET_MAP.find(a => a.fromNetwork === network.networkId && a.fromAsset.startsWith('id:'));
     
                 let row = assetsCsv.get(`id:${network.id}`);
     
@@ -47,7 +47,7 @@ export class RepoFileGenerator {
                         continue;
                     }
                     // create the network asset
-                    assetsCsv.append(await AssetsCsvRow.prepare(`id:${network.id}`, network.id, network.name, network.symbol, networksMap));
+                    assetsCsv.append(await AssetsCsvRow.prepare(`id:${network.id}`, network.networkId, network.name, network.symbol, networksMap));
                 }
     
                 const networkAssets: AssetInfo[] = await getAssetsForNetwork(network.networkId, repoLoc);
@@ -58,14 +58,14 @@ export class RepoFileGenerator {
                 
                 for(const asset of networkAssets) {
     
-                    const assetMappedToAnotherOne = EXAMPLE_ASSET_MAP.find(a => a.fromNetwork === network.id && a.fromAsset === `address:${asset.address}`);
+                    const assetMappedToAnotherOne = EXAMPLE_ASSET_MAP.find(a => a.fromNetwork === network.networkId && a.fromAsset === `address:${asset.address}`);
     
                     if(assetMappedToAnotherOne) {
-                        let row = assetsCsv.get(`address:${asset.address}`);
+                        let row = assetsCsv.get(asset.id);
     
                         if(row) {
                             // delete the row
-                            row = assetsCsv.remove(`address:${asset.address}`);
+                            row = assetsCsv.remove(asset.id);
                         }
                         // @ts-ignore
                         row = assetsCsv.get(assetMappedToAnotherOne.toAsset)
@@ -78,7 +78,7 @@ export class RepoFileGenerator {
                             console.log(`Skipping asset ${asset.address} because it has the same name or symbol as another asset`);
                             continue;
                         }
-                        assetsCsv.append(await AssetsCsvRow.prepare(`id:${asset.id}`, network.id, network.name, network.symbol, networksMap));
+                        assetsCsv.append(await AssetsCsvRow.prepare(`id:${asset.id}`, network.networkId, network.name, network.symbol, networksMap));
                     }
                 }
             }

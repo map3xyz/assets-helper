@@ -8,7 +8,8 @@
             "command": "yarn test",
             "name": "Run Tests",
             "request": "launch",
-            "type": "node-terminal"
+            "type": "node-terminal",
+            "trace": true
         },
         {
             "type": "node",
@@ -23,11 +24,11 @@
                 "${workspaceFolder}/dist/**/*.js"
             ],
             "runtimeArgs": ["-r", "./.pnp.cjs", "-r", "ts-node/register"],
-            "args": ["validate", "-r", "../assets/networks/ethereum/assets"],
             "cwd": "${workspaceFolder}",
             "env": {
                 "NODE_ENV": "development"
-              }
+              },
+              "trace": true
         }
     ]
 }

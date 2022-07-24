@@ -1,7 +1,7 @@
 export const EXAMPLE_ASSET_MAP =  [
     {
         // matic on the polygon network to matic on the ethereum network
-        "fromAsset": "id:d6bffe69-071d-4fa8-9038-d90fac19bf77",
+        "fromAsset": "d6bffe69-071d-4fa8-9038-d90fac19bf77",
         'fromNetwork': 'polygon',
         "toAsset": "address:0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
         'toNetwork': 'ethereum',

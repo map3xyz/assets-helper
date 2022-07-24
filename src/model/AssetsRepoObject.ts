@@ -1,6 +1,6 @@
 import { TagName } from "./Tag";
 import { Description, Links, Logos, Verification } from "./types";
-import { getUUID, UUID } from "./UUID";
+import { getUUID } from "./UUID";
 import { Version } from "./Version";
 
 export type ObjectType = 'network' | 'asset';
