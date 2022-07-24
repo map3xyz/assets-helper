@@ -1,10 +1,15 @@
+import { Database } from "sqlite3";
 import { NetworkInfo } from "../model";
 
-export type NetworkInfoCallback = (networkInfo: NetworkInfo[]) => void;
+type NetworkInfoCallback = (networkInfo: NetworkInfo) => Promise<void>;
 
-export async function findEach(db: any, batchSize: Number, callback: NetworkInfoCallback) {
+export async function forEach(db: Database, callback: NetworkInfoCallback, complete?: () => Promise<void>) {
   const networks = await getMockNetworks();
-  callback(networks);
+
+  networks.map(async (network) => await callback(network));
+  if (complete) {
+    await complete();
+  }
 }
 
 async function getMockNetworks(networkId?: string): Promise<NetworkInfo[]> {
