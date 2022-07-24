@@ -16,6 +16,10 @@ export class AssetsCsv implements IAssetsCsv {
     
     append (row: AssetsCsvRow): AssetsCsvRow {
         // TODO; make this more defensive to not insert if name and symbol match
+
+        if(!row || !row.primaryId) {
+            throw new Error('AssetsCsv.append: row has no primaryId '  + JSON.stringify(row));
+        }
         this.rows.push(row);
         return row;
     };
@@ -36,20 +40,23 @@ export class AssetsCsv implements IAssetsCsv {
 
     replace(row: AssetsCsvRow): AssetsCsvRow {
         this.rows = this.rows.map(_row => {
-            if(_row.primaryId === row.primaryId) {
-                return row;
-            }
+            return _row.primaryId === row.primaryId? row : _row;
         });
         return row;
     }
 
     get(primaryId: RepoPointer): AssetsCsvRow {
-        return this.rows.find(row => row.primaryId.toLowerCase() === primaryId.toLowerCase());
+        if(this.rows.find(row => !row || row.primaryId === undefined)) {
+             throw 'found row without primary key ';
+        }
+        return this.rows.find((row, i) => {
+            return row.primaryId.toLowerCase() === primaryId.toLowerCase()
+        });
     };
 
     assetExistsWithNameOrSymbol(name: string, symbol: string): boolean {
-        return this.rows.some(row => row.name.toLowerCase() === name.toLowerCase() 
-            || row.symbol.toLowerCase() === symbol.toLowerCase());
+        return this.rows.find(row => row.name.toLowerCase() === name.toLowerCase() 
+            || row.symbol.toLowerCase() === symbol.toLowerCase()) !== undefined;
     }
     
     static async parse(csvLocation: string): Promise<AssetsCsv> {
@@ -91,7 +98,7 @@ export class AssetsCsv implements IAssetsCsv {
             let csv = `${HEADER_ROW_START},${networkDirs.sort().join(',')}\n`;
 
             this.rows.forEach(row => {
-                csv += `${row.primaryId},${row.primaryNetwork},${networkDirs.sort().map(network => row.networks[network].join(';')).join(',')}\n`;
+                csv += `${row.primaryId},${row.primaryNetwork},${row.name},${row.symbol},${networkDirs.sort().map(network => row.networks[network].join(';')).join(',')}\n`;
             });
 
             return fs.promises.writeFile(`${persistDir}.csv`, csv);

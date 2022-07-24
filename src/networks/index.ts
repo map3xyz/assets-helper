@@ -41,12 +41,14 @@ export async function getAssetsForNetwork(network: string, dir?: string): Promis
        try {
         await cloneAssetsRepoAndPullSubmodules(dir);
 
-        if(!fs.existsSync(`${dir}/networks/${network}/assets/${network}-tokenlist`)) {
+        const tokenlistDir = `${dir}/networks/${network}/assets/${network}-tokenlist`;
+
+        if(!fs.existsSync(tokenlistDir)) {
             return [];
         }
        
         // TODO, make it work for multiple tokenlists
-        const assetDirs = await getDirectories(`${dir}/networks/${network}/assets/${network}-tokenlist`);
+        const assetDirs = await getDirectories(tokenlistDir);
 
         assetDirs.forEach(directory => {
             const split = directory.split('/');

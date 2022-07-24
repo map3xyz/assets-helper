@@ -33,7 +33,7 @@ export class AssetsCsvRow implements IAssetsCsvRow {
         }
 
         this.networks = networks;
-        this.name = name.toLowerCase();
+        this.name = name;
         this.symbol = symbol.toUpperCase();
     }
 
