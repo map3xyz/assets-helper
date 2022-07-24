@@ -7,7 +7,8 @@ type AssetInfoCallback = (assetInfo: AssetInfo) => Promise<void>;
 export async function assetsForEach(db: Database, callback: AssetInfoCallback, complete?: () => Promise<void>) {
   const assets = await getMockAssets();
 
-  assets.map(async (asset) => await callback(asset));
+  await Promise.all(assets.map(async (asset) => await callback(asset)));
+
   if (complete) {
     await complete();
   }
