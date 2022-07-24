@@ -1,5 +1,6 @@
 import { Database } from "sqlite3";
 import { NetworkInfo } from "../model";
+import { MOCK_NETWORKS } from "./networks.json";
 
 type NetworkInfoCallback = (networkInfo: NetworkInfo) => Promise<void>;
 
