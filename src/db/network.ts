@@ -7,7 +7,8 @@ type NetworkInfoCallback = (networkInfo: NetworkInfo) => Promise<void>;
 export async function networksForEach(db: Database, callback: NetworkInfoCallback, complete?: () => Promise<void>) {
   const networks = await getMockNetworks();
 
-  networks.map(async (network) => await callback(network));
+  await Promise.all(networks.map(async (network) => await callback(network)));
+
   if (complete) {
     await complete();
   }
