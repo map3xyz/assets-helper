@@ -15,6 +15,7 @@ export class AssetsCsv implements IAssetsCsv {
     rows: AssetsCsvRow[] = [];
     
     append (row: AssetsCsvRow): AssetsCsvRow {
+        // TODO; make this more defensive to not insert if name and symbol match
         this.rows.push(row);
         return row;
     };
