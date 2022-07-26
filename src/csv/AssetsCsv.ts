@@ -53,7 +53,7 @@ export class AssetsCsv implements IAssetsCsv {
 
     get(primaryId: RepoPointer): AssetsCsvRow {
         if(this.rows.find(row => !row || row.primaryId === undefined)) {
-             throw 'found row without primary key ';
+             throw new Error('found row without primary key ');
         }
         return this.rows.find((row, i) => {
             return row.primaryId.toLowerCase() === primaryId.toLowerCase()
@@ -107,7 +107,7 @@ export class AssetsCsv implements IAssetsCsv {
                 csv += `${row.primaryId},${row.primaryNetwork},${row.name},${row.symbol},${networkDirs.sort().map(network => row.networks[network].join(';')).join(',')}\n`;
             });
 
-            return fs.promises.writeFile(`${persistDir}.csv`, csv);
+            return fs.promises.writeFile(persistDir, csv);
         } catch (err) {
             throw err;
         }
