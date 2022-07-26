@@ -59,7 +59,7 @@ export function getGithubHostedFileUrl (dir: string, fileName: string) {
         const preTokenlistDir = dir.split("-tokenlist")[0];
         const network = preTokenlistDir.split("/")[preTokenlistDir.split('/').length - 1];
         const baseUrl = `${GITHUB_USER_CONTENT_BASE_URL}/${network}-tokenlist/master`;
-        const address = dir.split('/')[dir.split('/').length -2]
+        const address = dir.split('/')[dir.split('/').length -1]
         return `${baseUrl}/${address}/${fileName}`;
     }
 

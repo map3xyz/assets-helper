@@ -13,9 +13,9 @@ export function shallowClone<T>(obj: T): T {
 export function sortObjectKeys<T>(obj: T): T {
       // sort keys
       return Object.keys(obj).sort().reduce(
-        (obj: any, key: any) => { 
-        obj[key] = obj[key]; 
-        return obj;
+        (accumulator: any, key: any) => { 
+            accumulator[key] = obj[key]; 
+            return accumulator;
         }, 
         {}
     );
