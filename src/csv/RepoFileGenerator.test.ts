@@ -1,11 +1,11 @@
 import test from 'ava';
-import { ASSETS_CSV_TMP_FILE } from '../utils/config';
+import { DEFAULT_TEMP_DIR } from '../utils/config';
 import { RepoFileGenerator } from './RepoFileGenerator';
 
 test('Generating and saving csv to tmp folder works ', async t => {
     try {
         const csv = await RepoFileGenerator.generate();
-        csv.deserialise(ASSETS_CSV_TMP_FILE);
+        csv.deserialise(DEFAULT_TEMP_DIR + '/test-assets.csv');
         t.pass();
     } catch (err) {
         t.fail(err.message);

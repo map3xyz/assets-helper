@@ -1,5 +1,5 @@
 
-import { REPO_CLONE_URL } from '../utils/config';
+import { GITHUB_USER_CONTENT_BASE_URL, REPO_CLONE_URL } from '../utils/config';
 import { getDirectories } from '../utils/filesystem';
 import { cloneOrPullRepoAndUpdateSubmodules, push } from '../utils/git';
 
@@ -46,4 +46,22 @@ export async function regenerateTokenlists(dir: string) {
     } catch (err) {
         throw err
     }
+}
+
+export function getGithubHostedFileUrl (dir: string, fileName: string) {
+    
+    if(dir.includes('/map3xyz/assets/')) {
+        const baseUrl = `${GITHUB_USER_CONTENT_BASE_URL}/assets/master`;
+        return `${baseUrl}/networks/${dir.split("/networks/")[1]}/${fileName}`;
+    }
+
+    if(dir.includes('-tokenlist')) {
+        const preTokenlistDir = dir.split("-tokenlist")[0];
+        const network = preTokenlistDir.split("/")[preTokenlistDir.split('/').length - 1];
+        const baseUrl = `${GITHUB_USER_CONTENT_BASE_URL}/${network}-tokenlist/master`;
+        const address = dir.split('/')[dir.split('/').length -2]
+        return `${baseUrl}/${address}/${fileName}`;
+    }
+
+    throw new Error('Cannot compute github hosted file url for directory ' + dir + ' and file name ' + fileName);
 }
