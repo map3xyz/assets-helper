@@ -10,6 +10,17 @@ export function shallowClone<T>(obj: T): T {
     return JSON.parse(JSON.stringify(obj));
 }
 
+export function sortObjectKeys<T>(obj: T): T {
+      // sort keys
+      return Object.keys(obj).sort().reduce(
+        (accumulator: any, key: any) => { 
+            accumulator[key] = obj[key]; 
+            return accumulator;
+        }, 
+        {}
+    );
+}
+
 export * from "./filesystem";
 export * from "./git";
 export * from "./images";

@@ -1,3 +1,4 @@
+import { sortObjectKeys } from "../utils";
 import { TagName } from "./Tag";
 import { Description, Links, Logos, Verification } from "./types";
 import { getUUID } from "./UUID";
@@ -62,13 +63,7 @@ export abstract class AssetsRepoObject {
         let parsed = JSON.parse(JSON.stringify(this));
 
         // sort keys
-        parsed = Object.keys(parsed).sort().reduce(
-            (obj: any, key: any) => { 
-              obj[key] = parsed[key]; 
-              return obj;
-            }, 
-            {}
-        );
+        parsed = sortObjectKeys(parsed);
         
         // let validation, schema;
 

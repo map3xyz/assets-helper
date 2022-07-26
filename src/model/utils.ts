@@ -1,9 +1,9 @@
-import { REPO_BASE_URL } from "../utils/config";
 import { downloadFile } from "../utils/images";
 import { AssetsRepoObject } from "./AssetsRepoObject";
 import { Logos } from "./types";
 import fs from 'fs';
 import path from 'path';
+import { getGithubHostedFileUrl } from "../repo";
 
 export function getMap3LogoUri(): string {
     // TODO
@@ -25,7 +25,7 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
             if(!fs.existsSync(path.join(directory, "logo.png"))) {
                 await downloadFile(logo.png.url || logo.png.ipfs, directory, 'logo.png');
             }
-            res.png.url = `${REPO_BASE_URL}/networks${directory.split("/networks")[1]}/logo.png`;
+            res.png.url = getGithubHostedFileUrl(directory, 'logo.png');
             // TODO: upload PNG to IPFS and get link in order to replace the possibly existing copy
         }
     
@@ -33,7 +33,7 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
             if(!fs.existsSync(path.join(directory, "logo.svg"))) {
                 await downloadFile(logo.svg.url || logo.svg.ipfs, directory, 'logo.svg');
             }
-            res.svg.url = `${REPO_BASE_URL}/networks${directory.split("/networks")[1]}/logo.svg`;
+            res.svg.url = getGithubHostedFileUrl(directory, 'logo.svg');
             res.png.ipfs = null;
             // TODO: upload SVG to IPFS and get link in order to replace the possibly existing copy
         }

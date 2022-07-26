@@ -45,7 +45,7 @@ export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<As
     const network = chainIdToTwaNetwork(chainId);
 
     if(!network) {
-        throw 'Cannot find TWA network based on token ChainId'
+        throw new Error('Cannot find TWA network based on token ChainId')
     }
 
     const infoFilePath = path.join(DEFAULT_TWA_DISK_LOCATION, 'blockchains', network, 'assets', t.address.toLowerCase(), 'info.json');
