@@ -113,16 +113,18 @@ async function forceCheckoutBranch(directory: string, branch: string) {
 export async function cloneOrPullRepoAndUpdateSubmodules(repo: string, dir: string, hasSubmodules: boolean, branch = 'master'): Promise<void> {
     try {
         if(fs.existsSync(dir)) {
-            const lastPull = await shell.exec(`cd ${dir} ; stat -f "%Sm" .git/FETCH_HEAD`);
-            const lastPullDate = new Date(lastPull.stdout.trim());
-            const configuredMinutesUntilCacheBursting = new Date( Date.now() - 1000 * (60 * ASSETS_REPO_CACHE_MINUTES) )
-
-            if(lastPullDate < configuredMinutesUntilCacheBursting) {
-                await forceCheckoutBranch(dir, branch);
-            } else {
-                return;
-            }
-            
+                const lastPullDate = new Date(
+                            fs.existsSync(`${dir}/.git/FETCH_HEAD`)? 
+                                (await shell.exec(`cd ${dir} ; stat -f "%Sm" .git/FETCH_HEAD`)).stdout.trim()
+                                : '1970-01-01T00:00:00.000Z'
+                        ); 
+                const configuredMinutesUntilCacheBursting = new Date( Date.now() - 1000 * (60 * ASSETS_REPO_CACHE_MINUTES) )
+    
+                if(lastPullDate < configuredMinutesUntilCacheBursting) {
+                    await forceCheckoutBranch(dir, branch);
+                } else {
+                    return;
+                }
         } else {
             await clone(repo, dir);
         }
