@@ -1,4 +1,5 @@
 import { ingestTokenList } from './tokenlist';
+import { getChainIdForNetwork } from './utils';
 
 export * from './model';
 export * from './networks';
@@ -16,3 +17,7 @@ export * from './csv';
 // }).catch(err => {
 //     console.error(err);
 // })
+
+// getChainIdForNetwork('ethereum')
+// .then(res => console.log)
+// .catch(err => console.error(err));
