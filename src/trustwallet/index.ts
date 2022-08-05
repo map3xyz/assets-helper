@@ -1,4 +1,4 @@
-import { AssetInfo } from "../model";
+import { AssetInfo, getUUID } from "../model";
 import fs from 'fs';
 import path from 'path';
 import { DEFAULT_TWA_DISK_LOCATION } from "../utils/config";
@@ -69,7 +69,7 @@ export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<As
                     "verified": true
                 }
             ],
-            "id": crypto.randomUUID(),
+            "id": getUUID(),
             "identifiers": { 
                 bip44: null,
                 chainId: null
