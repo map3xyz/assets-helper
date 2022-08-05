@@ -25,6 +25,10 @@ export async function getNetworks(dir?: string): Promise<NetworkInfo[]> {
             }
         });
 
+        if(res.length === 0) {
+            throw new Error(`getNetworks No networks found in ${dir}`);
+        }
+
         return res;
    } catch (err) {  
         throw err;
