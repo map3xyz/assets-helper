@@ -47,14 +47,14 @@ export async function getNetworkForChainId(chainId: number): Promise<NetworkInfo
         }
     
         let index;
-        const search = Object.values(chainIdMap)
+         Object.values(chainIdMap)
             .find((value, index) => {
                 if(value === chainId) {
                     index = index;
                 }
             });
         
-        if(!search) {
+        if(!index) {
             throw new Error(`getNetworkForChainId Network does not exist for chainId ${chainId} on the Map3 repo (yet!) or is not cached by utils/chainId. State: ${JSON.stringify(chainIdMap)}`);
         }
 
