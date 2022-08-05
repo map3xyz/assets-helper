@@ -30,7 +30,7 @@ export async function getChainIdForNetwork(networkId: string): Promise<number> {
         const res = chainIdMap[networkId.toLowerCase()];
 
         if(!res) {
-            throw new Error(`getChainIdForNetwork ChainId does not exist for network ${networkId} on the Map3 repo (yet!) or is not cached by utils/chainId`);
+            throw new Error(`getChainIdForNetwork ChainId does not exist for network ${networkId} on the Map3 repo (yet!) or is not cached by utils/chainId. State: ${JSON.stringify(chainIdMap)}`);
         }
 
         return res;
@@ -54,7 +54,7 @@ export async function getNetworkForChainId(chainId: number): Promise<NetworkInfo
             });
         
         if(!search) {
-            throw new Error(`getNetworkForChainId Network does not exist for chainId ${chainId} on the Map3 repo (yet!) or is not cached by utils/chainId`);
+            throw new Error(`getNetworkForChainId Network does not exist for chainId ${chainId} on the Map3 repo (yet!) or is not cached by utils/chainId. State: ${JSON.stringify(chainIdMap)}`);
         }
 
         return networks[index];
