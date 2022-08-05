@@ -42,15 +42,20 @@ export async function getChainIdForNetwork(networkId: string): Promise<number> {
 
 export async function getNetworkForChainId(chainId: number): Promise<NetworkInfo> {
     try {
+
+        if(!Number.isInteger(chainId)) {
+            chainId = parseInt(chainId.toString());
+        }
+
         if(!chainIdMap || Object.keys(chainIdMap).length === 0) {
             chainIdMap = await getChainIdMap();
         }
     
         let index;
-         Object.values(chainIdMap)
-            .find((value, index) => {
+        Object.values(chainIdMap)
+            .find((value, i) => {
                 if(value === chainId) {
-                    index = index;
+                    index = i;
                 }
             });
         
