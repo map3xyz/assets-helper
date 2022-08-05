@@ -138,7 +138,7 @@ export async function ingestTokenList(listLocation: string, directory: string, b
             token => !previousListToParse.tokens.some(
                             existingToken => existingToken.address.toLowerCase() === token.address.toLowerCase()
                         )
-                    && token.chainId === chainId
+                    && !token.chainId || token.chainId === chainId
             );
     
         if(newAssets.length > 0) {
