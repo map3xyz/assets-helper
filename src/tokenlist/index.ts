@@ -125,7 +125,9 @@ export async function ingestTokenList(listLocation: string, directory: string, b
 
         let listToIngest: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
 
-        const chainId = listToIngest.tokens.find(t => t.chainId !== undefined)?.chainId;
+        const networkInfoFile = JSON.parse(fs.readFileSync(path.join(directory, 'info.json'), 'utf8'));
+
+        const chainId = networkInfoFile?.identifiers.chainId;
 
         if(!chainId) {
             throw new Error('No chainId info found for tokenlist ' + listLocation);

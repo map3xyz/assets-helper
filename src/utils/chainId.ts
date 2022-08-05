@@ -10,6 +10,7 @@ async function getChainIdMap() {
             return chainIdMap;
         }
     
+        chainIdMap = {};
         networks = await getNetworks();
         networks.forEach(network => {
             chainIdMap[network.networkId.toLowerCase()] = network.identifiers.chainId;
