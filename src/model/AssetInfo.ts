@@ -3,7 +3,7 @@ import {TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
 import { TagName } from "./Tag";
 import { Logos } from "./types";
 import { getTwaTokenInfo } from "../trustwallet";
-import { chainIdToMap3Network } from "../utils/chainId";
+import { getNetworkForChainId } from "../utils/chainId";
 
 export class AssetInfo extends AssetsRepoObject {
 
@@ -37,17 +37,21 @@ export class AssetInfo extends AssetsRepoObject {
             }
         }
         
-        const baseToken: AssetInfo = new AssetInfo({
-            networkId: chainIdToMap3Network(info.chainId),
-            address: info.address,
-            name: info.name,
-            symbol: info.symbol,
-            decimals: info.decimals,
-            logo: logo,
-            tags: info.tags as TagName[],
-        });
-
-        return enhanceExtTokenInfoWithSourceData(baseToken, info.chainId, source);
+        try {
+            const baseToken: AssetInfo = new AssetInfo({
+                networkId: (await getNetworkForChainId(info.chainId)).networkId,
+                address: info.address,
+                name: info.name,
+                symbol: info.symbol,
+                decimals: info.decimals,
+                logo: logo,
+                tags: info.tags as TagName[],
+            });
+    
+            return enhanceExtTokenInfoWithSourceData(baseToken, info.chainId, source);
+        } catch (err) {
+            throw err;
+        }
     }
 }
 

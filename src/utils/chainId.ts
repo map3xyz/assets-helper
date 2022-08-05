@@ -1,14 +1,63 @@
-export function chainIdToTwaNetwork(chainId: number): string {
-    // TODO, make dynamic
-    if(!chainId) {
-        return undefined;
-    }
+import { NetworkInfo } from "../model";
+import { getNetworks } from "../networks";
 
-    return chainId === 1? 'ethereum' : 
-        chainId === 137? 'polygon' : undefined
+let chainIdMap: { [key: string]: number } = {};
+let networks: NetworkInfo[];
+
+async function getChainIdMap() {
+    try {
+        if (chainIdMap && Object.keys(chainIdMap).length > 0) {
+            return chainIdMap;
+        }
+    
+        networks = await getNetworks();
+        networks.forEach(network => {
+            chainIdMap[network.name.toLowerCase()] = network.identifiers.chainId;
+        });
+
+        return chainIdMap;
+    } catch (err) {
+        throw err;
+    }
+}
+export async function getChainIdForNetwork(network: string): Promise<number> {
+    try {
+        if(!chainIdMap) {
+            chainIdMap = await getChainIdMap();
+        }
+    
+        const res = chainIdMap[network.toLowerCase()];
+
+        if(!res) {
+            throw new Error(`getChainIdForNetwork ChainId does not exist for network ${network} on the Map3 repo (yet!) or is not cached by utils/chainId`);
+        }
+
+        return res;
+    } catch (err) {
+        throw err;
+    }
 }
 
-export function chainIdToMap3Network(chainId: number): string {
-    // TODO, make dynamic
-    return chainIdToTwaNetwork(chainId);
+export async function getNetworkForChainId(chainId: number): Promise<NetworkInfo> {
+    try {
+        if(!chainIdMap) {
+            chainIdMap = await getChainIdMap();
+        }
+    
+        let index;
+        const search = Object.values(chainIdMap)
+            .find((value, index) => {
+                if(value === chainId) {
+                    index = index;
+                }
+            });
+        
+        if(!search) {
+            throw new Error(`getNetworkForChainId Network does not exist for chainId ${chainId} on the Map3 repo (yet!) or is not cached by utils/chainId`);
+        }
+
+        return networks[index];
+    } catch (err) {
+        throw err;
+    }
 }
