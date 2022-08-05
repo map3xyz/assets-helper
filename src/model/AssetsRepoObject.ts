@@ -33,8 +33,8 @@ export abstract class AssetsRepoObject {
         this.active = info.active || true;
         this.color = info.color || null;
         
-        if(!info.decimals) {
-            throw new Error('decimals is required to initialise an AssetsRepoObject. Passed: ' + JSON.stringify(info));
+        if(!Number.isInteger(info.decimals) || info.decimals < 0) {
+            throw new Error('decimals needs to be a positive integer to initialise an AssetsRepoObject. Passed: ' + JSON.stringify(info));
         }
         this.decimals = info.decimals;
         this.description = info.description || [];
