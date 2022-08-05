@@ -23,7 +23,7 @@ async function getChainIdMap() {
 }
 export async function getChainIdForNetwork(networkId: string): Promise<number> {
     try {
-        if(!chainIdMap) {
+        if(!chainIdMap || Object.keys(chainIdMap).length === 0) {
             chainIdMap = await getChainIdMap();
         }
     
@@ -41,7 +41,7 @@ export async function getChainIdForNetwork(networkId: string): Promise<number> {
 
 export async function getNetworkForChainId(chainId: number): Promise<NetworkInfo> {
     try {
-        if(!chainIdMap) {
+        if(!chainIdMap || Object.keys(chainIdMap).length === 0) {
             chainIdMap = await getChainIdMap();
         }
     
