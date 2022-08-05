@@ -24,3 +24,4 @@ export function sortObjectKeys<T>(obj: T): T {
 export * from "./filesystem";
 export * from "./git";
 export * from "./images";
+export * from "./chainId";

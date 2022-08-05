@@ -2,7 +2,7 @@ import { AssetInfo } from "../model";
 import fs from 'fs';
 import path from 'path';
 import { DEFAULT_TWA_DISK_LOCATION } from "../utils/config";
-import { chainIdToTwaNetwork } from "../utils/chainId";
+import { getNetworkForChainId } from "../utils/chainId";
 
 function getLinks(input: any) {
     let links: any = {};
@@ -42,20 +42,21 @@ function getLinks(input: any) {
 
 export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<AssetInfo> {
     
-    const network = chainIdToTwaNetwork(chainId);
-
-    if(!network) {
-        throw new Error('Cannot find TWA network based on token ChainId')
-    }
-
-    const infoFilePath = path.join(DEFAULT_TWA_DISK_LOCATION, 'blockchains', network, 'assets', t.address.toLowerCase(), 'info.json');
-
-    if(!fs.existsSync(infoFilePath)) {
-        console.error(`getTwaTokenInfo No info.json found for ${t.address}`);
-        return t;
-    }
-
     try {
+
+        const network = await getNetworkForChainId(chainId);
+        
+        // note: if trustwallet names the network different to our networkId, 
+        // even if they have the same chainId we may encounter issues
+        // as we may not find the infoFilePath. 
+        // TODO; Handle this case better
+        const infoFilePath = path.join(DEFAULT_TWA_DISK_LOCATION, 'blockchains', network.networkId, 'assets', t.address.toLowerCase(), 'info.json');
+
+        if(!fs.existsSync(infoFilePath)) {
+            console.error(`getTwaTokenInfo No info.json found for ${t.address}`);
+            return t;
+        }
+
         const i = JSON.parse(fs.readFileSync(infoFilePath, 'utf-8'));
 
         let res: any = {
