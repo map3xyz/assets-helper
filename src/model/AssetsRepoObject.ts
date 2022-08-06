@@ -30,7 +30,7 @@ export abstract class AssetsRepoObject {
         }
         this.networkId = info.networkId;
 
-        this.active = info.active || true;
+        this.active = info.active === undefined ? true : info.active;
         this.color = info.color || null;
         
         if(!Number.isInteger(info.decimals) || info.decimals < 0) {
@@ -46,7 +46,7 @@ export abstract class AssetsRepoObject {
             throw new Error('name is required to initialise an AssetsRepoObject Passed: ' + JSON.stringify(info));
         }
         this.name = info.name;
-        this.spam = info.spam || false;
+        this.spam = info.spam === undefined ? true : info.spam;
 
         if(!info.symbol) {
             throw new Error('symbol is required to initialise an AssetsRepoObject Passed: ' + JSON.stringify(info));
