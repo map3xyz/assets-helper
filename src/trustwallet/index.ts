@@ -62,6 +62,7 @@ export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<As
         const i = JSON.parse(fs.readFileSync(infoFilePath, 'utf-8'));
 
         let res = new AssetInfo({
+            address: i.address || i.id?.startsWith('0x') ? i.id : t.address,
             color: null,
             decimals: i.decimals,
             description: [
