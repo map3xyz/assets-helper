@@ -1,9 +1,9 @@
 import { AssetsRepoObject } from "./AssetsRepoObject";
 import {TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
 import { TagName } from "./Tag";
-import { Logos } from "./types";
 import { getTwaTokenInfo } from "../trustwallet";
 import { getNetworkForChainId } from "../utils/chainId";
+import { getLogosFromLogoUri } from "./utils";
 
 export class AssetInfo extends AssetsRepoObject {
 
@@ -20,23 +20,7 @@ export class AssetInfo extends AssetsRepoObject {
         this.address = info.address;
     }
 
-    static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<AssetInfo> {
-        const logoHttp = info.logoURI?.startsWith('http://') || info.logoURI?.startsWith('https://');
-        const logoIpfs = info.logoURI?.startsWith('ipfs://');
-        const logoPng = info.logoURI?.endsWith('.png');
-        const logoSvg = info.logoURI?.endsWith('.svg');
-
-        const logo: Logos = {
-            png: {
-                url: logoHttp && logoPng? info.logoURI : null,
-                ipfs: logoIpfs && logoPng? info.logoURI : null,
-            },
-            svg: { 
-                url: logoHttp && logoSvg? info.logoURI : null,
-                ipfs: logoIpfs && logoSvg? info.logoURI : null
-            }
-        }
-        
+    static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<AssetInfo> {        
         try {
             const baseToken: AssetInfo = new AssetInfo({
                 networkId: (await getNetworkForChainId(info.chainId)).networkId,
@@ -44,7 +28,7 @@ export class AssetInfo extends AssetsRepoObject {
                 name: info.name,
                 symbol: info.symbol,
                 decimals: info.decimals,
-                logo: logo,
+                logo: await getLogosFromLogoUri(info.logoURI),
                 tags: info.tags as TagName[],
             });
     

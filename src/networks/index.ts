@@ -2,7 +2,7 @@ import fs from "fs";
 import { AssetInfo } from "../model";
 import { NetworkInfo } from "../model/NetworkInfo";
 import { cloneAssetsRepoAndPullSubmodules } from "../repo";
-import { DEFAULT_REPO_DISK_LOCATION } from "../utils/config";
+import { DEFAULT_REPO_DISK_LOCATION } from "../utils/constants";
 import { getDirectories, readAndParseJson } from "../utils/filesystem";
 
 export async function getNetworks(dir?: string): Promise<NetworkInfo[]> {

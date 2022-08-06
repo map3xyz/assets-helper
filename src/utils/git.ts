@@ -1,7 +1,7 @@
 import shell from 'shelljs';
 import fs from 'fs';
 import { isDev } from '.';
-import { ASSETS_REPO_CACHE_MINUTES } from './config';
+import { ASSETS_REPO_CACHE_MINUTES } from './constants';
 
 if(!isDev()) {
     shell.config.silent = true;

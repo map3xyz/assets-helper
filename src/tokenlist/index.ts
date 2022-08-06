@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { getDefaultTags } from '../model/Tag';
 import { AssetInfo } from '../model/AssetInfo';
-import { getMap3LogoUri, getLogoUriFromInfo, downloadAndPersistLogos } from '../model/utils';
+import { getMap3LogoUri, downloadAndPersistLogos } from '../model/utils';
 import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
 import { branch, commit } from '../utils/git';
@@ -35,7 +35,7 @@ async function prepareTokenlist(directory: string, previousTokenlist?: TokenList
                     name: info.name,
                     decimals: info.decimals,
                     symbol: info.symbol,
-                    logoURI: getLogoUriFromInfo(info, dir),
+                    logoURI: info.logoURI,
                     tags: info.tags
                 };
                 resolve(token);

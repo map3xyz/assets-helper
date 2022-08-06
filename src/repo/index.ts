@@ -1,5 +1,5 @@
 
-import { GITHUB_USER_CONTENT_BASE_URL, REPO_CLONE_URL } from '../utils/config';
+import { GITHUB_USER_CONTENT_BASE_URL, REPO_CLONE_URL } from '../utils/constants';
 import { getDirectories } from '../utils/filesystem';
 import { cloneOrPullRepoAndUpdateSubmodules, push } from '../utils/git';
 
