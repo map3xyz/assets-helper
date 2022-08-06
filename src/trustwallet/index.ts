@@ -65,17 +65,18 @@ export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<As
             address: i.address || i.id?.startsWith('0x') ? i.id : t.address,
             color: null,
             decimals: i.decimals,
-            description: [
+            description: i.description && i.description !== '-' ? [
                 {
                     locale: "en",
                     value: i.description,
                     verified: true
                 }
-            ],
+            ] : [],
             id: getUUID(),
             links: getLinks(i),
             networkId: network.networkId,
-            active: i.active || true,
+            active: i.status === 'active',
+            spam: i.status === 'spam',
             logo: await getLogosFromLogoUri(logoHttpPath),
             name: i.name,
             symbol: i.symbol,
