@@ -58,7 +58,7 @@ export abstract class AssetsRepoObject {
         this.version = info.version? (typeof info.version === 'string' ? Version.fromString(info.version) : info.version ) : Version.getNew();        
     }
 
-    async deserialise(): Promise<string> {
+    deserialise(): string {
         this.version = this.version.toString();
         let parsed = JSON.parse(JSON.stringify(this));
 
