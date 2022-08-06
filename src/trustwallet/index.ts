@@ -1,8 +1,9 @@
-import { AssetInfo } from "../model";
+import { AssetInfo, getUUID } from "../model";
 import fs from 'fs';
 import path from 'path';
-import { DEFAULT_TWA_DISK_LOCATION } from "../utils/config";
+import { DEFAULT_TWA_DISK_LOCATION, TWA_USER_CONTENT_BASE } from "../utils/constants";
 import { getNetworkForChainId } from "../utils/chainId";
+import { getLogosFromLogoUri } from "../model/utils";
 
 function getLinks(input: any) {
     let links: any = {};
@@ -50,7 +51,8 @@ export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<As
         // even if they have the same chainId we may encounter issues
         // as we may not find the infoFilePath. 
         // TODO; Handle this case better
-        const infoFilePath = path.join(DEFAULT_TWA_DISK_LOCATION, 'blockchains', network.networkId, 'assets', t.address.toLowerCase(), 'info.json');
+        const infoFilePath = path.join(DEFAULT_TWA_DISK_LOCATION, 'blockchains', network.networkId, 'assets', t.address, 'info.json');
+        const logoHttpPath = `${TWA_USER_CONTENT_BASE}/blockchains/${network.networkId}/assets/${t.address}/logo.png`;
 
         if(!fs.existsSync(infoFilePath)) {
             console.error(`getTwaTokenInfo No info.json found for ${t.address}`);
@@ -59,47 +61,26 @@ export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<As
 
         const i = JSON.parse(fs.readFileSync(infoFilePath, 'utf-8'));
 
-        let res: any = {
-            "color": null,
-            "decimals": i.decimals,
-            "description": [
+        let res = new AssetInfo({
+            address: i.address || i.id?.startsWith('0x') ? i.id : t.address,
+            color: null,
+            decimals: i.decimals,
+            description: [
                 {
-                    "locale": "en",
-                    "value": i.description,
-                    "verified": true
+                    locale: "en",
+                    value: i.description,
+                    verified: true
                 }
             ],
-            "id": crypto.randomUUID(),
-            "identifiers": { 
-                bip44: null,
-                chainId: null
-             },
-            "links": getLinks(i),
-            "logo": {
-                "png": {
-                    github: i.logoURI ? i.logoURI : t.logo?.png  || null,
-                    cdn: null,
-                    ipfs: null,
-
-                },
-                "svg": {
-                    github: null,
-                    cdn: null,
-                    ipfs: null,
-
-                }
-            },
-            "name": i.name,
-            "regex": {
-                "address": null,
-                "memo": null
-            },
-            "status": i.status,
-            "symbol": i.symbol,
+            id: getUUID(),
+            links: getLinks(i),
+            networkId: network.networkId,
+            active: i.active || true,
+            logo: await getLogosFromLogoUri(logoHttpPath),
+            name: i.name,
+            symbol: i.symbol,
             tags: i.tags && (!t.tags || t.tags.length < i.tags.length)? i.tags : t.tags || [],
-            "type": i.type,
-            "verified": true
-        };
+        });
 
         return res;
     } catch (err) {

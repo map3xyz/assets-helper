@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { getDefaultTags } from '../model/Tag';
 import { AssetInfo } from '../model/AssetInfo';
-import { getMap3LogoUri, getLogoUriFromInfo, downloadAndPersistLogos } from '../model/utils';
+import { getMap3LogoUri, downloadAndPersistLogos } from '../model/utils';
 import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
 import { branch, commit } from '../utils/git';
@@ -35,7 +35,7 @@ async function prepareTokenlist(directory: string, previousTokenlist?: TokenList
                     name: info.name,
                     decimals: info.decimals,
                     symbol: info.symbol,
-                    logoURI: getLogoUriFromInfo(info, dir),
+                    logoURI: info.logoURI,
                     tags: info.tags
                 };
                 resolve(token);
@@ -93,7 +93,7 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
             //    console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));
 
                if(!fs.existsSync(path.join(tokenDir, 'info.json'))) {
-                fs.writeFileSync(path.join(tokenDir, 'info.json'), await parsedToken.deserialise());
+                fs.writeFileSync(path.join(tokenDir, 'info.json'), parsedToken.deserialise());
                }
                
                resolve();
@@ -125,7 +125,10 @@ export async function ingestTokenList(listLocation: string, directory: string, b
 
         let listToIngest: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
 
-        const chainId = listToIngest.tokens.find(t => t.chainId !== undefined)?.chainId;
+        const networkId = directory.split('/')[directory.split('/').length - 3];
+        const networkInfoFile = JSON.parse(fs.readFileSync(path.join(directory.split(networkId)[0], networkId, 'info.json'), 'utf8'));
+
+        const chainId = networkInfoFile?.identifiers.chainId;
 
         if(!chainId) {
             throw new Error('No chainId info found for tokenlist ' + listLocation);
@@ -135,7 +138,7 @@ export async function ingestTokenList(listLocation: string, directory: string, b
             token => !previousListToParse.tokens.some(
                             existingToken => existingToken.address.toLowerCase() === token.address.toLowerCase()
                         )
-                    && token.chainId === chainId
+                    && !token.chainId || token.chainId === chainId
             );
     
         if(newAssets.length > 0) {

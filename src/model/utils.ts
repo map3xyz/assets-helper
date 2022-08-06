@@ -1,5 +1,4 @@
 import { downloadFile } from "../utils/images";
-import { AssetsRepoObject } from "./AssetsRepoObject";
 import { Logos } from "./types";
 import fs from 'fs';
 import path from 'path';
@@ -7,11 +6,6 @@ import { getGithubHostedFileUrl } from "../repo";
 
 export function getMap3LogoUri(): string {
     // TODO
-    return "";
-}
-
-export function getLogoUriFromInfo(info: AssetsRepoObject, dir: string): string {
-    // TODO for a given info object, get the URI of the logo. PNG > SVG by default
     return "";
 }
 
@@ -43,3 +37,41 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
         throw err;
     }
 }
+
+async function validateLogoUri(logoURI?: string): Promise<boolean> {
+    if(!logoURI) {
+        return true;
+    }
+
+    // TODO; download the image and validate it based on the dimensions and size (similar to twa)
+    // handle pngs and svgs over ipfs and http
+    return Promise.resolve(true);
+}
+export async function getLogosFromLogoUri(logoURI?: string): Promise<Logos> {
+    
+    const valid = validateLogoUri(logoURI);
+
+    if(!valid) {
+        logoURI = undefined;
+    }
+
+    const logoHttp = logoURI?.startsWith('http://') || logoURI?.startsWith('https://');
+    const logoIpfs = logoURI?.startsWith('ipfs://');
+    const logoPng = logoURI?.endsWith('.png');
+    const logoSvg = logoURI?.endsWith('.svg');
+
+    const logo: Logos = {
+        png: {
+            url: logoHttp && logoPng? logoURI : null,
+            ipfs: logoIpfs && logoPng? logoURI : null,
+        },
+        svg: { 
+            url: logoHttp && logoSvg? logoURI : null,
+            ipfs: logoIpfs && logoSvg? logoURI : null
+        }
+    }
+
+    return logo;
+}
+
+

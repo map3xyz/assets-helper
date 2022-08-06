@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { DEFAULT_TEMP_DIR } from './config';
+import { DEFAULT_TEMP_DIR } from './constants';
 const { promises: { readdir, stat } } = fs;
 const { join } = path;
 

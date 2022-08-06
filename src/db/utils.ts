@@ -1,6 +1,6 @@
 import { AssetsCsv, RepoFileGenerator } from "../csv";
 import fs from 'fs';
-import { ASSETS_CSV_TMP_FILE } from "../utils/config";
+import { ASSETS_CSV_TMP_FILE } from "../utils/constants";
 
 let _assetsCsv: AssetsCsv;
 

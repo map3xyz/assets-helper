@@ -1,5 +1,5 @@
 import test from 'ava';
-import { DEFAULT_TEMP_DIR } from '../utils/config';
+import { DEFAULT_TEMP_DIR } from '../utils/constants';
 import { RepoFileGenerator } from './RepoFileGenerator';
 
 test('Generating and saving csv to tmp folder works ', async t => {

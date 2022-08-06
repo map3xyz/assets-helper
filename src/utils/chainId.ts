@@ -10,7 +10,9 @@ async function getChainIdMap() {
             return chainIdMap;
         }
     
+        chainIdMap = {};
         networks = await getNetworks();
+
         networks.forEach(network => {
             chainIdMap[network.networkId.toLowerCase()] = network.identifiers.chainId;
         });
@@ -22,14 +24,14 @@ async function getChainIdMap() {
 }
 export async function getChainIdForNetwork(networkId: string): Promise<number> {
     try {
-        if(!chainIdMap) {
+        if(!chainIdMap || Object.keys(chainIdMap).length === 0) {
             chainIdMap = await getChainIdMap();
         }
     
         const res = chainIdMap[networkId.toLowerCase()];
 
         if(!res) {
-            throw new Error(`getChainIdForNetwork ChainId does not exist for network ${networkId} on the Map3 repo (yet!) or is not cached by utils/chainId`);
+            throw new Error(`getChainIdForNetwork ChainId does not exist for network ${networkId} on the Map3 repo (yet!) or is not cached by utils/chainId. State: ${JSON.stringify(chainIdMap)}`);
         }
 
         return res;
@@ -40,20 +42,25 @@ export async function getChainIdForNetwork(networkId: string): Promise<number> {
 
 export async function getNetworkForChainId(chainId: number): Promise<NetworkInfo> {
     try {
-        if(!chainIdMap) {
+
+        if(!Number.isInteger(chainId)) {
+            chainId = parseInt(chainId.toString());
+        }
+
+        if(!chainIdMap || Object.keys(chainIdMap).length === 0) {
             chainIdMap = await getChainIdMap();
         }
     
         let index;
-        const search = Object.values(chainIdMap)
-            .find((value, index) => {
+        Object.values(chainIdMap)
+            .find((value, i) => {
                 if(value === chainId) {
-                    index = index;
+                    index = i;
                 }
             });
         
-        if(!search) {
-            throw new Error(`getNetworkForChainId Network does not exist for chainId ${chainId} on the Map3 repo (yet!) or is not cached by utils/chainId`);
+        if(!index) {
+            throw new Error(`getNetworkForChainId Network does not exist for chainId ${chainId} on the Map3 repo (yet!) or is not cached by utils/chainId. State: ${JSON.stringify(chainIdMap)}`);
         }
 
         return networks[index];

@@ -18,6 +18,6 @@ export * from './csv';
 //     console.error(err);
 // })
 
-// getChainIdForNetwork('ethereum')
-// .then(res => console.log)
-// .catch(err => console.error(err));
+// getChainIdForNetwork('polygon')
+// .then(console.log)
+// .catch(console.error);
