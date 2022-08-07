@@ -132,7 +132,7 @@ export async function cloneOrPullRepoAndUpdateSubmodules(
   }
 }
 
-export async function getCommitId(repo: string, dir: string, tag: string = "HEAD"): Promise<string> {
+export async function getCommitId(dir: string, tag: string = "HEAD"): Promise<string> {
   const commitId = (await shell.exec(`cd ${dir}; git rev-parse ${tag}`)).stdout.trim();
   return Promise.resolve(commitId);
 }
