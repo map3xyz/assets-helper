@@ -20,7 +20,7 @@ test("cloning assets repo clones and pulls submodules", async (t) => {
 test("we are able to get the commit id of a tag", async (t) => {
   try {
     await cloneOrPullRepoAndUpdateSubmodules(REPO_CLONE_URL, DEFAULT_REPO_DISK_LOCATION, true, "master");
-    const commitId = await getCommitId(REPO_CLONE_URL, DEFAULT_REPO_DISK_LOCATION, "HEAD");
+    const commitId = await getCommitId(DEFAULT_REPO_DISK_LOCATION, "HEAD");
     t.true(commitId.length === 40);
   } catch (err) {
     t.fail(err.message);
