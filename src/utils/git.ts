@@ -18,11 +18,14 @@ export async function commit(repo: string, message: string): Promise<void> {
   }
 }
 
-export async function branch(directory: string, branch: string): Promise<void> {
+export async function branch(directory: string, branch: string, origin: string = "origin"): Promise<void> {
   try {
+    const branchExists = await exists(directory, branch);
+    const checkoutFlags = branchExists ? "" : "-b";
+
     console.log(`Branching ${directory} to ${branch}`);
-    const checkBranchCmd = `git rev-parse --abbrev-ref HEAD`;
-    const createBranchCmd = `cd ${directory} ;` + ` git checkout -b ${branch}`;
+    const checkBranchCmd = `cd ${directory} ;` + ` git rev-parse --abbrev-ref HEAD`;
+    const createBranchCmd = `cd ${directory} ;` + ` git checkout ${checkoutFlags} ${branch}`;
 
     const gitBranch = shell.exec(checkBranchCmd).stdout.trim();
 
@@ -31,6 +34,17 @@ export async function branch(directory: string, branch: string): Promise<void> {
     }
 
     return Promise.resolve();
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function exists(directory: string, branch: string): Promise<boolean> {
+  try {
+    const cmd = `cd ${directory} ;` + `git branch | grep ${branch}`;
+    const gitBranch = shell.exec(cmd).stdout.trim();
+
+    return Promise.resolve(gitBranch.length > 0);
   } catch (err) {
     throw err;
   }
@@ -90,7 +104,7 @@ export async function pull(directory: string, origin: string): Promise<void> {
   }
 }
 
-async function forceCheckoutBranch(directory: string, branch: string) {
+export async function forceCheckoutBranch(directory: string, branch: string) {
   try {
     console.log(`Checking out branch ${branch} in ${directory}`);
     const cmd = `cd ${directory} ;` + ` git stash ;` + ` git checkout ${branch} ;` + ` git pull origin ${branch} ;`;
@@ -132,8 +146,8 @@ export async function cloneOrPullRepoAndUpdateSubmodules(
   }
 }
 
-export async function getCommitId(repo: string, dir: string, tag: string = "HEAD"): Promise<string> {
-  const commitId = (await shell.exec(`cd ${dir}; git rev-parse ${tag}`)).stdout.trim();
+export async function getCommitId(dir: string, tag: string = "HEAD"): Promise<string> {
+  const commitId = (await shell.exec(`cd ${dir}; git rev-parse --short=16 ${tag}`)).stdout.trim();
   return Promise.resolve(commitId);
 }
 
