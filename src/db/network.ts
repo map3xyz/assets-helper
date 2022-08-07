@@ -1,11 +1,10 @@
-import { Database } from "sqlite3";
 import { NetworkInfo } from "../model";
 import { getNetworks, getAssetsForNetwork } from "../networks";
 import { MOCK_NETWORKS } from "./networks.json";
 
 type NetworkInfoCallback = (networkInfo: NetworkInfo) => Promise<void>;
 
-export async function networksForEach(db: Database, callback: NetworkInfoCallback, complete?: () => Promise<void>) {
+export async function networksForEach(callback: NetworkInfoCallback, complete?: () => Promise<void>) {
   try {
     const networks = await getNetworks();
     await Promise.all(networks.map(async network => {
@@ -21,7 +20,7 @@ export async function networksForEach(db: Database, callback: NetworkInfoCallbac
   }
 }
 
-export async function networkForId(db: Database, id: string, callback: NetworkInfoCallback) {
+export async function networkForId (id: string, callback: NetworkInfoCallback) {
     try {
       const networks = await getNetworks();
       const network = networks.find((network) => network.id === id);
@@ -32,7 +31,7 @@ export async function networkForId(db: Database, id: string, callback: NetworkIn
     }
 }
 
-export async function findNetworkByNetworkId(db: Database, networkId: string, callback: NetworkInfoCallback) {
+export async function findNetworkByNetworkId(networkId: string, callback: NetworkInfoCallback) {
   try {
     const networks = await getNetworks();
     const network = networks.find((network) => network.networkId === networkId);

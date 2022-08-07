@@ -26,7 +26,6 @@
   "devDependencies": {
     "@types/ethereum-checksum-address": "^0.0.0",
     "@types/node": "^18.0.0",
-    "@types/sqlite3": "^3.1.8",
     "ava": "^4.3.0",
     "pkg": "^5.7.0",
     "rimraf": "^3.0.2",
@@ -39,7 +38,6 @@
     "ethereum-checksum-address": "^0.0.8",
     "jsonschema": "^1.4.1",
     "shelljs": "^0.8.5",
-    "sqlite3": "^5.0.10",
     "uuid": "^8.3.2"
   },
   "packageManager": "yarn@3.2.1",
