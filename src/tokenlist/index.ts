@@ -7,6 +7,7 @@ import { getMap3LogoUri, downloadAndPersistLogos } from '../model/utils';
 import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
 import { branch, commit } from '../utils/git';
+import { formatAddress } from '../utils';
 
 async function prepareTokenlist(directory: string, previousTokenlist?: TokenList): Promise<TokenList> {
 
@@ -80,7 +81,7 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
 
    await Promise.all(newAssets.map<Promise<void>>(token => {
        return new Promise(async resolve => {
-           const tokenDir = path.join(directory, token.address.toLowerCase());
+           const tokenDir = path.join(directory, formatAddress(token.address));
 
            try {
                if(!fs.existsSync(tokenDir)) {
@@ -136,7 +137,7 @@ export async function ingestTokenList(listLocation: string, directory: string, b
 
         const newAssets = listToIngest.tokens.filter(
             token => !previousListToParse.tokens.some(
-                            existingToken => existingToken.address.toLowerCase() === token.address.toLowerCase()
+                            existingToken => formatAddress(existingToken.address) === formatAddress(token.address)
                         )
                     && !token.chainId || token.chainId === chainId
             );

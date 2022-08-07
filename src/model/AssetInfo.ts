@@ -4,6 +4,7 @@ import { TagName } from "./Tag";
 import { getTwaTokenInfo } from "../trustwallet";
 import { getNetworkForChainId } from "../utils/chainId";
 import { getLogosFromLogoUri } from "./utils";
+import { formatAddress } from "../utils";
 
 export class AssetInfo extends AssetsRepoObject {
 
@@ -17,7 +18,7 @@ export class AssetInfo extends AssetsRepoObject {
            throw new Error('AssetInfo requires an address');
         }
 
-        this.address = info.address;
+        this.address = formatAddress(info.address);
     }
 
     static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<AssetInfo> {        

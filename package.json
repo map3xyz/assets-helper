@@ -24,6 +24,7 @@
     "bundle": "yarn build && pkg . --out-dir ./exec/"
   },
   "devDependencies": {
+    "@types/ethereum-checksum-address": "^0.0.0",
     "@types/node": "^18.0.0",
     "@types/sqlite3": "^3.1.8",
     "ava": "^4.3.0",
@@ -35,6 +36,7 @@
   "dependencies": {
     "@uniswap/token-lists": "^1.0.0-beta.30",
     "axios": "^0.27.2",
+    "ethereum-checksum-address": "^0.0.8",
     "jsonschema": "^1.4.1",
     "shelljs": "^0.8.5",
     "sqlite3": "^5.0.10",
