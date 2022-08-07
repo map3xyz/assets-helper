@@ -5,8 +5,7 @@ import path from 'path';
 import { getGithubHostedFileUrl } from "../repo";
 
 export function getMap3LogoUri(): string {
-    // TODO
-    return "";
+    return "https://map3.xyz/images/brand/map3-open-graph.png";
 }
 
 export async function downloadAndPersistLogos(logo: Logos, directory: string): Promise<Logos> {
@@ -14,28 +13,33 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
         ...logo
     }
 
-    try {
-        if(logo.png.url || logo.png.ipfs) {
+    if(logo.png.url || logo.png.ipfs) {
+        try {
             if(!fs.existsSync(path.join(directory, "logo.png"))) {
                 await downloadFile(logo.png.url || logo.png.ipfs, directory, 'logo.png');
             }
             res.png.url = getGithubHostedFileUrl(directory, 'logo.png');
             // TODO: upload PNG to IPFS and get link in order to replace the possibly existing copy
+        } catch (err) { 
+            console.error(`Error downloading png. Skipping: ${err}`) 
         }
-    
-        if(logo.svg.url || logo.svg.ipfs) {
+        
+    }
+
+    if(logo.svg.url || logo.svg.ipfs) {
+        try {
             if(!fs.existsSync(path.join(directory, "logo.svg"))) {
                 await downloadFile(logo.svg.url || logo.svg.ipfs, directory, 'logo.svg');
             }
             res.svg.url = getGithubHostedFileUrl(directory, 'logo.svg');
             res.png.ipfs = null;
-            // TODO: upload SVG to IPFS and get link in order to replace the possibly existing copy
+            // TODO: upload SVG to IPFS and get link in order to replace the possibly existing copy    
+        } catch (err) { 
+            console.error(`Error downloading svg. Skipping: ${err}`) 
         }
-
-        return res;
-    } catch (err) {
-        throw err;
     }
+
+    return res;
 }
 
 async function validateLogoUri(logoURI?: string): Promise<boolean> {
