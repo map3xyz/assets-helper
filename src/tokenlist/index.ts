@@ -71,7 +71,7 @@ export async function needBeRegenerateTokenlist(directory: string): Promise<void
         tokenlist = await prepareTokenlist(directory);
     }
 
-    console.log(`Saving Tokenlist: ${JSON.stringify(tokenlist)}`);
+    // console.log(`Saving Tokenlist: ${JSON.stringify(tokenlist)}`);
     return fs.writeFileSync(path.join(directory, FILE_NAME), JSON.stringify(tokenlist, undefined, 2));
 }
 
