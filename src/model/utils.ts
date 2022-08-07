@@ -21,7 +21,8 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
             res.png.url = getGithubHostedFileUrl(directory, 'logo.png');
             // TODO: upload PNG to IPFS and get link in order to replace the possibly existing copy
         } catch (err) { 
-            console.error(`Error downloading png. Skipping: ${err}`) 
+            console.error(`Error downloading png. Skipping: ${err}`)
+            res.png.url = null;
         }
         
     }
@@ -31,11 +32,11 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
             if(!fs.existsSync(path.join(directory, "logo.svg"))) {
                 await downloadFile(logo.svg.url || logo.svg.ipfs, directory, 'logo.svg');
             }
-            res.svg.url = getGithubHostedFileUrl(directory, 'logo.svg');
-            res.png.ipfs = null;
+            res.svg.url = getGithubHostedFileUrl(directory, 'logo.svg');            
             // TODO: upload SVG to IPFS and get link in order to replace the possibly existing copy    
         } catch (err) { 
             console.error(`Error downloading svg. Skipping: ${err}`) 
+            res.svg.url = null;
         }
     }
 
