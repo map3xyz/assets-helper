@@ -65,13 +65,9 @@ export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<As
             address: i.address || i.id?.startsWith('0x') ? i.id : t.address,
             color: null,
             decimals: i.decimals,
-            description: i.description && i.description !== '-' ? [
-                {
-                    locale: "en",
-                    value: i.description,
-                    verified: true
-                }
-            ] : [],
+            description: i.description && i.description !== '-' ? {
+                    "en": i.description
+            } : {},
             id: getUUID(),
             links: getLinks(i),
             networkId: network.networkId,

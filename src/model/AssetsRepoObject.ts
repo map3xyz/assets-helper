@@ -12,7 +12,7 @@ export abstract class AssetsRepoObject {
     active: boolean;
     color: string | null;
     decimals: number;
-    description: Description[];// foreign keys
+    description: Description | {};// foreign keys
     links: Links; // foreign keys
     logo: Logos; // foreign keys
     name: string;
@@ -37,7 +37,7 @@ export abstract class AssetsRepoObject {
             throw new Error('decimals needs to be a positive integer to initialise an AssetsRepoObject. Passed: ' + JSON.stringify(info));
         }
         this.decimals = info.decimals;
-        this.description = info.description || [];
+        this.description = info.description || {};
 
         this.links = info.links || getEmptyBaseLinks();
         this.logo = info.logo || getEmptyLogoLinks();

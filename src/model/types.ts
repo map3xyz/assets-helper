@@ -1,7 +1,7 @@
-export interface Description {
-    locale: 'en' | 'es' | 'fr' | 'de' | 'it' | 'ja' | 'ko' | 'pt' | 'ru' | 'zh';
-    value: string;
-    verified: boolean;
+type locales = 'en' | 'es' | 'fr' | 'de' | 'it' | 'ja' | 'ko' | 'pt' | 'ru' | 'zh';
+
+export type Description = {
+    [locale in locales]: string
 }
 
 export interface Links {
