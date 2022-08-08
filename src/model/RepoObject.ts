@@ -46,7 +46,7 @@ export abstract class RepoObject {
             throw new Error('name is required to initialise an AssetsRepoObject Passed: ' + JSON.stringify(info));
         }
         this.name = info.name;
-        this.spam = info.spam === undefined ? true : info.spam;
+        this.spam = info.spam === undefined ? false : info.spam;
 
         if(!info.symbol) {
             throw new Error('symbol is required to initialise an AssetsRepoObject Passed: ' + JSON.stringify(info));

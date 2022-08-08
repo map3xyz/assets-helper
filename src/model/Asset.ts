@@ -19,6 +19,7 @@ export class Asset extends RepoObject {
         }
 
         this.address = formatAddress(info.address);
+        this.type = 'asset';
     }
 
     static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<Asset> {        

@@ -65,17 +65,34 @@ export async function getLogosFromLogoUri(logoURI?: string): Promise<Logos> {
     const logoPng = logoURI?.endsWith('.png');
     const logoSvg = logoURI?.endsWith('.svg');
 
-    const logo: Logos = {
-        png: {
-            url: logoHttp && logoPng? logoURI : null,
-            ipfs: logoIpfs && logoPng? logoURI : null,
-        },
-        svg: { 
-            url: logoHttp && logoSvg? logoURI : null,
-            ipfs: logoIpfs && logoSvg? logoURI : null
+    let logo: any = {};
+
+    if(logoPng) {
+        logo.png = {};
+        if(logoHttp) {
+            logo.png.url = logoURI;
+        }
+
+        if(logoIpfs) {
+            logo.png.ipfs = logoURI;
         }
     }
 
+    if(logoSvg) {
+        logo.svg = {};
+        if(logoHttp) {
+            logo.svg.url = logoURI;
+        }
+
+        if(logoIpfs) {
+            logo.svg.ipfs = logoURI;
+        }
+    }
+
+    if(Object.keys(logo).length == 0) {
+        return null;
+    }
+    
     return logo;
 }
 

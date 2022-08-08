@@ -10,20 +10,14 @@ function getLinks(input: any) {
 
     if(input.explorer) {
         links.explorer = input.explorer;
-    } else {
-        links.explorer = null;
     }
     
     if(input.research) {
         links.research = input.research;
-    } else {
-        links.research = null;
     }
 
     if(input.website) {
         links.website = input.website;
-    } else {
-        links.website = null;
     }
 
     if(input.links && input.links.length > 1) {
@@ -33,7 +27,7 @@ function getLinks(input: any) {
     }
 
     if(links.sourceCode && !links.github) {
-        // AP: baaad I know :) 
+        // AP: baaad to map sourceCode to github, I know :) 
         links.github = links.sourceCode;
         delete links.sourceCode;
     }

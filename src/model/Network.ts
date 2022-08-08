@@ -37,5 +37,6 @@ export class Network extends RepoObject {
                 this.regex.memo = info.regex.memo;
             } 
         }
+        this.type = 'network';
     }
 }
