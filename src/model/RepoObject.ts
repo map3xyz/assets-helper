@@ -6,24 +6,24 @@ import { Version } from "./Version";
 
 export type ObjectType = 'network' | 'asset';
 
-export abstract class AssetsRepoObject {
+export abstract class RepoObject {
     id: string;
     networkId: string;
     active: boolean;
     color: string | null;
     decimals: number;
-    description: Description | {};// foreign keys
-    links: Links; // foreign keys
-    logo: Logos; // foreign keys
+    description: Description | null;// foreign keys
+    links: Links | null; // foreign keys
+    logo: Logos | null; // foreign keys
     name: string;
     spam: boolean;
     symbol: string;
-    tags: TagName[]; // foreign keys
+    tags: TagName[] | []; // foreign keys
     type: ObjectType; // not persisted
-    verifications: Verification[]; // foreign keys
+    verifications: Verification[] | [] // foreign keys
     version: Version | string;
 
-    constructor(info: Partial<AssetsRepoObject>) {
+    constructor(info: Partial<RepoObject>) {
         this.id = info.id? info.id : getUUID();
         if(!info.networkId) {
             throw new Error('AssetsRepoObject requires a networkId');
@@ -37,7 +37,7 @@ export abstract class AssetsRepoObject {
             throw new Error('decimals needs to be a positive integer to initialise an AssetsRepoObject. Passed: ' + JSON.stringify(info));
         }
         this.decimals = info.decimals;
-        this.description = info.description || {};
+        this.description = info.description || null;
 
         this.links = info.links || getEmptyBaseLinks();
         this.logo = info.logo || getEmptyLogoLinks();
@@ -93,28 +93,30 @@ export abstract class AssetsRepoObject {
 }
 
 function getEmptyBaseLinks(): Links {
-    return {
-        explorer: null,
-        research: null,
-        website: null,
-        github: null,
-        medium: null,
-        twitter: null,
-        reddit: null,
-        whitepaper: null  
-    }
+    return null;
+    // return {
+    //     explorer: null,
+    //     research: null,
+    //     website: null,
+    //     github: null,
+    //     medium: null,
+    //     twitter: null,
+    //     reddit: null,
+    //     whitepaper: null  
+    // }
 }
 
 function getEmptyLogoLinks(): Logos {
-    return {
-        png: {
-            url: null,
-            ipfs: null
-        }, 
-        svg: {
-            url: null,
-            ipfs: null
-        }
-    }
+    return null;
+    // return {
+    //     png: {
+    //         url: null,
+    //         ipfs: null
+    //     }, 
+    //     svg: {
+    //         url: null,
+    //         ipfs: null
+    //     }
+    // }
 }
 

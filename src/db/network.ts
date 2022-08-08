@@ -1,8 +1,8 @@
-import { NetworkInfo } from "../model";
+import { Network } from "../model";
 import { getNetworks, getAssetsForNetwork } from "../networks";
 import { MOCK_NETWORKS } from "./networks.json";
 
-type NetworkInfoCallback = (networkInfo: NetworkInfo) => Promise<void>;
+type NetworkInfoCallback = (networkInfo: Network) => Promise<void>;
 
 export async function networksForEach(callback: NetworkInfoCallback, complete?: () => Promise<void>) {
   try {
@@ -42,8 +42,8 @@ export async function findNetworkByNetworkId(networkId: string, callback: Networ
   }
 }
 
-async function getMockNetworks(networkId?: string): Promise<NetworkInfo[]> {
+async function getMockNetworks(networkId?: string): Promise<Network[]> {
   // @ts-ignore
-  return (networkId ? MOCK_NETWORKS.filter((n) => n.networkId === networkId) : MOCK_NETWORKS) as NetworkInfo[];
+  return (networkId ? MOCK_NETWORKS.filter((n) => n.networkId === networkId) : MOCK_NETWORKS) as Network[];
 }
 

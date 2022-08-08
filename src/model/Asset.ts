@@ -1,4 +1,4 @@
-import { AssetsRepoObject } from "./AssetsRepoObject";
+import { RepoObject } from "./RepoObject";
 import {TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
 import { TagName } from "./Tag";
 import { getTwaTokenInfo } from "../trustwallet";
@@ -6,24 +6,24 @@ import { getNetworkForChainId } from "../utils/chainId";
 import { getLogosFromLogoUri } from "./utils";
 import { formatAddress } from "../utils";
 
-export class AssetInfo extends AssetsRepoObject {
+export class Asset extends RepoObject {
 
     address: string;
     type: 'asset';
 
-    constructor(info: Partial<AssetInfo>) {
+    constructor(info: Partial<Asset>) {
         super(info);
 
         if(!info.address) {
-           throw new Error('AssetInfo requires an address');
+           throw new Error('Asset requires an address');
         }
 
         this.address = formatAddress(info.address);
     }
 
-    static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<AssetInfo> {        
+    static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<Asset> {        
         try {
-            const baseToken: AssetInfo = new AssetInfo({
+            const baseToken: Asset = new Asset({
                 networkId: (await getNetworkForChainId(info.chainId)).networkId,
                 address: info.address,
                 name: info.name,
@@ -40,7 +40,7 @@ export class AssetInfo extends AssetsRepoObject {
     }
 }
 
-async function enhanceExtTokenInfoWithSourceData(baseToken: AssetInfo, chainId: number, source?: string): Promise<AssetInfo> {
+async function enhanceExtTokenInfoWithSourceData(baseToken: Asset, chainId: number, source?: string): Promise<Asset> {
     if(!source) {
         return baseToken;
     }

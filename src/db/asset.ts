@@ -1,9 +1,9 @@
-import { AssetInfo } from "../model";
+import { Asset } from "../model";
 import { getAssetsForNetwork, getNetworks } from "../networks";
 import { ETHEREUM_ASSETS, POLYGON_ASSETS } from "./assets.json";
 import { fetchAssetsCsv } from "./utils";
 
-type AssetInfoCallback = (assetInfo: AssetInfo) => Promise<void>;
+type AssetInfoCallback = (assetInfo: Asset) => Promise<void>;
 
 export async function assetsForEach(callback: AssetInfoCallback, complete?: () => Promise<void>) {
   try {
@@ -54,7 +54,7 @@ export async function findAssetByNetworkIdAndAddress(
   }
 }
 
-async function getMockAssets(networkId?: string): Promise<AssetInfo[]> {
+async function getMockAssets(networkId?: string): Promise<Asset[]> {
   let res = [];
 
   switch (networkId) {
@@ -69,6 +69,6 @@ async function getMockAssets(networkId?: string): Promise<AssetInfo[]> {
       break;
   }
 
-  return res as AssetInfo[];
+  return res as Asset[];
 }
 

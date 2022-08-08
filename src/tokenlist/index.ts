@@ -2,7 +2,7 @@ import { TokenList, TokenInfo as ExtTokenInfo } from '@uniswap/token-lists'
 import fs from 'fs';
 import path from 'path';
 import { getDefaultTags } from '../model/Tag';
-import { AssetInfo } from '../model/AssetInfo';
+import { Asset } from '../model/Asset';
 import { getMap3LogoUri, downloadAndPersistLogos } from '../model/utils';
 import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
@@ -88,7 +88,7 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
                 fs.mkdirSync(tokenDir, { recursive: true });
                } 
 
-               const parsedToken = await AssetInfo.fromTokenlistTokenInfo(token, source);
+               const parsedToken = await Asset.fromTokenlistTokenInfo(token, source);
                parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
 
             //    console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));

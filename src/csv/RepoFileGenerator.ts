@@ -1,4 +1,4 @@
-import { AssetInfo } from "../model";
+import { Asset } from "../model";
 import { getAssetsForNetwork, getNetworks } from "../networks";
 import { shallowClone } from "../utils";
 import { DEFAULT_REPO_DISK_LOCATION } from "../utils/constants";
@@ -63,7 +63,7 @@ export class RepoFileGenerator {
                     }
                 }
     
-                const networkAssets: AssetInfo[] = await getAssetsForNetwork(network.networkId, repoLoc);
+                const networkAssets: Asset[] = await getAssetsForNetwork(network.networkId, repoLoc);
     
                 if(!networkAssets || networkAssets.length === 0) {
                     continue;

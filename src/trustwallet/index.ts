@@ -1,4 +1,4 @@
-import { AssetInfo, getUUID } from "../model";
+import { Asset, getUUID } from "../model";
 import fs from 'fs';
 import path from 'path';
 import { DEFAULT_TWA_DISK_LOCATION, TWA_USER_CONTENT_BASE } from "../utils/constants";
@@ -41,7 +41,7 @@ function getLinks(input: any) {
     return links;
 }
 
-export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<AssetInfo> {
+export async function getTwaTokenInfo(t: Asset, chainId: number): Promise<Asset> {
     
     try {
 
@@ -61,13 +61,10 @@ export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<As
 
         const i = JSON.parse(fs.readFileSync(infoFilePath, 'utf-8'));
 
-        let res = new AssetInfo({
+        let assetInitProps: any = {
             address: i.address || i.id?.startsWith('0x') ? i.id : t.address,
             color: null,
             decimals: i.decimals,
-            description: i.description && i.description !== '-' ? {
-                    "en": i.description
-            } : {},
             id: getUUID(),
             links: getLinks(i),
             networkId: network.networkId,
@@ -77,7 +74,15 @@ export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<As
             name: i.name,
             symbol: i.symbol,
             tags: i.tags && (!t.tags || t.tags.length < i.tags.length)? i.tags : t.tags || [],
-        });
+        };
+
+        if(i.description && i.description !== '-') {
+            assetInitProps.description = {
+                "en": i.description
+            }
+        }
+
+        const res = new Asset(assetInitProps);
 
         return res;
     } catch (err) {
