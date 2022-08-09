@@ -15,7 +15,7 @@ test("We are able to convert trustwallet assets to map3 assets, active asset", a
             address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
             name: "USD Coin",
             symbol: "USDC",
-            decimals: 18,
+            decimals: 6,
             networkId: "ethereum",
             id: "foofaaId",
             logo: undefined
@@ -24,7 +24,7 @@ test("We are able to convert trustwallet assets to map3 assets, active asset", a
 
         t.is(twaAsset.name, "USD Coin");
         t.is(twaAsset.symbol, "USDC");
-        t.is(twaAsset.decimals, 18);
+        t.is(twaAsset.decimals, 6);
         t.is(twaAsset.active, true);
         t.not(twaAsset.logo, null);
     } catch (err) {
