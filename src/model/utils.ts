@@ -13,7 +13,7 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
         ...logo
     }
 
-    if(logo.png.url || logo.png.ipfs) {
+    if(logo?.png?.url || logo?.png?.ipfs) {
         try {
             if(!fs.existsSync(path.join(directory, "logo.png"))) {
                 await downloadFile(logo.png.url || logo.png.ipfs, directory, 'logo.png');
@@ -24,10 +24,9 @@ export async function downloadAndPersistLogos(logo: Logos, directory: string): P
             console.error(`Error downloading png. Skipping: ${err}`)
             res.png.url = null;
         }
-        
     }
 
-    if(logo.svg.url || logo.svg.ipfs) {
+    if(logo?.svg?.url || logo?.svg?.ipfs) {
         try {
             if(!fs.existsSync(path.join(directory, "logo.svg"))) {
                 await downloadFile(logo.svg.url || logo.svg.ipfs, directory, 'logo.svg');
@@ -92,7 +91,7 @@ export async function getLogosFromLogoUri(logoURI?: string): Promise<Logos> {
     if(Object.keys(logo).length == 0) {
         return null;
     }
-    
+
     return logo;
 }
 
