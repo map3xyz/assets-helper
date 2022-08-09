@@ -5,13 +5,9 @@ export const MOCK_NETWORKS = [
     id: "da5eb9b1-7e2b-4976-a260-07a3eab89618",
     color: "#3c3c3d",
     decimals: 18,
-    description: [
-      {
-        locale: "en",
-        value: "Open source platform to write and distribute decentralized applications.",
-        verified: true,
-      },
-    ],
+    description:  {
+        "en": "Open source platform to write and distribute decentralized applications.",
+    },
     identifiers: {
       bip44: 60,
       chainId: 1,
@@ -26,14 +22,8 @@ export const MOCK_NETWORKS = [
       whitepaper: "https://github.com/ethereum/wiki/wiki/White-Paper",
     },
     logo: {
-      png: {
-        url: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/ethereum/logo.png",
-        ipfs: null,
-      },
-      svg: {
-        url: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/ethereum/logo.svg",
-        ipfs: null,
-      },
+      png:  "https://raw.githubusercontent.com/map3xyz/assets/master/networks/ethereum/logo.png",
+      svg: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/ethereum/logo.svg"
     },
     name: "Ethereum",
     networkId: "ethereum",
@@ -53,14 +43,9 @@ export const MOCK_NETWORKS = [
     id: "d6bffe69-071d-4fa8-9038-d90fac19bf77",
     color: "#8247e5",
     decimals: 18,
-    description: [
-      {
-        locale: "en",
-        value:
-          "Polygon (Matic) strives to solve the scalability and usability issues, while not compromising on decentralization and leveraging the existing developer community and ecosystem",
-        verified: true,
-      },
-    ],
+    description: {
+      "en": "Polygon (Matic) strives to solve the scalability and usability issues, while not compromising on decentralization and leveraging the existing developer community and ecosystem",
+    },
     identifiers: {
       bip44: 966,
       chainId: 137,
@@ -75,14 +60,8 @@ export const MOCK_NETWORKS = [
       whitepaper: "https://github.com/maticnetwork/whitepaper",
     },
     logo: {
-      png: {
-        url: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/logo.png",
-        ipfs: null,
-      },
-      svg: {
-        url: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/logo.svg",
-        ipfs: null,
-      },
+      png: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/logo.png",
+      svg: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/logo.svg"
     },
     name: "Polygon",
     networkId: "polygon",

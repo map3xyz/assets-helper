@@ -1,11 +1,10 @@
-import { Database } from "sqlite3";
-import { NetworkInfo } from "../model";
+import { Network } from "../model";
 import { getNetworks, getAssetsForNetwork } from "../networks";
 import { MOCK_NETWORKS } from "./networks.json";
 
-type NetworkInfoCallback = (networkInfo: NetworkInfo) => Promise<void>;
+type NetworkInfoCallback = (networkInfo: Network) => Promise<void>;
 
-export async function networksForEach(db: Database, callback: NetworkInfoCallback, complete?: () => Promise<void>) {
+export async function networksForEach(callback: NetworkInfoCallback, complete?: () => Promise<void>) {
   try {
     const networks = await getNetworks();
     await Promise.all(networks.map(async network => {
@@ -21,7 +20,7 @@ export async function networksForEach(db: Database, callback: NetworkInfoCallbac
   }
 }
 
-export async function networkForId(db: Database, id: string, callback: NetworkInfoCallback) {
+export async function networkForId (id: string, callback: NetworkInfoCallback) {
     try {
       const networks = await getNetworks();
       const network = networks.find((network) => network.id === id);
@@ -32,7 +31,7 @@ export async function networkForId(db: Database, id: string, callback: NetworkIn
     }
 }
 
-export async function findNetworkByNetworkId(db: Database, networkId: string, callback: NetworkInfoCallback) {
+export async function findNetworkByNetworkId(networkId: string, callback: NetworkInfoCallback) {
   try {
     const networks = await getNetworks();
     const network = networks.find((network) => network.networkId === networkId);
@@ -43,8 +42,8 @@ export async function findNetworkByNetworkId(db: Database, networkId: string, ca
   }
 }
 
-async function getMockNetworks(networkId?: string): Promise<NetworkInfo[]> {
+async function getMockNetworks(networkId?: string): Promise<Network[]> {
   // @ts-ignore
-  return (networkId ? MOCK_NETWORKS.filter((n) => n.networkId === networkId) : MOCK_NETWORKS) as NetworkInfo[];
+  return (networkId ? MOCK_NETWORKS.filter((n) => n.networkId === networkId) : MOCK_NETWORKS) as Network[];
 }
 

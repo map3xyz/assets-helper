@@ -2,11 +2,12 @@ import { TokenList, TokenInfo as ExtTokenInfo } from '@uniswap/token-lists'
 import fs from 'fs';
 import path from 'path';
 import { getDefaultTags } from '../model/Tag';
-import { AssetInfo } from '../model/AssetInfo';
-import { getMap3LogoUri, downloadAndPersistLogos } from '../model/utils';
+import { Asset } from '../model/Asset';
+import { getMap3LogoUri } from '../model/Logos';
 import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
 import { branch, commit } from '../utils/git';
+import { formatAddress } from '../utils';
 
 async function prepareTokenlist(directory: string, previousTokenlist?: TokenList): Promise<TokenList> {
 
@@ -71,7 +72,7 @@ export async function needBeRegenerateTokenlist(directory: string): Promise<void
         tokenlist = await prepareTokenlist(directory);
     }
 
-    console.log(`Saving Tokenlist: ${JSON.stringify(tokenlist)}`);
+    // console.log(`Saving Tokenlist: ${JSON.stringify(tokenlist)}`);
     return fs.writeFileSync(path.join(directory, FILE_NAME), JSON.stringify(tokenlist, undefined, 2));
 }
 
@@ -80,15 +81,15 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
 
    await Promise.all(newAssets.map<Promise<void>>(token => {
        return new Promise(async resolve => {
-           const tokenDir = path.join(directory, token.address.toLowerCase());
+           const tokenDir = path.join(directory, formatAddress(token.address));
 
            try {
                if(!fs.existsSync(tokenDir)) {
                 fs.mkdirSync(tokenDir, { recursive: true });
                } 
 
-               const parsedToken = await AssetInfo.fromTokenlistTokenInfo(token, source);
-               parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
+               const parsedToken = await Asset.fromTokenlistTokenInfo(token, source);
+               await parsedToken.logo.downloadAndPersistLogos(tokenDir);
 
             //    console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));
 
@@ -136,7 +137,7 @@ export async function ingestTokenList(listLocation: string, directory: string, b
 
         const newAssets = listToIngest.tokens.filter(
             token => !previousListToParse.tokens.some(
-                            existingToken => existingToken.address.toLowerCase() === token.address.toLowerCase()
+                            existingToken => formatAddress(existingToken.address) === formatAddress(token.address)
                         )
                     && !token.chainId || token.chainId === chainId
             );

@@ -1,6 +1,6 @@
 {
   "name": "@map3xyz/assets-helper",
-  "version": "1.0.98",
+  "version": "1.0.113",
   "description": "A library for maintaining the assets repo.",
   "author": "pellicceama",
   "keywords": [
@@ -24,8 +24,8 @@
     "bundle": "yarn build && pkg . --out-dir ./exec/"
   },
   "devDependencies": {
+    "@types/ethereum-checksum-address": "^0.0.0",
     "@types/node": "^18.0.0",
-    "@types/sqlite3": "^3.1.8",
     "ava": "^4.3.0",
     "pkg": "^5.7.0",
     "rimraf": "^3.0.2",
@@ -35,9 +35,9 @@
   "dependencies": {
     "@uniswap/token-lists": "^1.0.0-beta.30",
     "axios": "^0.27.2",
+    "ethereum-checksum-address": "^0.0.8",
     "jsonschema": "^1.4.1",
     "shelljs": "^0.8.5",
-    "sqlite3": "^5.0.10",
     "uuid": "^8.3.2"
   },
   "packageManager": "yarn@3.2.1",

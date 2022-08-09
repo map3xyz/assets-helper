@@ -1,16 +1,16 @@
 import fs from "fs";
-import { AssetInfo } from "../model";
-import { NetworkInfo } from "../model/NetworkInfo";
+import { Asset } from "../model";
+import { Network } from "../model/Network";
 import { cloneAssetsRepoAndPullSubmodules } from "../repo";
 import { DEFAULT_REPO_DISK_LOCATION } from "../utils/constants";
 import { getDirectories, readAndParseJson } from "../utils/filesystem";
 
-export async function getNetworks(dir?: string): Promise<NetworkInfo[]> {
+export async function getNetworks(dir?: string): Promise<Network[]> {
    if(!dir)  {
     dir = DEFAULT_REPO_DISK_LOCATION
    }
 
-   const res: NetworkInfo[] = [];
+   const res: Network[] = [];
 
    try {
         await cloneAssetsRepoAndPullSubmodules(dir);
@@ -35,12 +35,12 @@ export async function getNetworks(dir?: string): Promise<NetworkInfo[]> {
    }
 }
 
-export async function getAssetsForNetwork(network: string, dir?: string): Promise<AssetInfo[]> {
+export async function getAssetsForNetwork(network: string, dir?: string): Promise<Asset[]> {
     if(!dir)  {
         dir = DEFAULT_REPO_DISK_LOCATION
        }
     
-       const res: AssetInfo[] = [];
+       const res: Asset[] = [];
        
        try {
         await cloneAssetsRepoAndPullSubmodules(dir);

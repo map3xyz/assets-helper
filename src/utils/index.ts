@@ -25,3 +25,4 @@ export * from "./filesystem";
 export * from "./git";
 export * from "./images";
 export * from "./chainId";
+export * from "./addresses";

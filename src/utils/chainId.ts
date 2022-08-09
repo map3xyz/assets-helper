@@ -1,8 +1,8 @@
-import { NetworkInfo } from "../model";
+import { Network } from "../model";
 import { getNetworks } from "../networks";
 
 let chainIdMap: { [key: string]: number };
-let networks: NetworkInfo[];
+let networks: Network[];
 
 async function getChainIdMap() {
     try {
@@ -40,7 +40,7 @@ export async function getChainIdForNetwork(networkId: string): Promise<number> {
     }
 }
 
-export async function getNetworkForChainId(chainId: number): Promise<NetworkInfo> {
+export async function getNetworkForChainId(chainId: number): Promise<Network> {
     try {
 
         if(!Number.isInteger(chainId)) {

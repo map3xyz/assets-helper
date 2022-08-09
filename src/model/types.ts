@@ -1,18 +1,18 @@
-export interface Description {
-    locale: 'en' | 'es' | 'fr' | 'de' | 'it' | 'ja' | 'ko' | 'pt' | 'ru' | 'zh';
-    value: string;
-    verified: boolean;
+type locales = 'en' | 'es' | 'fr' | 'de' | 'it' | 'ja' | 'ko' | 'pt' | 'ru' | 'zh';
+
+export type Description = {
+    [locale in locales]?: string
 }
 
 export interface Links {
-    explorer: string | null;
-    research: string | null;
-    website: string | null;
-    github: string | null;
-    medium: string | null;
-    twitter: string | null;
-    reddit: string | null;
-    whitepaper: string | null;
+    explorer?: string;
+    research?: string;
+    website?: string;
+    github?: string;
+    medium?: string;
+    twitter?: string;
+    reddit?: string;
+    whitepaper?: string;
 }
 
 export interface Verification {
@@ -28,14 +28,4 @@ type VerificationProof = AdminVerificationProof;
 interface AdminVerificationProof  {
     signature: string;
     assertion: string;
-}
-interface Logo {
-    url: string | null;
-    ipfs: string | null;
-}
-
-type LogoFormats = 'png' | 'svg';
-
-export type Logos = {
-    [key in LogoFormats]: Logo;
 }

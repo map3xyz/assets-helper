@@ -1,29 +1,22 @@
-import { AssetInfo, getUUID } from "../model";
+import { Asset, getUUID, Logos } from "../model";
 import fs from 'fs';
 import path from 'path';
 import { DEFAULT_TWA_DISK_LOCATION, TWA_USER_CONTENT_BASE } from "../utils/constants";
 import { getNetworkForChainId } from "../utils/chainId";
-import { getLogosFromLogoUri } from "../model/utils";
 
 function getLinks(input: any) {
     let links: any = {};
 
     if(input.explorer) {
         links.explorer = input.explorer;
-    } else {
-        links.explorer = null;
     }
     
     if(input.research) {
         links.research = input.research;
-    } else {
-        links.research = null;
     }
 
     if(input.website) {
         links.website = input.website;
-    } else {
-        links.website = null;
     }
 
     if(input.links && input.links.length > 1) {
@@ -33,7 +26,7 @@ function getLinks(input: any) {
     }
 
     if(links.sourceCode && !links.github) {
-        // AP: baaad I know :) 
+        // AP: baaad to map sourceCode to github, I know :) 
         links.github = links.sourceCode;
         delete links.sourceCode;
     }
@@ -41,7 +34,7 @@ function getLinks(input: any) {
     return links;
 }
 
-export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<AssetInfo> {
+export async function getTwaTokenInfo(t: Asset, chainId: number): Promise<Asset> {
     
     try {
 
@@ -61,26 +54,28 @@ export async function getTwaTokenInfo(t: AssetInfo, chainId: number): Promise<As
 
         const i = JSON.parse(fs.readFileSync(infoFilePath, 'utf-8'));
 
-        let res = new AssetInfo({
+        let assetInitProps: any = {
             address: i.address || i.id?.startsWith('0x') ? i.id : t.address,
             color: null,
             decimals: i.decimals,
-            description: [
-                {
-                    locale: "en",
-                    value: i.description,
-                    verified: true
-                }
-            ],
             id: getUUID(),
             links: getLinks(i),
             networkId: network.networkId,
-            active: i.active || true,
-            logo: await getLogosFromLogoUri(logoHttpPath),
+            active: i.status === 'active',
+            spam: i.status === 'spam',
+            logo: Logos.getLogosFromUri(logoHttpPath),
             name: i.name,
             symbol: i.symbol,
             tags: i.tags && (!t.tags || t.tags.length < i.tags.length)? i.tags : t.tags || [],
-        });
+        };
+
+        if(i.description && i.description !== '-') {
+            assetInitProps.description = {
+                "en": i.description
+            }
+        }
+
+        const res = new Asset(assetInitProps);
 
         return res;
     } catch (err) {

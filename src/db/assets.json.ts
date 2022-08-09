@@ -6,7 +6,7 @@ export const ETHEREUM_ASSETS = [
     networkId: "ethereum",
     color: null,
     decimals: 6,
-    description: [],
+    description: {},
     id: "3a9c9957-a317-491b-a25a-790958244ec0",
     links: {
       explorer: null,
@@ -19,14 +19,8 @@ export const ETHEREUM_ASSETS = [
       whitepaper: null,
     },
     logo: {
-      png: {
-        url: null,
-        ipfs: null,
-      },
-      svg: {
-        url: null,
-        ipfs: null,
-      },
+      png: null,
+      svg: null
     },
     name: "USD Coin",
     spam: false,
@@ -46,7 +40,7 @@ export const ETHEREUM_ASSETS = [
     networkId: "ethereum",
     color: null,
     decimals: 18,
-    description: [],
+    description: {},
     id: "bb32d010-4468-4a2c-9bdb-a9a28dd81f5a",
     links: {
       explorer: null,
@@ -59,14 +53,8 @@ export const ETHEREUM_ASSETS = [
       whitepaper: null,
     },
     logo: {
-      png: {
-        url: null,
-        ipfs: null,
-      },
-      svg: {
-        url: null,
-        ipfs: null,
-      },
+      png: null,
+      svg: null
     },
     name: "Dai Stablecoin",
     spam: false,
@@ -89,7 +77,7 @@ export const POLYGON_ASSETS = [
     networkId: "polygon",
     color: null,
     decimals: 6,
-    description: [],
+    description: {},
     id: "f65962d9-ce17-4e0c-a05a-d1aae64d9090",
     links: {
       explorer: null,
@@ -128,7 +116,7 @@ export const POLYGON_ASSETS = [
     networkId: "polygon",
     color: null,
     decimals: 18,
-    description: [],
+    description:{},
     id: "a01b4e56-3be6-4524-b893-144d557fc10e",
     links: {
       explorer: null,
@@ -141,14 +129,8 @@ export const POLYGON_ASSETS = [
       whitepaper: null,
     },
     logo: {
-      png: {
-        url: null,
-        ipfs: null,
-      },
-      svg: {
-        url: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/assets/polygon-tokenlist/0x8f3cf7ad23cd3cadbd9735aff958023239c6a063/logo.svg",
-        ipfs: null,
-      },
+        png: null,
+        svg:  "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/assets/polygon-tokenlist/0x8f3cf7ad23cd3cadbd9735aff958023239c6a063/logo.svg",
     },
     name: "Dai - PoS",
     spam: false,
