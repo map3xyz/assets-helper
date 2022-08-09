@@ -63,31 +63,12 @@ export abstract class RepoObject {
         this.version = this.version.toString();
         let parsed = JSON.parse(JSON.stringify(this));
 
+        parsed.logo = this.logo.deserialise();
+
         // sort keys
         parsed = sortObjectKeys(parsed);
         
-        // let validation, schema;
-
-        // try {
-        //     switch(this.type) {
-        //         case 'network':
-        //             schema = await fetchNetworkSchema();
-        //             validation = validateJsonSchema(parsed, schema);
-        //             break;
-        //         case 'token':
-        //             schema = await fetchTokenSchema();
-        //             validation = validateJsonSchema(parsed, schema);
-        //             break;
-        //         default:
-        //             throw new Error('Unknown object type ' + this.type);
-        //     }    
-        // } catch (err) {
-        //     throw new Error('Failed to validate object: ' + err.message);
-        // }
-
-        // if(!validation.valid) {
-        //     throw new Error('Failed to validate object. Errors: ' + JSON.stringify(validation.errors));
-        // }
+        // TODO; perhaps do validation on the object?
         
         return JSON.stringify(parsed, null, 2);
     }
@@ -95,14 +76,4 @@ export abstract class RepoObject {
 
 function getEmptyBaseLinks(): Links {
     return null;
-    // return {
-    //     explorer: null,
-    //     research: null,
-    //     website: null,
-    //     github: null,
-    //     medium: null,
-    //     twitter: null,
-    //     reddit: null,
-    //     whitepaper: null  
-    // }
 }

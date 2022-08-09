@@ -31,7 +31,7 @@ export class Logos {
         if(!this.input) {
             return Promise.resolve();
         }
-        
+
         let httpLogo: any = {};
     
         if(this.input?.png?.url || this.input?.png?.ipfs) {
@@ -106,9 +106,9 @@ export class Logos {
         return new Logos(input);
     }
 
-    toString(): string {
+    deserialise(): HttpLogos {
         if(this.downloaded) {
-            return JSON.stringify(this.output);
+            return JSON.parse(JSON.stringify(this.output));
         }
 
         return null;
