@@ -1,9 +1,8 @@
-import { Asset, getUUID } from "../model";
+import { Asset, getUUID, Logos } from "../model";
 import fs from 'fs';
 import path from 'path';
 import { DEFAULT_TWA_DISK_LOCATION, TWA_USER_CONTENT_BASE } from "../utils/constants";
 import { getNetworkForChainId } from "../utils/chainId";
-import { getLogosFromLogoUri } from "../model/utils";
 
 function getLinks(input: any) {
     let links: any = {};
@@ -64,7 +63,7 @@ export async function getTwaTokenInfo(t: Asset, chainId: number): Promise<Asset>
             networkId: network.networkId,
             active: i.status === 'active',
             spam: i.status === 'spam',
-            logo: await getLogosFromLogoUri(logoHttpPath),
+            logo: Logos.getLogosFromUri(logoHttpPath),
             name: i.name,
             symbol: i.symbol,
             tags: i.tags && (!t.tags || t.tags.length < i.tags.length)? i.tags : t.tags || [],

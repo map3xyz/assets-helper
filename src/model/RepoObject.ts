@@ -1,6 +1,7 @@
 import { sortObjectKeys } from "../utils";
+import { Logos } from "./Logos";
 import { TagName } from "./Tag";
-import { Description, Links, Logos, Verification } from "./types";
+import { Description, Links, Verification } from "./types";
 import { getUUID } from "./UUID";
 import { Version } from "./Version";
 
@@ -40,7 +41,7 @@ export abstract class RepoObject {
         this.description = info.description || null;
 
         this.links = info.links || getEmptyBaseLinks();
-        this.logo = info.logo || getEmptyLogoLinks();
+        this.logo = info.logo || new Logos();
 
         if(!info.name) {
             throw new Error('name is required to initialise an AssetsRepoObject Passed: ' + JSON.stringify(info));
@@ -105,18 +106,3 @@ function getEmptyBaseLinks(): Links {
     //     whitepaper: null  
     // }
 }
-
-function getEmptyLogoLinks(): Logos {
-    return null;
-    // return {
-    //     png: {
-    //         url: null,
-    //         ipfs: null
-    //     }, 
-    //     svg: {
-    //         url: null,
-    //         ipfs: null
-    //     }
-    // }
-}
-

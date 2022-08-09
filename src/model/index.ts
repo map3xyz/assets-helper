@@ -5,4 +5,4 @@ export * from "./Asset";
 export * from "./types";
 export * from "./UUID";
 export * from "./Version";
-export * from "./utils";
+export * from "./Logos";

@@ -3,8 +3,8 @@ import {TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
 import { TagName } from "./Tag";
 import { getTwaTokenInfo } from "../trustwallet";
 import { getNetworkForChainId } from "../utils/chainId";
-import { getLogosFromLogoUri } from "./utils";
 import { formatAddress } from "../utils";
+import { Logos } from "./Logos";
 
 export class Asset extends RepoObject {
 
@@ -30,7 +30,7 @@ export class Asset extends RepoObject {
                 name: info.name,
                 symbol: info.symbol,
                 decimals: info.decimals,
-                logo: await getLogosFromLogoUri(info.logoURI),
+                logo: Logos.getLogosFromUri(info.logoURI),
                 tags: info.tags as TagName[],
             });
     

@@ -19,14 +19,8 @@ export const ETHEREUM_ASSETS = [
       whitepaper: null,
     },
     logo: {
-      png: {
-        url: null,
-        ipfs: null,
-      },
-      svg: {
-        url: null,
-        ipfs: null,
-      },
+      png: null,
+      svg: null
     },
     name: "USD Coin",
     spam: false,
@@ -59,14 +53,8 @@ export const ETHEREUM_ASSETS = [
       whitepaper: null,
     },
     logo: {
-      png: {
-        url: null,
-        ipfs: null,
-      },
-      svg: {
-        url: null,
-        ipfs: null,
-      },
+      png: null,
+      svg: null
     },
     name: "Dai Stablecoin",
     spam: false,
@@ -141,14 +129,8 @@ export const POLYGON_ASSETS = [
       whitepaper: null,
     },
     logo: {
-      png: {
-        url: null,
-        ipfs: null,
-      },
-      svg: {
-        url: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/assets/polygon-tokenlist/0x8f3cf7ad23cd3cadbd9735aff958023239c6a063/logo.svg",
-        ipfs: null,
-      },
+        png: null,
+        svg:  "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/assets/polygon-tokenlist/0x8f3cf7ad23cd3cadbd9735aff958023239c6a063/logo.svg",
     },
     name: "Dai - PoS",
     spam: false,

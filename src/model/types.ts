@@ -29,13 +29,3 @@ interface AdminVerificationProof  {
     signature: string;
     assertion: string;
 }
-interface Logo {
-    url: string;
-    ipfs?: string;
-}
-
-type LogoFormats = 'png' | 'svg';
-
-export type Logos = {
-    [key in LogoFormats]: Logo;
-}

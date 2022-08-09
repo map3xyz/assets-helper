@@ -22,14 +22,8 @@ export const MOCK_NETWORKS = [
       whitepaper: "https://github.com/ethereum/wiki/wiki/White-Paper",
     },
     logo: {
-      png: {
-        url: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/ethereum/logo.png",
-        ipfs: null,
-      },
-      svg: {
-        url: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/ethereum/logo.svg",
-        ipfs: null,
-      },
+      png:  "https://raw.githubusercontent.com/map3xyz/assets/master/networks/ethereum/logo.png",
+      svg: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/ethereum/logo.svg"
     },
     name: "Ethereum",
     networkId: "ethereum",
@@ -66,14 +60,8 @@ export const MOCK_NETWORKS = [
       whitepaper: "https://github.com/maticnetwork/whitepaper",
     },
     logo: {
-      png: {
-        url: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/logo.png",
-        ipfs: null,
-      },
-      svg: {
-        url: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/logo.svg",
-        ipfs: null,
-      },
+      png: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/logo.png",
+      svg: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/logo.svg"
     },
     name: "Polygon",
     networkId: "polygon",

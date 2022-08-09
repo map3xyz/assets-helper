@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { getDefaultTags } from '../model/Tag';
 import { Asset } from '../model/Asset';
-import { getMap3LogoUri, downloadAndPersistLogos } from '../model/utils';
+import { getMap3LogoUri } from '../model/Logos';
 import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
 import { branch, commit } from '../utils/git';
@@ -89,7 +89,7 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
                } 
 
                const parsedToken = await Asset.fromTokenlistTokenInfo(token, source);
-               parsedToken.logo = await downloadAndPersistLogos(parsedToken.logo, tokenDir);
+               await parsedToken.logo.downloadAndPersistLogos(tokenDir);
 
             //    console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));
 
