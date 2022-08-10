@@ -21,6 +21,6 @@ export * from './csv';
 // .then(console.log)
 // .catch(console.error);
 
-validate('all', '/Users/ap/ama_dev/map3/indexer/tmp/map3xyz-assets/')
-.then(console.log)
-.catch(console.error);
+// validate('all', '/Users/ap/ama_dev/map3/indexer/tmp/map3xyz-assets/')
+// .then(console.log)
+// .catch(console.error);
