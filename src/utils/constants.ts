@@ -7,3 +7,5 @@ export const DEFAULT_TEMP_DIR = './tmp';
 export const DEFAULT_TWA_DISK_LOCATION = './tmp/trustwallet-assets';
 export const ASSETS_CSV_TMP_FILE = './tmp/assets.csv';
 export const ASSETS_REPO_CACHE_MINUTES = 60; // 60 minutes
+export const NETWORKS_SCHEMA_FILE_URL = 'https://raw.githubusercontent.com/map3xyz/assets/new-model-migration/schema/networks.schema.json';
+export const ASSETS_SCHEMA_FILE_URL = 'https://raw.githubusercontent.com/map3xyz/assets/new-model-migration/schema/assets.schema.json';

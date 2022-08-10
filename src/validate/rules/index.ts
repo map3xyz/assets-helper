@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { getDirectories } from '../../utils/filesystem';
+import { AssetSchemaRules } from './network/AssetSchemaRules';
 import { CoreFilesIntegrityRules, EditorPermissionRules, RepoStructureRules } from './core';
 import { NetworkDirectoryRules, NetworkImagesRules, NetworkSchemaRules, NetworkSpecificRules, NetworkSubdirectoryRules } from './network';
 
@@ -43,7 +44,8 @@ const networkRules = [
     ...NetworkSchemaRules,
     ...NetworkImagesRules,
     ...NetworkSpecificRules,
-    ...NetworkSubdirectoryRules
+    ...NetworkSubdirectoryRules,
+    ...AssetSchemaRules
 ]
 
 async function validateRules(network: string, _rules: ValidationRule[], repoPath: string): Promise<ValidationResult> {    
@@ -100,26 +102,28 @@ function extractNetworkFromDir(dir: string): string {
     }
 }
 
-function getCurrentDirBase(baseDir:string, currentDir: string) {
-    return currentDir.split("/")[baseDir.split("/").length];
+function getCurrentDirName(dir: string) {
+    return dir.split("/")[dir.split("/").length - 1];
 }
 
-async function traverseAndValidateNetworks(dir: string, rules: ValidationRule[]): Promise<ValidationResult> {
-    let dirsToTraverse = (await getDirectories(dir))
-                .filter(_dir => !skipDirs.includes(getCurrentDirBase(dir, _dir)) 
-                        && baseNetworkDirs.includes(getCurrentDirBase(dir, _dir)));
+async function traverseAndValidateNetworks(baseDir: string, rules: ValidationRule[]): Promise<ValidationResult> {
 
-    if(dirsToTraverse.length === 0) {
-        const network = extractNetworkFromDir(dir);
+    const dirsToTraverse = (await getDirectories(baseDir)).filter(subDir => {
 
-        return validateRules(network, rules, dir)
-            .then(result => {
-                return {
-                    valid: result.valid,
-                    errors: result.errors
-                };
+            let isSkipDir = false;
+
+            skipDirs.forEach(skipDir => {
+                if(subDir.includes(skipDir)) {
+                    isSkipDir = true;
+                }
             });
-    }
+
+            const split = subDir.split('/');
+            const isNetworkDir = split[split.length - 2] === 'networks' || split[split.length - 2] === 'testnets';
+            
+            return !isSkipDir && isNetworkDir;
+    });
+
     return Promise.all(dirsToTraverse.map(async (subDir) => {
         const network = extractNetworkFromDir(subDir);
 

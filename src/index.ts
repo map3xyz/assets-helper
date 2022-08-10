@@ -1,5 +1,4 @@
-import { ingestTokenList } from './tokenlist';
-import { getChainIdForNetwork } from './utils';
+import { validate } from './validate';
 
 export * from './model';
 export * from './networks';
@@ -19,5 +18,9 @@ export * from './csv';
 // })
 
 // getChainIdForNetwork('polygon')
+// .then(console.log)
+// .catch(console.error);
+
+// validate('all', '/Users/ap/ama_dev/map3/indexer/tmp/map3xyz-assets/')
 // .then(console.log)
 // .catch(console.error);
