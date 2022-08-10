@@ -11,9 +11,9 @@ const coreFiles = [
 ]
 
 const schemaFiles = [
-    '/schema/networks.schema.json',
-    '/schema/assets.schema.json',
-    '/schema/maps.tsv'
+    'networks.schema.json',
+    'assets.schema.json',
+    'maps.tsv'
 ]
 
 export const CoreFilesIntegrityRules: ValidationRule[] = [
@@ -26,7 +26,7 @@ export const CoreFilesIntegrityRules: ValidationRule[] = [
                 let valid = true;
 
                 coreFiles.forEach(file =>{
-                    if(!fs.existsSync(path.join(repoPath, file))){                    
+                    if(!fs.existsSync(path.join(repoPath, 'schema', file))){                    
                         errors.push({
                             source: `${repoPath}`,
                             message: `Core File ${file} is missing`
