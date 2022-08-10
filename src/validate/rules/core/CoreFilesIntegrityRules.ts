@@ -11,7 +11,9 @@ const coreFiles = [
 ]
 
 const schemaFiles = [
-    '/schema/coin.schema.json'
+    '/schema/networks.schema.json',
+    '/schema/assets.schema.json',
+    '/schema/maps.tsv'
 ]
 
 export const CoreFilesIntegrityRules: ValidationRule[] = [
