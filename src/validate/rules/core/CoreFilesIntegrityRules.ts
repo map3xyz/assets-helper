@@ -5,7 +5,6 @@ import path from 'path';
 const baseName = 'CoreFilesIntegrityRules';
 
 const coreFiles = [
-    '.gitignore',
     'README.md',
     'LICENSE',
 ]
@@ -26,7 +25,7 @@ export const CoreFilesIntegrityRules: ValidationRule[] = [
                 let valid = true;
 
                 coreFiles.forEach(file =>{
-                    if(!fs.existsSync(path.join(repoPath, 'schema', file))){                    
+                    if(!fs.existsSync(path.join(repoPath, file))){                    
                         errors.push({
                             source: `${repoPath}`,
                             message: `Core File ${file} is missing`
@@ -38,7 +37,7 @@ export const CoreFilesIntegrityRules: ValidationRule[] = [
                 // schema files should only be in main repo
                 if(repoPath.endsWith('/assets')) {
                     schemaFiles.forEach(file =>{
-                        if(!fs.existsSync(path.join(repoPath, file))){                    
+                        if(!fs.existsSync(path.join(repoPath, 'schema', file))){                    
                             errors.push({
                                 source: `${repoPath}`,
                                 message: `Schema File ${file} is missing`
