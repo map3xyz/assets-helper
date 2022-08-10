@@ -21,13 +21,12 @@ export const NetworkDirectoryRules: ValidationRule[] = [
                 if(!network) {
                     return resolve({valid: true, errors: []})
                 }
-
-                const networkPath = path.join(repoPath, 'networks', network);
                 
                 const errors = [];
                 let valid = true;
 
-                if(!fs.existsSync(path.join(repoPath, 'info.json'))){                    
+                if(!fs.existsSync(path.join(repoPath, 'info.json'))){ 
+                    console.log('Error: info.json not found on ' + path.join(repoPath, 'info.json'));                   
                     errors.push({
                         source: `${repoPath}`,
                         message: `${network} info.json is missing`
@@ -37,15 +36,6 @@ export const NetworkDirectoryRules: ValidationRule[] = [
 
                 // TODO: check that the networkId in the info.json file matches the directory name. 
                 
-                if(!fs.existsSync(path.join(repoPath, 'logo.png'))
-                && !fs.existsSync(path.join(repoPath, 'logo.svg'))){
-                    errors.push({
-                        source: `${repoPath}`,
-                        message: `${network} requires either a logo.png or logo.svg file`
-                    });
-                    valid = false;
-                }
-
                 resolve({
                     valid: valid,
                     errors: errors

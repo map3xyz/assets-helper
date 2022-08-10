@@ -2,6 +2,7 @@ import { ValidationResult, ValidationRule } from "..";
 import axios from 'axios';
 import fs from "fs";
 import { validateJsonSchema } from "../../../utils/json-schema";
+import { NETWORKS_SCHEMA_FILE_URL } from "../../../utils/constants";
 const baseName = 'NetworkSchemaRules';
 
 let networkSchema;
@@ -12,7 +13,7 @@ export async function fetchNetworkSchema(): Promise<any> {
     }
 
     try {
-        networkSchema = (await axios.get('https://raw.githubusercontent.com/map3xyz/assets/master/schema/coin.schema.json')).data;
+        networkSchema = (await axios.get(NETWORKS_SCHEMA_FILE_URL)).data;
     } catch (err) {
         console.error('needBeFetchSchemas', err);
         throw err;
@@ -48,9 +49,9 @@ export const NetworkSchemaRules: ValidationRule[] = [
                 await fetchNetworkSchema();
                 const infoFile = await JSON.parse(fs.readFileSync(`${repoPath}/info.json`, 'utf-8'));
 
-                const result = infoFile.type = 'coin' ? 
+                const result = infoFile.type = 'network' ? 
                     validateJsonSchema(infoFile, networkSchema) : 
-                    { valid: true, errors: []}; // TODO; implement for token type
+                    { valid: true, errors: []};
 
                 return {
                     valid: result.valid,
