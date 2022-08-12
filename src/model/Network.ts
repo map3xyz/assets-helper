@@ -17,7 +17,12 @@ export class Network extends RepoObject {
         super(info);
 
         if(!this.name || toHyphenCase(this.name) !== info.networkId) {
-            throw new Error('Network requires a name that is the hyphencase version of the id');
+            const err = `'Network requires a name that is the hyphencase version of the id. '` 
+                + ' Passed: name=' + this.name; 
+                +  ' Network Id=' + this.networkId;
+                +  ' hyphenatedName=' + toHyphenCase(this.name);
+            
+            throw new Error(err);
         }
 
         if(!info.identifiers) { 
