@@ -85,7 +85,7 @@ export async function getTwaTokenInfo(t: Asset, chainId: number, twaRepoLoc: str
     }
 }
 
-export async function getTwaNetworkInfo(twaNetworkName: string, addressRegex: string, twaRepoLoc: string = DEFAULT_TWA_DISK_LOCATION): Promise<Network> {
+export async function getTwaNetworkInfo(twaNetworkName: string, addressRegex: string, chainId: number, twaRepoLoc: string = DEFAULT_TWA_DISK_LOCATION): Promise<Network> {
     const infoFilePath = path.join(twaRepoLoc, 'blockchains', twaNetworkName, 'info', 'info.json');
     const logoHttpPath = `${TWA_USER_CONTENT_BASE}/blockchains/${twaNetworkName}/info/logo.png`;
     
@@ -107,6 +107,9 @@ export async function getTwaNetworkInfo(twaNetworkName: string, addressRegex: st
         tags: i.tags && i.tags.length > 0 ? i.tags : [], 
         regex: {
             address: addressRegex
+        },
+        identifiers: {
+            chainId: chainId
         }
     };
 
