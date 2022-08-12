@@ -1,8 +1,9 @@
-import { Asset, getUUID, Logos } from "../model";
+import { Asset, getUUID, Logos, Network } from "../model";
 import fs from 'fs';
 import path from 'path';
-import { DEFAULT_TWA_DISK_LOCATION, TWA_USER_CONTENT_BASE } from "../utils/constants";
+import { DEFAULT_TWA_DISK_LOCATION, TWA_USER_CONTENT_BASE, TWA_REPO_CLONE_URL  } from "../utils/constants";
 import { getNetworkForChainId } from "../utils/chainId";
+import { cloneOrPullRepoAndUpdateSubmodules } from "../utils";
 
 function getLinks(input: any) {
     let links: any = {};
@@ -39,7 +40,8 @@ export async function getTwaTokenInfo(t: Asset, chainId: number): Promise<Asset>
     try {
 
         const network = await getNetworkForChainId(chainId);
-        
+        await cloneOrPullRepoAndUpdateSubmodules(TWA_REPO_CLONE_URL, DEFAULT_TWA_DISK_LOCATION, false, "master");
+
         // note: if trustwallet names the network different to our networkId, 
         // even if they have the same chainId we may encounter issues
         // as we may not find the infoFilePath. 
@@ -81,4 +83,35 @@ export async function getTwaTokenInfo(t: Asset, chainId: number): Promise<Asset>
     } catch (err) {
         throw err;
     }
+}
+
+export async function getTwaNetworkInfo(twaNetworkName: string): Promise<Network> {
+    const infoFilePath = path.join(DEFAULT_TWA_DISK_LOCATION, 'blockchains', twaNetworkName, 'info', 'info.json');
+    const logoHttpPath = `${TWA_USER_CONTENT_BASE}/blockchains/${twaNetworkName}/info/logo.png`;
+    
+    await cloneOrPullRepoAndUpdateSubmodules(TWA_REPO_CLONE_URL, DEFAULT_TWA_DISK_LOCATION, false, "master");
+    
+    const i = JSON.parse(fs.readFileSync(infoFilePath, 'utf-8'));
+
+    let networkInitProps: any = {
+        color: null,
+        decimals: i.decimals,
+        id: getUUID(),
+        links: getLinks(i),
+        networkId: twaNetworkName,
+        active: i.status === 'active',
+        spam: i.status === 'spam',
+        logo: Logos.getLogosFromUri(logoHttpPath),
+        name: i.name,
+        symbol: i.symbol,
+        tags: i.tags && i.tags.length > 0 ? i.tags : []
+    };
+
+    if(i.description && i.description !== '-') {
+        networkInitProps.description = {
+            "en": i.description
+        }
+    }
+
+    return new Network(networkInitProps);
 }

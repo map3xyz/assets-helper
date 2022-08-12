@@ -1,8 +1,8 @@
 import fs from "fs";
 import { Asset } from "../model";
 import { Network } from "../model/Network";
-import { cloneAssetsRepoAndPullSubmodules } from "../repo";
-import { DEFAULT_REPO_DISK_LOCATION } from "../utils/constants";
+import { cloneOrPullRepoAndUpdateSubmodules } from "../utils";
+import { DEFAULT_REPO_DISK_LOCATION, REPO_CLONE_URL } from "../utils/constants";
 import { getDirectories, readAndParseJson } from "../utils/filesystem";
 
 export async function getNetworks(dir?: string): Promise<Network[]> {
@@ -13,7 +13,8 @@ export async function getNetworks(dir?: string): Promise<Network[]> {
    const res: Network[] = [];
 
    try {
-        await cloneAssetsRepoAndPullSubmodules(dir);
+
+        await cloneOrPullRepoAndUpdateSubmodules(REPO_CLONE_URL, dir, true, 'master');
 
         const directories = await getDirectories(dir);
 
@@ -43,7 +44,7 @@ export async function getAssetsForNetwork(network: string, dir?: string): Promis
        const res: Asset[] = [];
        
        try {
-        await cloneAssetsRepoAndPullSubmodules(dir);
+        await cloneOrPullRepoAndUpdateSubmodules(REPO_CLONE_URL, dir, true, 'master');
 
         const tokenlistDir = `${dir}/networks/${network}/assets/${network}-tokenlist`;
 
