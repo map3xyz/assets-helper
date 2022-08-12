@@ -35,18 +35,18 @@ function getLinks(input: any) {
     return links;
 }
 
-export async function getTwaTokenInfo(t: Asset, chainId: number): Promise<Asset> {
+export async function getTwaTokenInfo(t: Asset, chainId: number, twaRepoLoc: string = DEFAULT_TWA_DISK_LOCATION): Promise<Asset> {
     
     try {
 
         const network = await getNetworkForChainId(chainId);
-        await cloneOrPullRepoAndUpdateSubmodules(TWA_REPO_CLONE_URL, DEFAULT_TWA_DISK_LOCATION, false, "master");
+        await cloneOrPullRepoAndUpdateSubmodules(TWA_REPO_CLONE_URL, twaRepoLoc, false, "master");
 
         // note: if trustwallet names the network different to our networkId, 
         // even if they have the same chainId we may encounter issues
         // as we may not find the infoFilePath. 
         // TODO; Handle this case better
-        const infoFilePath = path.join(DEFAULT_TWA_DISK_LOCATION, 'blockchains', network.networkId, 'assets', t.address, 'info.json');
+        const infoFilePath = path.join(twaRepoLoc, 'blockchains', network.networkId, 'assets', t.address, 'info.json');
         const logoHttpPath = `${TWA_USER_CONTENT_BASE}/blockchains/${network.networkId}/assets/${t.address}/logo.png`;
 
         if(!fs.existsSync(infoFilePath)) {
@@ -85,11 +85,11 @@ export async function getTwaTokenInfo(t: Asset, chainId: number): Promise<Asset>
     }
 }
 
-export async function getTwaNetworkInfo(twaNetworkName: string): Promise<Network> {
-    const infoFilePath = path.join(DEFAULT_TWA_DISK_LOCATION, 'blockchains', twaNetworkName, 'info', 'info.json');
+export async function getTwaNetworkInfo(twaNetworkName: string, twaRepoLoc: string = DEFAULT_TWA_DISK_LOCATION): Promise<Network> {
+    const infoFilePath = path.join(twaRepoLoc, 'blockchains', twaNetworkName, 'info', 'info.json');
     const logoHttpPath = `${TWA_USER_CONTENT_BASE}/blockchains/${twaNetworkName}/info/logo.png`;
     
-    await cloneOrPullRepoAndUpdateSubmodules(TWA_REPO_CLONE_URL, DEFAULT_TWA_DISK_LOCATION, false, "master");
+    await cloneOrPullRepoAndUpdateSubmodules(TWA_REPO_CLONE_URL, twaRepoLoc, false, "master");
     
     const i = JSON.parse(fs.readFileSync(infoFilePath, 'utf-8'));
 
