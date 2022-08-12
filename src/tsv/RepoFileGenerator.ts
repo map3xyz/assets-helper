@@ -2,7 +2,7 @@ import { Asset } from "../model";
 import { getAssetsForNetwork, getNetworks } from "../networks";
 import { shallowClone } from "../utils";
 import { DEFAULT_REPO_DISK_LOCATION } from "../utils/constants";
-import { AssetsCsv, AssetsCsvRow } from "./";
+import { AssetsTsv, AssetsTsvRow } from ".";
 import { EXAMPLE_ASSET_MAP } from "./tmp-maps.json";
 
 /*
@@ -13,9 +13,9 @@ import { EXAMPLE_ASSET_MAP } from "./tmp-maps.json";
 */ 
 export class RepoFileGenerator {
     
-    static async generate(repoLoc?: string): Promise<AssetsCsv> {
+    static async generate(repoLoc?: string): Promise<AssetsTsv> {
 
-        const assetsCsv = new AssetsCsv();
+        const assetsCsv = new AssetsTsv();
 
         if(!repoLoc) {
             repoLoc = DEFAULT_REPO_DISK_LOCATION
@@ -47,7 +47,7 @@ export class RepoFileGenerator {
                             // handle case where the asset its mapped to does not exist, yet.
                             const assetInfo = networks.find(n => n.networkId === mainNetworkAssetMappedTo.toAsset.split(':')[1])
                                             ||  (await getAssetsForNetwork(mainNetworkAssetMappedTo.toNetwork, repoLoc)).find(a => a.id === mainNetworkAssetMappedTo.toAsset.split(":")[1]);
-                            row = assetsCsv.append(await AssetsCsvRow.prepare(`id:${assetInfo.id}`, assetInfo.networkId, assetInfo.name, assetInfo.symbol, shallowClone(networksMap)));
+                            row = assetsCsv.append(await AssetsTsvRow.prepare(`id:${assetInfo.id}`, assetInfo.networkId, assetInfo.name, assetInfo.symbol, shallowClone(networksMap)));
                         }
                     }
                     row.networks[mainNetworkAssetMappedTo.fromNetwork].push(mainNetworkAssetMappedTo.fromAsset);
@@ -59,7 +59,7 @@ export class RepoFileGenerator {
                         console.log(`Skipping network ${network.id} because it has the same name or symbol as another asset`);
                     } else {
                         // create the network asset
-                        assetsCsv.append(await AssetsCsvRow.prepare(`id:${network.id}`, network.networkId, network.name, network.symbol, shallowClone(networksMap)));
+                        assetsCsv.append(await AssetsTsvRow.prepare(`id:${network.id}`, network.networkId, network.name, network.symbol, shallowClone(networksMap)));
                     }
                 }
     
@@ -85,7 +85,7 @@ export class RepoFileGenerator {
                                 // handle case where the asset its mapped to does not exist, yet.
                                 const assetInfo = networks.find(n => n.networkId === mainNetworkAssetMappedTo.toAsset.split(':')[1])
                                                     || (await getAssetsForNetwork(assetMappedToAnotherOne.toNetwork, repoLoc)).find(a => a.id === assetMappedToAnotherOne.toAsset.split(":")[1]);
-                                row = assetsCsv.append(await AssetsCsvRow.prepare(`id:${assetInfo.id}`, assetInfo.networkId, assetInfo.name, assetInfo.symbol, shallowClone(networksMap)));
+                                row = assetsCsv.append(await AssetsTsvRow.prepare(`id:${assetInfo.id}`, assetInfo.networkId, assetInfo.name, assetInfo.symbol, shallowClone(networksMap)));
                             }
                         }
                         row.networks[assetMappedToAnotherOne.fromNetwork].push(assetMappedToAnotherOne.fromAsset);
@@ -98,7 +98,7 @@ export class RepoFileGenerator {
                             continue;
                         }
                         // create the network asset
-                        assetsCsv.append(await AssetsCsvRow.prepare(`id:${asset.id}`, asset.networkId, asset.name, asset.symbol, shallowClone(networksMap)));
+                        assetsCsv.append(await AssetsTsvRow.prepare(`id:${asset.id}`, asset.networkId, asset.name, asset.symbol, shallowClone(networksMap)));
                     }
                 }
             }

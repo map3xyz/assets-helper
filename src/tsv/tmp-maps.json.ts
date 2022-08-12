@@ -15,9 +15,9 @@ export const EXAMPLE_ASSET_MAP =  [
     // },
     {
         // USDC on polygon to USDC on ETH
-        "fromAsset": "id:597c0c0d-dd22-4b7a-81bd-ce1e6656a10f",
+        "fromAsset": "id:fe2bf2f8-3ddc-4ccc-8f34-8fdd9be03884",
         'fromNetwork': 'polygon',
-        "toAsset": "id:cb16073d-069f-4f8a-b87c-9a9af5e2c97e",
+        "toAsset": "id:53adbb94-6a68-4eeb-af49-6b6d9e84a1f4",
         'toNetwork': 'ethereum',
         "type": "direct_issuance",
         "verifications": [
@@ -27,4 +27,15 @@ export const EXAMPLE_ASSET_MAP =  [
             }
         ]
     }
+
+    //     //     // USDC on polygon to USDC on ETH based on addresses
+
+    // {
+    //     "fromAsset": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+    //     "fromNetwork": "polygon",
+    //     "toAsset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    //     "toNetwork": "ethereum",
+    //     "type": "direct_issuance",
+    //     "verifications": []
+    // }
 ];

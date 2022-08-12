@@ -3,10 +3,6 @@ import { GITHUB_USER_CONTENT_BASE_URL, REPO_CLONE_URL } from '../utils/constants
 import { getDirectories } from '../utils/filesystem';
 import { cloneOrPullRepoAndUpdateSubmodules, push } from '../utils/git';
 
-export async function cloneAssetsRepoAndPullSubmodules(dir: string) {
-    return cloneOrPullRepoAndUpdateSubmodules(REPO_CLONE_URL, dir, true, 'master');
-}
-
 export async function pushAssetsRepoModuleChangesAndCreatePullRequests(dir: string) {
     try {
         const directories = await getDirectories(dir);

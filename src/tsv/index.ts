@@ -1,4 +1,4 @@
-export * from './AssetsCsv';
-export * from './AssetsCsvRow';
+export * from './AssetsTsv';
+export * from './AssetsTsvRow';
 export * from './types';
 export * from './RepoFileGenerator';
