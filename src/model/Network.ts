@@ -16,11 +16,12 @@ export class Network extends RepoObject {
     constructor(info: Partial<Network>) {
         super(info);
 
-        if(!this.name || toHyphenCase(this.name) !== info.networkId) {
+        if(!this.name || toHyphenCase(this.networkId) !== info.networkId) {
             const err = `'Network requires a name that is the hyphencase version of the id. '` 
-                + ' Passed: name=' + this.name; 
-                +  ' Network Id=' + this.networkId;
-                +  ' hyphenatedName=' + toHyphenCase(this.name);
+                + ' Passed: name=' + this.name
+                +  ' Network Id=' + this.networkId
+                +  ' hyphenatedName=' + toHyphenCase(this.name)
+                +  ' hyphenatedNetworkId=' + toHyphenCase(this.networkId);
             
             throw new Error(err);
         }
