@@ -31,7 +31,7 @@ const skipDirs = [
 ]
 
 // TODO; check that assetIds / /assets/{address}/info.json ids are unique. 
-// Also check that networkIds are unique
+// Also check that networkCodes are unique
 
 const coreRules = [
     ...EditorPermissionRules,

@@ -25,7 +25,7 @@ export class Asset extends RepoObject {
     static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<Asset> {        
         try {
             const baseToken: Asset = new Asset({
-                networkId: (await getNetworkForChainId(info.chainId)).networkId,
+                networkCode: (await getNetworkForChainId(info.chainId)).networkCode,
                 address: info.address,
                 name: info.name,
                 symbol: info.symbol,

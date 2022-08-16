@@ -9,7 +9,7 @@ export type ObjectType = 'network' | 'asset';
 
 export abstract class RepoObject {
     id: string;
-    networkId: string;
+    networkCode: string;
     active: boolean;
     color: string | null;
     decimals: number;
@@ -26,10 +26,10 @@ export abstract class RepoObject {
 
     constructor(info: Partial<RepoObject>) {
         this.id = info.id? info.id : getUUID();
-        if(!info.networkId) {
-            throw new Error('AssetsRepoObject requires a networkId');
+        if(!info.networkCode) {
+            throw new Error('AssetsRepoObject requires a networkCode');
         }
-        this.networkId = info.networkId;
+        this.networkCode = info.networkCode;
 
         this.active = info.active === undefined ? true : info.active;
         this.color = info.color || null;

@@ -16,7 +16,7 @@ test("We are able to convert trustwallet assets to map3 assets, active asset", a
             name: "USD Coin",
             symbol: "USDC",
             decimals: 6,
-            networkId: "ethereum",
+            networkCode: "ethereum",
             id: "foofaaId",
             logo: undefined
         });
@@ -44,7 +44,7 @@ test("We are able to convert trustwallet assets to map3 assets, inactive asset",
             name: "Trias Token",
             symbol: "TRY",
             decimals: 18,
-            networkId: "ethereum",
+            networkCode: "ethereum",
             id: "foofaaIdX",
         });
         const twaAsset = await getTwaTokenInfo(asset, 1);

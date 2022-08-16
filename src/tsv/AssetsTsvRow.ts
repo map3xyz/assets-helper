@@ -47,7 +47,7 @@ export class AssetsTsvRow implements IAssetsTsvRow {
     static async prepare(primaryId: RepoPointer, primaryNetwork: string, name: string, symbol: string, networks: { [network: string]: RepoPointer[];}): Promise<AssetsTsvRow> {
         try {
             if(networkDirs.length === 0) {
-                networkDirs = (await getNetworks()).map(network => network.networkId);
+                networkDirs = (await getNetworks()).map(network => network.networkCode);
             }
 
             if(!networkDirs.includes(primaryNetwork)) {
