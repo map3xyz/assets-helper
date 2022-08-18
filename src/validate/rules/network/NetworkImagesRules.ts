@@ -8,7 +8,7 @@ export const NetworkImagesRules: ValidationRule[] = [
         name: `${baseName}:ShouldHaveImagesRule`,
         network: 'all',
         validate: async (network: string, repoPath: string): Promise<ValidationResult> => {
-            // TODO: implement
+            // TODO: implement if it either has a png and/or svg in the info file but we can't find the images
             return {
                 valid: true,
                 errors: []

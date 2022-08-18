@@ -31,33 +31,36 @@ export class Logos {
     }
 
     async downloadAndPersistLogos(directory: string): Promise<void> {
-        if(!this.png && !this.svg) {
-            return Promise.resolve();
-        }
-    
-        if(this.png) {
-            try {
-                if(!fs.existsSync(path.join(directory, "logo.png"))) {
-                    await downloadFile(this.png, directory, 'logo.png');
-                }
-                this.png = getGithubHostedFileUrl(directory, 'logo.png');
-            } catch (err) { 
-                console.error(`Error downloading png. Skipping: ${err}`)
+        return new Promise(async (resolve) => {
+            if(!this.png && !this.svg) {
+                return resolve();
             }
-        }
-    
-        if(this.svg) {
-            try {
-                if(!fs.existsSync(path.join(directory, "logo.svg"))) {
-                    await downloadFile(this.svg, directory, 'logo.svg');
+        
+            if(this.png) {
+                try {
+                    if(!fs.existsSync(path.join(directory, "logo.png"))) {
+                        await downloadFile(this.png, directory, 'logo.png');
+                    }
+                    this.png = getGithubHostedFileUrl(directory, 'logo.png');
+                } catch (err) { 
+                    console.error(`Error downloading png. Skipping: ${err}`)
                 }
-                this.svg = getGithubHostedFileUrl(directory, 'logo.svg');            
-            } catch (err) { 
-                console.error(`Error downloading svg. Skipping: ${err}`) 
             }
-        }
-
-        return Promise.resolve();
+        
+            if(this.svg) {
+                try {
+                    if(!fs.existsSync(path.join(directory, "logo.svg"))) {
+                        await downloadFile(this.svg, directory, 'logo.svg');
+                    }
+                    this.svg = getGithubHostedFileUrl(directory, 'logo.svg');            
+                } catch (err) { 
+                    console.error(`Error downloading svg. Skipping: ${err}`) 
+                }
+            }
+    
+            return resolve();
+        });
+       
     }
 
     static getLogosFromUri(logoURI?: string): Logos {
