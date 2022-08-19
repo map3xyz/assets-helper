@@ -28,6 +28,9 @@ export async function downloadFile (fileUrl: string, fileDestination: string, fi
   }).then(response => {
     return new Promise(async (resolve, reject) => {
       
+      if(response.data.length < 1) {
+        return reject(new Error('Empty download response for file ' + url));
+      }
       response.data.pipe(writer);
 
       writer.on('finish', () => {
