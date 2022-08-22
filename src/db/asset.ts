@@ -8,17 +8,16 @@ type AssetInfoCallback = (assetInfo: Asset) => Promise<void>;
 export async function assetsForEach(callback: AssetInfoCallback, complete?: () => Promise<void>) {
   try {
     const networks = await getNetworks();
-    await Promise.all(networks.map(async network => {
+    for (const network of networks) {
       const assets = await getAssetsForNetwork(network.networkCode);
-      return Promise.all(assets.map(async asset => {
-        return callback(asset);
-      }));
-    }));
+      for (const asset of assets) {
+        await callback(asset);
+      }
+    }
 
     if (complete) {
       await complete();
     }
-
   } catch (err) {
     throw err;
   }
@@ -29,12 +28,12 @@ export async function assetForId(id: string, callback: AssetInfoCallback) {
     const assets = await fetchAssetsCsv();
     const assetCsvRow = assets.get(`id:${id}`);
 
-    if(!assetCsvRow) {
+    if (!assetCsvRow) {
       return callback(null);
-    } 
+    }
     const asset = (await getAssetsForNetwork(assetCsvRow.primaryNetwork)).find((asset) => asset.id === id);
 
-    return callback(asset);  
+    return callback(asset);
   } catch (err) {
     throw err;
   }
@@ -45,7 +44,6 @@ export async function findAssetByNetworkIdAndAddress(
   address: string,
   callback: AssetInfoCallback
 ) {
-  
   try {
     const asset = (await getAssetsForNetwork(networkCode)).find((asset) => asset.address === address);
     return callback(asset);
