@@ -14,7 +14,7 @@ async function getChainIdMap() {
         networks = await getNetworks();
 
         networks.forEach(network => {
-            chainIdMap[network.networkId.toLowerCase()] = network.identifiers.chainId;
+            chainIdMap[network.networkCode.toLowerCase()] = network.identifiers.chainId;
         });
 
         return chainIdMap;
@@ -22,16 +22,16 @@ async function getChainIdMap() {
         throw err;
     }
 }
-export async function getChainIdForNetwork(networkId: string): Promise<number> {
+export async function getChainIdForNetwork(networkCode: string): Promise<number> {
     try {
         if(!chainIdMap || Object.keys(chainIdMap).length === 0) {
             chainIdMap = await getChainIdMap();
         }
     
-        const res = chainIdMap[networkId.toLowerCase()];
+        const res = chainIdMap[networkCode.toLowerCase()];
 
         if(!res) {
-            throw new Error(`getChainIdForNetwork ChainId does not exist for network ${networkId} on the Map3 repo (yet!) or is not cached by utils/chainId. State: ${JSON.stringify(chainIdMap)}`);
+            throw new Error(`getChainIdForNetwork ChainId does not exist for network ${networkCode} on the Map3 repo (yet!) or is not cached by utils/chainId. State: ${JSON.stringify(chainIdMap)}`);
         }
 
         return res;

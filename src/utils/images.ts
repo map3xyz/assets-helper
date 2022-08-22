@@ -9,36 +9,37 @@ function getP2PUrl(hash) {
 }
 
 export async function downloadFile (fileUrl: string, fileDestination: string, fileName: string): Promise<void> {
+  if(!fileUrl || !fileDestination || !fileName) {
+    throw new Error(`Cannot download empty file Url, dest or name. Dest: ${fileDestination} ${fileName}`);
+  }
 
-  return new Promise(async (resolve, reject) => {
-    if(!fileUrl || !fileDestination || !fileName) {
-      reject(new Error(`Cannot download empty file Url, dest or name. Dest: ${fileDestination} ${fileName}`));
-    }
-    const localFilePath = path.resolve(fileDestination, fileName);
+  const localFilePath = path.resolve(fileDestination, fileName);
+  const writer = fs.createWriteStream(localFilePath);
+  
+  const isP2P = fileUrl.includes('ipfs://') || fileUrl.includes('ipns://');
+  
+  // TODO: resolve ENS entries alongside IPFS
+  const url = isP2P ? getP2PUrl(fileUrl.split('//')[1]): fileUrl;
 
-    const isP2P = fileUrl.includes('ipfs://') || fileUrl.includes('ipns://');
+  return axios({
+    method: 'GET',
+    url: url,
+    responseType: 'stream',
+  }).then(response => {
+    return new Promise(async (resolve, reject) => {
+      
+      if(response.data.length < 1) {
+        return reject(new Error('Empty download response for file ' + url));
+      }
+      response.data.pipe(writer);
 
-    // TODO: resolve ENS entries alongside IPFS
-    const url = isP2P ? getP2PUrl(fileUrl.split('//')[1]): fileUrl;
-
-    try {
-        const response = await axios({
-            method: 'GET',
-            url: url,
-            responseType: 'stream',
-        });
-
-        const w = response.data.pipe(fs.createWriteStream(localFilePath));
-        w.on('finish', () => {
-            resolve();
-        });
-
-        w.on('error', (err) => {
-            reject(err);
-        });
-
-    } catch (err) { 
-        reject(`${fileUrl} fetch error: ${err?.response?.status}`);
-    }
-  });
+      writer.on('finish', () => {
+          resolve();
+      });
+  
+      writer.on('error', (err) => {
+          reject(err);
+      });
+    })
+  })
 }; 

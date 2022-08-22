@@ -42,12 +42,12 @@ export async function getTwaTokenInfo(t: Asset, chainId: number, twaRepoLoc: str
         const network = await getNetworkForChainId(chainId);
         await cloneOrPullRepoAndUpdateSubmodules(TWA_REPO_CLONE_URL, twaRepoLoc, false, "master");
 
-        // note: if trustwallet names the network different to our networkId, 
+        // note: if trustwallet names the network different to our networkCode, 
         // even if they have the same chainId we may encounter issues
         // as we may not find the infoFilePath. 
         // TODO; Handle this case better
-        const infoFilePath = path.join(twaRepoLoc, 'blockchains', network.networkId, 'assets', t.address, 'info.json');
-        const logoHttpPath = `${TWA_USER_CONTENT_BASE}/blockchains/${network.networkId}/assets/${t.address}/logo.png`;
+        const infoFilePath = path.join(twaRepoLoc, 'blockchains', network.networkCode, 'assets', t.address, 'info.json');
+        const logoHttpPath = `${TWA_USER_CONTENT_BASE}/blockchains/${network.networkCode}/assets/${t.address}/logo.png`;
 
         if(!fs.existsSync(infoFilePath)) {
             console.error(`getTwaTokenInfo No info.json found for ${t.address}`);
@@ -62,7 +62,7 @@ export async function getTwaTokenInfo(t: Asset, chainId: number, twaRepoLoc: str
             decimals: i.decimals,
             id: getUUID(),
             links: getLinks(i),
-            networkId: network.networkId,
+            networkCode: network.networkCode,
             active: i.status === 'active',
             spam: i.status === 'spam',
             logo: Logos.getLogosFromUri(logoHttpPath),
@@ -85,7 +85,7 @@ export async function getTwaTokenInfo(t: Asset, chainId: number, twaRepoLoc: str
     }
 }
 
-export async function getTwaNetworkInfo(twaNetworkName: string, twaRepoLoc: string = DEFAULT_TWA_DISK_LOCATION): Promise<Network> {
+export async function getTwaNetworkInfo(twaNetworkName: string, addressRegex: string, chainId: number, twaRepoLoc: string = DEFAULT_TWA_DISK_LOCATION): Promise<Network> {
     const infoFilePath = path.join(twaRepoLoc, 'blockchains', twaNetworkName, 'info', 'info.json');
     const logoHttpPath = `${TWA_USER_CONTENT_BASE}/blockchains/${twaNetworkName}/info/logo.png`;
     
@@ -98,13 +98,19 @@ export async function getTwaNetworkInfo(twaNetworkName: string, twaRepoLoc: stri
         decimals: i.decimals,
         id: getUUID(),
         links: getLinks(i),
-        networkId: twaNetworkName,
+        networkCode: twaNetworkName,
         active: i.status === 'active',
         spam: i.status === 'spam',
         logo: Logos.getLogosFromUri(logoHttpPath),
         name: i.name,
         symbol: i.symbol,
-        tags: i.tags && i.tags.length > 0 ? i.tags : []
+        tags: i.tags && i.tags.length > 0 ? i.tags : [], 
+        regex: {
+            address: addressRegex
+        },
+        identifiers: {
+            chainId: chainId
+        }
     };
 
     if(i.description && i.description !== '-') {

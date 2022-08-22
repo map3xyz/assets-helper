@@ -1,7 +1,7 @@
 
 import { GITHUB_USER_CONTENT_BASE_URL, REPO_CLONE_URL } from '../utils/constants';
 import { getDirectories } from '../utils/filesystem';
-import { cloneOrPullRepoAndUpdateSubmodules, push } from '../utils/git';
+import { push } from '../utils/git';
 
 export async function pushAssetsRepoModuleChangesAndCreatePullRequests(dir: string) {
     try {
@@ -46,7 +46,7 @@ export async function regenerateTokenlists(dir: string) {
 
 export function getGithubHostedFileUrl (dir: string, fileName: string) {
     
-    if(dir.includes('/map3xyz/assets/')) {
+    if(dir.includes('assets/networks')) {
         const baseUrl = `${GITHUB_USER_CONTENT_BASE_URL}/assets/master`;
         return `${baseUrl}/networks/${dir.split("/networks/")[1]}/${fileName}`;
     }

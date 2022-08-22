@@ -34,7 +34,7 @@ export const NetworkDirectoryRules: ValidationRule[] = [
                     valid = false;
                 }
 
-                // TODO: check that the networkId in the info.json file matches the directory name. 
+                // TODO: check that the networkCode in the info.json file matches the directory name. 
                 
                 resolve({
                     valid: valid,

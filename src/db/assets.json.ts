@@ -3,7 +3,7 @@ export const ETHEREUM_ASSETS = [
   {
     active: true,
     address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-    networkId: "ethereum",
+    networkCode: "ethereum",
     color: null,
     decimals: 6,
     description: {},
@@ -37,7 +37,7 @@ export const ETHEREUM_ASSETS = [
   {
     active: true,
     address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-    networkId: "ethereum",
+    networkCode: "ethereum",
     color: null,
     decimals: 18,
     description: {},
@@ -74,7 +74,7 @@ export const POLYGON_ASSETS = [
   {
     active: true,
     address: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
-    networkId: "polygon",
+    networkCode: "polygon",
     color: null,
     decimals: 6,
     description: {},
@@ -113,7 +113,7 @@ export const POLYGON_ASSETS = [
   {
     active: true,
     address: "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
-    networkId: "polygon",
+    networkCode: "polygon",
     color: null,
     decimals: 18,
     description:{},

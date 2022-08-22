@@ -26,7 +26,7 @@ export const MOCK_NETWORKS = [
       svg: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/ethereum/logo.svg"
     },
     name: "Ethereum",
-    networkId: "ethereum",
+    networkCode: "ethereum",
     regex: {
       address: "^0x[a-fA-F0-9]{40}$",
       memo: null,
@@ -64,7 +64,7 @@ export const MOCK_NETWORKS = [
       svg: "https://raw.githubusercontent.com/map3xyz/assets/master/networks/polygon/logo.svg"
     },
     name: "Polygon",
-    networkId: "polygon",
+    networkCode: "polygon",
     regex: {
       address: "^(0x)[0-9A-Fa-f]{40}$",
       memo: null,

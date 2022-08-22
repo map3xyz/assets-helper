@@ -8,5 +8,5 @@ export const TWA_REPO_CLONE_URL = 'git@github.com:trustwallet/assets.git';
 export const DEFAULT_TWA_DISK_LOCATION = './tmp/trustwallet-assets';
 export const ASSETS_CSV_TMP_FILE = './tmp/assets.csv';
 export const ASSETS_REPO_CACHE_MINUTES = 60; // 60 minutes
-export const NETWORKS_SCHEMA_FILE_URL = 'https://raw.githubusercontent.com/map3xyz/assets/new-model-migration/schema/networks.schema.json';
-export const ASSETS_SCHEMA_FILE_URL = 'https://raw.githubusercontent.com/map3xyz/assets/new-model-migration/schema/assets.schema.json';
+export const NETWORKS_SCHEMA_FILE_URL = 'https://raw.githubusercontent.com/map3xyz/assets/master/schema/networks.schema.json';
+export const ASSETS_SCHEMA_FILE_URL = 'https://raw.githubusercontent.com/map3xyz/assets/master/schema/assets.schema.json';

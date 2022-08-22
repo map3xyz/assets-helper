@@ -9,7 +9,7 @@ export async function assetsForEach(callback: AssetInfoCallback, complete?: () =
   try {
     const networks = await getNetworks();
     await Promise.all(networks.map(async network => {
-      const assets = await getAssetsForNetwork(network.networkId);
+      const assets = await getAssetsForNetwork(network.networkCode);
       return Promise.all(assets.map(async asset => {
         return callback(asset);
       }));
@@ -41,13 +41,13 @@ export async function assetForId(id: string, callback: AssetInfoCallback) {
 }
 
 export async function findAssetByNetworkIdAndAddress(
-  networkId: string,
+  networkCode: string,
   address: string,
   callback: AssetInfoCallback
 ) {
   
   try {
-    const asset = (await getAssetsForNetwork(networkId)).find((asset) => asset.address === address);
+    const asset = (await getAssetsForNetwork(networkCode)).find((asset) => asset.address === address);
     return callback(asset);
   } catch (err) {
     throw err;

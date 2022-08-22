@@ -31,19 +31,13 @@ export async function networkForId (id: string, callback: NetworkInfoCallback) {
     }
 }
 
-export async function findNetworkByNetworkId(networkId: string, callback: NetworkInfoCallback) {
+export async function findNetworkByNetworkId(networkCode: string, callback: NetworkInfoCallback) {
   try {
     const networks = await getNetworks();
-    const network = networks.find((network) => network.networkId === networkId);
+    const network = networks.find((network) => network.networkCode === networkCode);
     return callback(network);
 
   } catch (err) {
     throw err;
   }
 }
-
-async function getMockNetworks(networkId?: string): Promise<Network[]> {
-  // @ts-ignore
-  return (networkId ? MOCK_NETWORKS.filter((n) => n.networkId === networkId) : MOCK_NETWORKS) as Network[];
-}
-

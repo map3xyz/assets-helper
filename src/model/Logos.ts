@@ -14,52 +14,53 @@ export type LogoDownloadInputs = {
     [key in LogoFormats]: LogoUris;
 }
 
-export type HttpLogos = {
-    [key in LogoFormats]: string;
-}
-
 export class Logos {
-    input: LogoDownloadInputs | null;
-    output: HttpLogos;
-    downloaded: boolean = false;
+    png?: string;
+    svg?: string;
 
     constructor(input?: LogoDownloadInputs) {
-        this.input = input;
+        if(input) {
+            if(input.png && (input.png.url || input.png.ipfs)) {
+                this.png = input.png.url || input.png.ipfs;
+            }
+
+            if(input.svg && (input.svg.url || input.svg.ipfs)) {
+                this.svg = input.svg.url || input.svg.ipfs;
+            }
+        }
     }
 
     async downloadAndPersistLogos(directory: string): Promise<void> {
-        if(!this.input) {
-            return Promise.resolve();
-        }
-
-        let httpLogo: any = {};
-    
-        if(this.input?.png?.url || this.input?.png?.ipfs) {
-            try {
-                if(!fs.existsSync(path.join(directory, "logo.png"))) {
-                    await downloadFile(this.input.png?.url || this.input.png?.ipfs, directory, 'logo.png');
-                }
-                httpLogo.png = getGithubHostedFileUrl(directory, 'logo.png');
-            } catch (err) { 
-                console.error(`Error downloading png. Skipping: ${err}`)
+        return new Promise(async (resolve) => {
+            if(!this.png && !this.svg) {
+                return resolve();
             }
-        }
-    
-        if(this.input?.svg?.url || this.input?.svg?.ipfs) {
-            try {
-                if(!fs.existsSync(path.join(directory, "logo.svg"))) {
-                    await downloadFile(this.input.svg?.url || this.input.svg?.ipfs, directory, 'logo.svg');
+        
+            if(this.png) {
+                try {
+                    if(!fs.existsSync(path.join(directory, "logo.png"))) {
+                        await downloadFile(this.png, directory, 'logo.png');
+                    }
+                    this.png = getGithubHostedFileUrl(directory, 'logo.png');
+                } catch (err) { 
+                    console.error(`Error downloading png. Skipping: ${err}`)
                 }
-                httpLogo.svg = getGithubHostedFileUrl(directory, 'logo.svg');            
-            } catch (err) { 
-                console.error(`Error downloading svg. Skipping: ${err}`) 
             }
-        }
-
-        this.output = httpLogo;
-        this.downloaded = true;
-
-        return Promise.resolve();
+        
+            if(this.svg) {
+                try {
+                    if(!fs.existsSync(path.join(directory, "logo.svg"))) {
+                        await downloadFile(this.svg, directory, 'logo.svg');
+                    }
+                    this.svg = getGithubHostedFileUrl(directory, 'logo.svg');            
+                } catch (err) { 
+                    console.error(`Error downloading svg. Skipping: ${err}`) 
+                }
+            }
+    
+            return resolve();
+        });
+       
     }
 
     static getLogosFromUri(logoURI?: string): Logos {
@@ -106,9 +107,9 @@ export class Logos {
         return new Logos(input);
     }
 
-    deserialise(): HttpLogos {
-        if(this.downloaded) {
-            return JSON.parse(JSON.stringify(this.output));
+    deserialise(): Logos {
+        if(this.png || this.svg) {
+            return JSON.parse(JSON.stringify(this));
         }
 
         return null;

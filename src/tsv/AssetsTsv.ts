@@ -100,7 +100,7 @@ export class AssetsTsv implements IAssetsTsv {
                 throw `AssetsTsv.deserialise: persistDir ${persistDir} does not exist`;
             }
 
-            const networkDirs = (await getNetworks()).map(network => network.networkId);
+            const networkDirs = (await getNetworks()).map(network => network.networkCode);
 
             let tsv = `${HEADER_ROW_START}\t${networkDirs.sort().join('\t')}\n`;
 
