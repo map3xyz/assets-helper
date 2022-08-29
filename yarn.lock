@@ -131,6 +131,7 @@ __metadata:
     "@uniswap/token-lists": ^1.0.0-beta.30
     ava: ^4.3.0
     axios: ^0.27.2
+    csv-parse: ^5.3.0
     ethereum-checksum-address: ^0.0.8
     jsonschema: ^1.4.1
     pkg: ^5.7.0
@@ -927,6 +928,13 @@ __metadata:
   version: 1.1.1
   resolution: "create-require@npm:1.1.1"
   checksum: a9a1503d4390d8b59ad86f4607de7870b39cad43d929813599a23714831e81c520bddf61bcdd1f8e30f05fd3a2b71ae8538e946eb2786dc65c2bbc520f692eff
+  languageName: node
+  linkType: hard
+
+"csv-parse@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "csv-parse@npm:5.3.0"
+  checksum: 6754e85aef9dfdf19da99206b4a83f51fb881b3a75f9f7b6221864252c386410e1f535a013911d6e52f77a017d3dadf10f1e526fe31e01b2b79074c3fb4b3aaa
   languageName: node
   linkType: hard
 

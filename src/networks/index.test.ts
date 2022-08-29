@@ -1,7 +1,14 @@
-import test from 'ava';
-import { getNetworks } from '.';
+import test from "ava";
+import { getAssetMapping, getNetworks } from ".";
 
-test('networks includes ethereum', async t => {
-    const networks = await getNetworks();
-    t.truthy(networks.find(n => n.name === 'Ethereum'));
+test("networks includes ethereum", async (t) => {
+  const networks = await getNetworks();
+  t.truthy(networks.find((n) => n.name === "Ethereum"));
 });
+
+test("Mappings can be read successfully", async (t) => {
+  const mappings = await getAssetMapping();
+  console.log(mappings);
+  t.truthy(mappings);
+});
+
