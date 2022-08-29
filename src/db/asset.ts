@@ -1,9 +1,11 @@
 import { Asset } from "../model";
-import { getAssetsForNetwork, getNetworks } from "../networks";
+import { AssetMapping } from "../model/AssetMapping";
+import { getAssetMapping, getAssetsForNetwork, getNetworks } from "../networks";
 import { ETHEREUM_ASSETS, POLYGON_ASSETS } from "./assets.json";
 import { fetchAssetsCsv } from "./utils";
 
 type AssetInfoCallback = (assetInfo: Asset) => Promise<void>;
+type AssetMappingInfoCallback = (assetMapping: AssetMapping) => Promise<void>;
 
 export async function assetsForEach(callback: AssetInfoCallback, complete?: () => Promise<void>) {
   try {
@@ -47,6 +49,21 @@ export async function findAssetByNetworkIdAndAddress(
   try {
     const asset = (await getAssetsForNetwork(networkCode)).find((asset) => asset.address === address);
     return callback(asset);
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function assetsMappingForEach(callback: AssetMappingInfoCallback, complete?: () => Promise<void>) {
+  try {
+    const assetMappings = await getAssetMapping();
+    for (const assetMapping of assetMappings) {
+      await callback(assetMapping);
+    }
+
+    if (complete) {
+      await complete();
+    }
   } catch (err) {
     throw err;
   }

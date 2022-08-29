@@ -38,6 +38,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@uniswap/token-lists", "npm:1.0.0-beta.30"],\
             ["ava", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:4.3.0"],\
             ["axios", "npm:0.27.2"],\
+            ["csv-parse", "npm:5.3.0"],\
             ["ethereum-checksum-address", "npm:0.0.8"],\
             ["jsonschema", "npm:1.4.1"],\
             ["pkg", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:5.7.0"],\
@@ -176,6 +177,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@uniswap/token-lists", "npm:1.0.0-beta.30"],\
             ["ava", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:4.3.0"],\
             ["axios", "npm:0.27.2"],\
+            ["csv-parse", "npm:5.3.0"],\
             ["ethereum-checksum-address", "npm:0.0.8"],\
             ["jsonschema", "npm:1.4.1"],\
             ["pkg", "virtual:450599ab03d8d1251e47072c746a084399a8634df041193dd12e1f87e2f387d3ff5eceeef406d1fa24121d1005f46886286ea884cce71197cee3b5b951ae7881#npm:5.7.0"],\
@@ -1093,6 +1095,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/create-require-npm-1.1.1-839884ca2e-a9a1503d43.zip/node_modules/create-require/",\
           "packageDependencies": [\
             ["create-require", "npm:1.1.1"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["csv-parse", [\
+        ["npm:5.3.0", {\
+          "packageLocation": "./.yarn/cache/csv-parse-npm-5.3.0-92f0ce63f9-6754e85aef.zip/node_modules/csv-parse/",\
+          "packageDependencies": [\
+            ["csv-parse", "npm:5.3.0"]\
           ],\
           "linkType": "HARD"\
         }]\
