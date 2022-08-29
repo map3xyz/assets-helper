@@ -20,7 +20,7 @@
     "clean": "rimraf ./dist/ ./exec/",
     "build": "yarn clean && tsc",
     "preparePublish": "yarn build && npm version patch",
-    "test": "yarn build && ava --verbose -T 5m  -m \"Mappings can be read successfully\"",
+    "test": "yarn build && ava --verbose",
     "bundle": "yarn build && pkg . --out-dir ./exec/"
   },
   "devDependencies": {

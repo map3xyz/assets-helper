@@ -8,7 +8,6 @@ test("networks includes ethereum", async (t) => {
 
 test("Mappings can be read successfully", async (t) => {
   const mappings = await getAssetMapping();
-  console.log(mappings);
-  t.truthy(mappings);
+  t.truthy(mappings.length > 0);
 });
 
