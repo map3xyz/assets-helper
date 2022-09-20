@@ -1,5 +1,5 @@
 import test from "ava";
-import { getAssetMapping, getNetworks } from ".";
+import { getAssetMapping, getNetworks, getNetworksWithAssets } from ".";
 
 test("networks includes ethereum", async (t) => {
   const networks = await getNetworks();
@@ -11,3 +11,12 @@ test("Mappings can be read successfully", async (t) => {
   t.truthy(mappings.length > 0);
 });
 
+test("networks with assets includes polygon", async (t) => {
+  const networks = await getNetworksWithAssets();
+  t.truthy(networks.find((n) => n.name === "Polygon"));
+});
+
+test("networks with assets does not include Bitcoin", async (t) => {
+  const networks = await getNetworksWithAssets();
+  t.falsy(networks.find((n) => n.name === "Bitcoin"));
+});

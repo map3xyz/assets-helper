@@ -37,6 +37,44 @@ export async function getNetworks(dir?: string): Promise<Network[]> {
   }
 }
 
+export async function getNetworksWithAssets(dir?: string): Promise<Network[]> {
+  if (!dir) {
+    dir = DEFAULT_REPO_DISK_LOCATION;
+  }
+
+  const res: Network[] = [];
+
+  try {
+    await cloneOrPullRepoAndUpdateSubmodules(REPO_CLONE_URL, dir, true, "master");
+
+    const directories = await getDirectories(dir);
+
+    directories.forEach((directory) => {
+      const split = directory.split("/");
+      const baseDirIsNetworkDir = split[split.length - 2] === "networks";
+      const dirIsGitDir = directory.includes(".git")
+      
+      if (baseDirIsNetworkDir && !dirIsGitDir) {
+        const networkName = split[split.length - 1];
+
+        const networkHasAssets = fs.existsSync(`${directory}/assets/${networkName}-tokenlist`);
+
+        if(networkHasAssets) {
+          res.push(readAndParseJson(`${directory}/info.json`));
+        } 
+      }
+    });
+
+    if (res.length === 0) {
+      throw new Error(`getNetworks No networks found in ${dir}`);
+    }
+
+    return res;
+  } catch (err) {
+    throw err;
+  }
+}
+
 export async function getAssetsForNetwork(network: string, dir?: string): Promise<Asset[]> {
   if (!dir) {
     dir = DEFAULT_REPO_DISK_LOCATION;
