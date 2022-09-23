@@ -8,6 +8,7 @@ import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
 import { branch, commit } from '../utils/git';
 import { formatAddress } from '../utils';
+import { VerificationType } from '../model/Verification';
 
 async function prepareTokenlist(directory: string, previousTokenlist?: TokenList): Promise<TokenList> {
 
@@ -76,7 +77,7 @@ export async function needBeRegenerateTokenlist(directory: string): Promise<void
     return fs.writeFileSync(path.join(directory, FILE_NAME), JSON.stringify(tokenlist, undefined, 2));
 }
 
-async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, source?: string): Promise<void> {
+async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, source?: string, verificationType?: VerificationType): Promise<void> {
     // take a list of tokens and add them to the repo if they don't already exist
 
    await Promise.all(newAssets.map<Promise<void>>(token => {
@@ -88,7 +89,7 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
                 fs.mkdirSync(tokenDir, { recursive: true });
                } 
 
-               const parsedToken = await Asset.fromTokenlistTokenInfo(token, source);
+               const parsedToken = await Asset.fromTokenlistTokenInfo(token, source, verificationType);
                await parsedToken.logo.downloadAndPersistLogos(tokenDir);
 
             //    console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));
@@ -109,7 +110,7 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
    return Promise.resolve();
 }
 
-export async function ingestTokenList(listLocation: string, directory: string, branchName: string, source?: string): Promise<void> {
+export async function ingestTokenList(listLocation: string, directory: string, branchName: string, source?: string, verificationType?: VerificationType): Promise<void> {
 
     try {
         const tokenlistLocation = path.join(directory, 'tokenlist.json');
@@ -144,7 +145,7 @@ export async function ingestTokenList(listLocation: string, directory: string, b
     
         if(newAssets.length > 0) {
             await branch(directory, branchName);
-            await ingestNewAssets(newAssets, directory, source);
+            await ingestNewAssets(newAssets, directory, source, verificationType);
             await needBeRegenerateTokenlist(directory);
             await commit(directory, `Indexing ${listToIngest.tokens.length} new assets from ${listToIngest.name || source}`);
         }
