@@ -38,7 +38,7 @@ interface TcrCheckResult {
 export async function checkIfMapInMapsTcr(map: AssetMap): Promise<TcrCheckResult> {
     try {
         // TODO; 
-        const url = 'https://kleros-listener.map3.xyz'
+        const url = 'https://console.map3.xyz/api/kleros/map'
 
         const response = await axios.get(url + '/kleros-map3-map?from=' + map.from + '&to=' + map.to);
 
@@ -60,13 +60,24 @@ export async function checkIfMapInMapsTcr(map: AssetMap): Promise<TcrCheckResult
 }
 
 
-export async function checkIfAssetInKlerosTCR(assetId: string): Promise<TcrCheckResult> {
+let klerosTokenList, klerosTokenlistLastUpdated = 0;
 
-    try {
+async function getKlerosTokenList() {
+    if (!klerosTokenList || Date.now() - klerosTokenlistLastUpdated > 1000 * 60 * 60) {
         const KLEROS_ENS_ENS_DOMAIN = 't2crtokens.eth';
         const ipfsHash = await getEnsIpfsContentHash(KLEROS_ENS_ENS_DOMAIN);
 
-        const tokenList = await getIpfsContent(ipfsHash);
+        klerosTokenList = await getIpfsContent(ipfsHash);
+        klerosTokenlistLastUpdated = Date.now();
+    }
+
+    return klerosTokenList;
+}
+export async function checkIfAssetInKlerosTCR(assetId: string): Promise<TcrCheckResult> {
+
+    try {
+
+        const tokenList = await getKlerosTokenList();
         const address = getAddressFromAssetId(assetId);
 
         const tokenInTcr = tokenList.tokens.some((token: any) => token.address === address);
@@ -121,7 +132,7 @@ export async function checkIfAssetInMap3TCR(assetId: string): Promise<TcrCheckRe
     
     try {
         // TODO; 
-        const url = 'https://kleros-listener.map3.xyz'
+        const url = 'https://console.map3.xyz/api/kleros/map'
 
         const response = await axios.get(url + '/kleros-map3-asset?id=' + assetId);
 
