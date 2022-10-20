@@ -6,3 +6,4 @@ export * from "./types";
 export * from "./UUID";
 export * from "./Version";
 export * from "./Logos";
+export * from "./AssetMap";

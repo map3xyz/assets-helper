@@ -21,8 +21,7 @@ export abstract class ChainObject extends RepoObject {
     symbol: string;
     tags: TagName[]; // foreign keys
     type: ObjectType; // not persisted
-    
-    
+      
     constructor(info: Partial<ChainObject>) {
         super(info);
 

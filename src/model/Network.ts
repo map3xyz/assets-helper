@@ -1,7 +1,5 @@
 import { toHyphenCase } from "../utils";
-import { getAdminVerificationForAssetId } from "../utils/verifications";
 import { ChainObject } from "./ChainObject";
-import { VerificationType } from "./Verification";
 
 export class Network extends ChainObject {
     identifiers: {
@@ -46,27 +44,5 @@ export class Network extends ChainObject {
             } 
         }
         this.type = 'network';
-    }
-
-    async verify(type: VerificationType): Promise<void> {
-        if(!this.verifications) {
-            this.verifications = [];
-        }
-
-        this.verifications.forEach(verification => {
-            if(verification.type === type) {
-                throw new Error('Network already verified with type ' + type);
-            }
-        })
-
-        switch(type) {
-            case 'ADMIN':
-                this.verifications.push(getAdminVerificationForAssetId(this.id));
-                break;
-            default:
-                throw new Error('Invalid verification type for Network: ' + type );
-        }
-
-        return Promise.resolve();
     }
 }
