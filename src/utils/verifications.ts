@@ -1,10 +1,12 @@
-import axios from "axios";
 import { AssetMap } from "../model/AssetMap";
 import { Verification } from "../model/Verification";
-import { getAddressFromAssetId } from "./addresses";
-import { getEnsIpfsContentHash, getIpfsContent } from "./ipfs";
 
-export function getAdminVerificationForAssetId(assetId: string): Verification {
+export interface VerificationAttemptResult {
+    verified: boolean;
+    verification: Verification; 
+}
+
+export function setAdminVerificationForAsset(signature: string, networkCode: string, address?: string): Verification {
     // TODO; signature operation
     return {
         verified: true,
@@ -16,7 +18,7 @@ export function getAdminVerificationForAssetId(assetId: string): Verification {
     }
 }
 
-export function getAdminVerificationForMap(map: AssetMap): Verification {
+export function setAdminVerificationForMap(signature: string, map: AssetMap): Verification {
 
     // TODO; signature operation
     return {
@@ -29,126 +31,26 @@ export function getAdminVerificationForMap(map: AssetMap): Verification {
     }
 }
 
-interface TcrCheckResult { 
-    inTcr: boolean, 
-    ipfsUri: string, 
-    resolutionTxHash: string 
-}
-
-export async function checkIfMapInMapsTcr(map: AssetMap): Promise<TcrCheckResult> {
-    try {
-        // TODO; 
-        const url = 'https://console.map3.xyz/api/kleros/map'
-
-        const response = await axios.get(url + '/kleros-map3-map?from=' + map.from + '&to=' + map.to);
-
-        return {
-            inTcr: response.data.status === 'Registered',
-            ipfsUri: response.data.ipfs_uri,
-            resolutionTxHash: response.data.resolution_tx
-        }
-
-    } catch (err) {
-        // console.error('checkIfMapInMapsTcr error', err);
-
-        return {
-            inTcr: false,
-            ipfsUri: null,
-            resolutionTxHash: null
+export function attemptTcrVerificationForAsset(networkCode: string, address?: string): Verification {
+    // If ethereum, check the kleros tcr and map3 tcr to see if its verified and produce the verification. Otherwise just the map3tcr
+    return {
+        verified: true,
+        type: 'KLEROS_TCR',
+        timestamp: Date.now() / 1000,
+        proof: {
+            ipfsUri: 'ipfs://QmWJ7CpY6hJkLjyYQ2zEeY2YJZ9XgZK1n8JWd7vP6oKJjK'
         }
     }
 }
 
-
-let klerosTokenList, klerosTokenlistLastUpdated = 0;
-
-async function getKlerosTokenList() {
-    if (!klerosTokenList || Date.now() - klerosTokenlistLastUpdated > 1000 * 60 * 60) {
-        const KLEROS_ENS_ENS_DOMAIN = 't2crtokens.eth';
-        const ipfsHash = await getEnsIpfsContentHash(KLEROS_ENS_ENS_DOMAIN);
-
-        klerosTokenList = await getIpfsContent(ipfsHash);
-        klerosTokenlistLastUpdated = Date.now();
-    }
-
-    return klerosTokenList;
-}
-export async function checkIfAssetInKlerosTCR(assetId: string): Promise<TcrCheckResult> {
-
-    try {
-
-        const tokenList = await getKlerosTokenList();
-        const address = getAddressFromAssetId(assetId);
-
-        const tokenInTcr = tokenList.tokens.some((token: any) => token.address === address);
-
-        if(!tokenInTcr) {
-            return {
-                inTcr: false,
-                ipfsUri: null,
-                resolutionTxHash: null
-            }
-        }
-
-        const query = {
-            query: `
-                    query GetKlerosTcrTokenByAddress {
-                        tokens(where: {address: ${address}}) {
-                            address
-                            status
-                            ticker
-                            name
-                            requests(orderBy: resolutionTime, orderDirection: desc, first: 1) {
-                                resolutionTx
-                            }
-                        }
-                    }
-                `
-            };
-        
-        const url = 'https://api.thegraph.com/subgraphs/name/kleros/t2cr';
-        const response = await axios.post(url, { query });
-        const token = response.data.data.tokens[0];
-
-        if(!token) {
-            return {
-                inTcr: false,
-                ipfsUri: null,
-                resolutionTxHash: null
-            }
-        }
-
-        return {
-            inTcr: token.status === 'Registered',
-            ipfsUri: ipfsHash,
-            resolutionTxHash: token.requests[0].resolutionTx
-        }
-    } catch (e) {
-        throw e;
-    }
-}
-
-export async function checkIfAssetInMap3TCR(assetId: string): Promise<TcrCheckResult> {
-    
-    try {
-        // TODO; 
-        const url = 'https://console.map3.xyz/api/kleros/map'
-
-        const response = await axios.get(url + '/kleros-map3-asset?id=' + assetId);
-
-        return {
-            inTcr: response.data.status === 'Registered',
-            ipfsUri: response.data.ipfs_uri,
-            resolutionTxHash: response.data.resolution_tx
-        }
-
-    } catch (err) {
-        // console.error('checkIfAssetInMap3TCR error', err);
-
-        return {
-            inTcr: false,
-            ipfsUri: null,
-            resolutionTxHash: null
+export function attemptTcrVerificationForMap(map: AssetMap): Verification {
+    // Check the map3 maps tcr to see if its verified and produce the verification
+    return {
+        verified: true,
+        type: 'KLEROS_TCR',
+        timestamp: Date.now() / 1000,
+        proof: {
+            ipfsUri: 'ipfs://QmWJ7CpY6hJkLjyYQ2zEeY2YJZ9XgZK1n8JWd7vP6oKJjK'
         }
     }
 }
