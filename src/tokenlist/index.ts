@@ -77,7 +77,7 @@ export async function needBeRegenerateTokenlist(directory: string): Promise<void
     return fs.writeFileSync(path.join(directory, FILE_NAME), JSON.stringify(tokenlist, undefined, 2));
 }
 
-async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, source?: string, verificationType?: VerificationType): Promise<void> {
+async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, source?: string): Promise<void> {
     // take a list of tokens and add them to the repo if they don't already exist
 
    await Promise.all(newAssets.map<Promise<void>>(token => {
@@ -89,7 +89,7 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
                 fs.mkdirSync(tokenDir, { recursive: true });
                } 
 
-               const parsedToken = await Asset.fromTokenlistTokenInfo(token, source, verificationType);
+               const parsedToken = await Asset.fromTokenlistTokenInfo(token, source);
                await parsedToken.logo.downloadAndPersistLogos(tokenDir);
 
             //    console.log('IngestNewToken saving token ' + JSON.stringify(parsedToken));
