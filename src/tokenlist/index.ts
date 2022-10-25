@@ -145,7 +145,7 @@ export async function ingestTokenList(listLocation: string, directory: string, b
     
         if(newAssets.length > 0) {
             await branch(directory, branchName);
-            await ingestNewAssets(newAssets, directory, source, verificationType);
+            await ingestNewAssets(newAssets, directory, source);
             await needBeRegenerateTokenlist(directory);
             await commit(directory, `Indexing ${listToIngest.tokens.length} new assets from ${listToIngest.name || source}`);
         }

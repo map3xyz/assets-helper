@@ -45,7 +45,6 @@ async function enhanceExtTokenInfoWithSourceData(baseToken: Asset, chainId: numb
         return baseToken;
     }
 
-
     switch(source) {
         case 'trustwallet': 
             return getTwaTokenInfo(baseToken, chainId);

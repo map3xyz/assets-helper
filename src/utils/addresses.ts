@@ -9,13 +9,10 @@ export function formatAddress(address: string): string {
     return address.toLowerCase();
 }
 
-// extracts a contract address from a CAIP-19 asset types
-// https://github.com/ChainAgnostic/CAIPs/blob/master/CAIPs/caip-19.md#test-cases
-export function getAddressFromAssetId(assetId: string): string {
-    const address = assetId.split(':')[2];
-    if(!address) {
-        throw new Error('Invalid assetId');
+export function parseAssetId(assetId: string): { networkCode: string, address: string } {
+    const [networkCode, address] = assetId.split(':');
+    return {
+        networkCode,
+        address: parseInt(address) == 0? undefined : formatAddress(address)
     }
-
-    return address;
 }

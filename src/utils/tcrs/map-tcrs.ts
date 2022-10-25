@@ -11,7 +11,6 @@ export async function checkIfMapInMapsTcr(map: AssetMap): Promise<TcrCheckResult
 
         return {
             inTcr: response.data.status === 'Registered',
-            ipfsUri: response.data.ipfs_uri,
             resolutionTxHash: response.data.resolution_tx
         }
 
@@ -20,7 +19,6 @@ export async function checkIfMapInMapsTcr(map: AssetMap): Promise<TcrCheckResult
 
         return {
             inTcr: false,
-            ipfsUri: null,
             resolutionTxHash: null
         }
     }
@@ -37,7 +35,6 @@ export async function checkIfAssetInMap3TCR(assetId: string): Promise<TcrCheckRe
 
         return {
             inTcr: response.data.status === 'Registered',
-            ipfsUri: response.data.ipfs_uri,
             resolutionTxHash: response.data.resolution_tx
         }
 
@@ -46,7 +43,6 @@ export async function checkIfAssetInMap3TCR(assetId: string): Promise<TcrCheckRe
 
         return {
             inTcr: false,
-            ipfsUri: null,
             resolutionTxHash: null
         }
     }
