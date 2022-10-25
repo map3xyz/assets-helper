@@ -128,7 +128,13 @@ export async function ingestTokenList(listLocation: string, directory: string, b
         let listToIngest: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
 
         const networkCode = directory.split('/')[directory.split('/').length - 3];
-        const networkInfoFile = JSON.parse(fs.readFileSync(path.join(directory.split(networkCode)[0], networkCode, 'info.json'), 'utf8'));
+        const networkInfoFileLoc = path.join(directory.split(networkCode)[0], networkCode, 'info.json');
+
+        if(!fs.existsSync(networkInfoFileLoc)) {
+            console.error(`Network info file does not exist. dir: ${directory} code: ${networkCode} file: ${networkInfoFileLoc}`);
+            return;
+        }
+        const networkInfoFile = JSON.parse(fs.readFileSync(networkInfoFileLoc, 'utf8'));
 
         const chainId = networkInfoFile?.identifiers.chainId;
 
