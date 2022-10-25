@@ -98,7 +98,9 @@ export async function getAssetsForNetwork(network: string, dir?: string): Promis
       const split = directory.split("/");
 
       if (split[split.length - 2] === `${network}-tokenlist` && !directory.includes(".git")) {
-        res.push(readAndParseJson(`${directory}/info.json`));
+        if(fs.existsSync(`${directory}/info.json`)) {
+          res.push(readAndParseJson(`${directory}/info.json`));
+        }
       }
     });
 
