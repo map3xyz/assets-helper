@@ -24,9 +24,9 @@ export * from './tsv';
 // .then(console.log)
 // .catch(console.error);
 
-// validate('all', '/Users/ap/ama_dev/map3/indexer/tmp/map3xyz-assets/')
-// .then(console.log)
-// .catch(console.error);
+validate('all', '/Users/ap/ama_dev/map3/indexer/tmp/map3xyz-assets/networks/smartchain/assets/smartchain-tokenlist')
+.then(console.log)
+.catch(console.error);
 
 
 // RepoFileGenerator.generate()

@@ -1,8 +1,9 @@
 import fs from 'fs';
 import { getDirectories } from '../../utils/filesystem';
-import { AssetSchemaRules } from './network/AssetSchemaRules';
+import { AssetSchemaRules, fetchAssetSchema } from './network/AssetSchemaRules';
 import { CoreFilesIntegrityRules, EditorPermissionRules, RepoStructureRules } from './core';
 import { NetworkDirectoryRules, NetworkImagesRules, NetworkSchemaRules, NetworkSpecificRules, NetworkSubdirectoryRules } from './network';
+import { fetchNetworkSchema } from './network/NetworkSchemaRules';
 
 export interface ValidationRule {
     name: string;
@@ -65,6 +66,9 @@ async function validateRules(network: string, _rules: ValidationRule[], repoPath
 
     await Promise.all(_rules.map(rule => {
         return rule.validate(network, repoPath).then(result => {
+            if(!result) {
+                throw new Error(`Rule ${rule.name} returned null`);
+            }
             if (!result.valid) {
                 valid = false;
                 errors.push(...result.errors);
@@ -72,7 +76,7 @@ async function validateRules(network: string, _rules: ValidationRule[], repoPath
         }).catch(err => {
             valid = false;
             errors.push({
-                source: rule.name + ':' + rule.network,
+                source: rule.name + ':' + rule.network + ':' + repoPath,
                 message: err.message
             });
         });
@@ -97,6 +101,8 @@ function extractNetworkFromDir(dir: string): string {
     
     if(parts[parts.length - 2] === 'networks' || parts[parts.length - 2] === 'testnets') {
         return parts[parts.length -1];
+    } else if (parts[parts.length - 2].endsWith('-tokenlist')) {
+        return parts[parts.length - 2].split("-")[0];
     } else {
         return null;
     }
@@ -120,8 +126,9 @@ async function traverseAndValidateNetworks(baseDir: string, rules: ValidationRul
 
             const split = subDir.split('/');
             const isNetworkDir = split[split.length - 2] === 'networks' || split[split.length - 2] === 'testnets';
-            
-            return !isSkipDir && isNetworkDir;
+            const isTokenListDir = split[split.length - 2].endsWith('-tokenlist');
+
+            return !isSkipDir && (isNetworkDir || isTokenListDir);
     });
 
     return Promise.all(dirsToTraverse.map(async (subDir) => {
@@ -172,6 +179,10 @@ export async function validate(network: string = 'all', repoPath: string): Promi
     const errors = [];
     let valid = true;
 
+    // warm up cache 
+    await fetchAssetSchema();
+    await fetchNetworkSchema();
+    
     const coreRulesResult = await validateRules(network, coreRules, repoPath);
     const nextworkRulesResult = await validateNetworkRules(network, networkRules, repoPath);
 

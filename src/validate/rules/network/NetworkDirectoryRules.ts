@@ -17,8 +17,9 @@ export const NetworkDirectoryRules: ValidationRule[] = [
             
             
             return new Promise((resolve, reject) => {
-
-                if(!network) {
+                const split = repoPath.split('/');
+                
+                if(!network || split[split.length - 2] !== 'networks') {
                     return resolve({valid: true, errors: []})
                 }
                 
