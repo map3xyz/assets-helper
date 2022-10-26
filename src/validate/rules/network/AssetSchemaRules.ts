@@ -30,7 +30,7 @@ export const AssetSchemaRules: ValidationRule[] = [
             try {
                 const split = repoPath.split('/');
                 const assetDirName = split[split.length - 1];
-                const isAssetDir = split[split.length - 2].endsWith('-tokenlist');
+                const isAssetDir = split[split.length - 2].endsWith('-tokenlist') && !split[split.length - 3].endsWith('-tokenlist');
                 
                 if(!isAssetDir) {
                     return { valid: true, errors: []};
