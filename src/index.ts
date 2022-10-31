@@ -24,9 +24,9 @@ export * from './tsv';
 // .then(console.log)
 // .catch(console.error);
 
-// validate('all', '/Users/ap/ama_dev/map3/indexer/tmp/map3xyz-assets/networks/smartchain/assets/smartchain-tokenlist')
-// .then(console.log)
-// .catch(console.error);
+validate('all', '/Users/ap/ama_dev/smartchain-tokenlist/smartchain-tokenlist')
+.then(console.log)
+.catch(console.error);
 
 // RepoFileGenerator.generate()
 // .then(csv => csv.deserialise(DEFAULT_TEMP_DIR))
