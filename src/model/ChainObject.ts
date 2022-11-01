@@ -41,7 +41,7 @@ export abstract class ChainObject extends RepoObject {
         this.description = info.description || null;
 
         this.links = info.links || getEmptyBaseLinks();
-        this.logo = info.logo || new Logos();
+        this.logo = info.logo? new Logos(info.logo) : new Logos();
 
         if(!info.name) {
             throw new Error('name is required to initialise an AssetsRepoObject Passed: ' + JSON.stringify(info));
@@ -59,9 +59,9 @@ export abstract class ChainObject extends RepoObject {
 
     deserialise(): string {
         this.version = this.version.toString();
+        this.logo = this.logo? this.logo.deserialise() : null;
+        
         let parsed = JSON.parse(JSON.stringify(this));
-
-        parsed.logo = this.logo?.deserialise();
 
         // sort keys
         parsed = sortObjectKeys(parsed);
