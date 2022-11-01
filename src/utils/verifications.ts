@@ -25,13 +25,13 @@ export async function setAdminVerificationForMap(signature: string, map: AssetMa
 }
 
 export async function attemptTcrVerificationForAsset(networkCode: string, address?: string): Promise<VerificationAttemptResult> {
-    // If ethereum, check the kleros tcr and map3 tcr to see if its verified and produce the verification. Otherwise just the map3tcr
-
-    if(networkCode !== 'ethereum' || !address) {
-        throw new Error(`Invalid network code or address for TCR verification`);   
-    }
 
     try {
+        // If ethereum, check the kleros tcr and map3 tcr to see if its verified and produce the verification. Otherwise just the map3tcr
+
+        if(networkCode !== 'ethereum' || !address) {
+            throw new Error(`Invalid network code or address for TCR verification`);   
+        }
         const klerosTcrResult = await checkIfAssetInKlerosTCR(address);
 
         if(!klerosTcrResult.inTcr) {
