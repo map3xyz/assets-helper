@@ -2,12 +2,10 @@ import axios from "axios";
 import { parseAssetId } from "../addresses";
 import { TcrCheckResult } from "./types";
 
-export async function checkIfAssetInKlerosTCR(assetId: string): Promise<TcrCheckResult> {
+export async function checkIfAssetInKlerosTCR(address: string): Promise<TcrCheckResult> {
 
 
     try {
-        const { networkCode, address } = parseAssetId(assetId);
-
         const query = `
                         query { tokens(where: { address: "${address}" }) {
                             address
