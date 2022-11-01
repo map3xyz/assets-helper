@@ -54,7 +54,7 @@ export async function attemptTcrVerificationForAsset(networkCode: string, addres
         }
 
     } catch (err) {
-        console.error(err);
+        // console.error(err);
         return {
             verified: false,
             verifications: []
