@@ -110,10 +110,10 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
    return Promise.resolve();
 }
 
-export async function ingestTokenList(listLocation: string, directory: string, branchName: string, source?: string, verificationType?: VerificationType): Promise<void> {
+export async function ingestTokenList(listLocation: string, networkDirectory: string, branchName: string, source?: string, verificationType?: VerificationType): Promise<void> {
 
     try {
-        const tokenlistLocation = path.join(directory, 'tokenlist.json');
+        const tokenlistLocation = path.join(networkDirectory, 'tokenlist.json');
 
         const previousListToParse: TokenList = 
             fs.existsSync(tokenlistLocation) ?
@@ -127,11 +127,11 @@ export async function ingestTokenList(listLocation: string, directory: string, b
 
         let listToIngest: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
 
-        const networkCode = directory.split('/')[directory.split('/').length - 3];
-        const networkInfoFileLoc = path.join(directory.split(networkCode)[0], networkCode, 'info.json');
+        const networkCode = networkDirectory.split('/')[networkDirectory.split('/').length - 1];
+        const networkInfoFileLoc = path.join(networkDirectory, 'info.json');
 
         if(!fs.existsSync(networkInfoFileLoc)) {
-            console.error(`Network info file does not exist. dir: ${directory} code: ${networkCode} file: ${networkInfoFileLoc}`);
+            console.error(`Network info file does not exist. dir: ${networkDirectory} code: ${networkCode} file: ${networkInfoFileLoc}`);
             return;
         }
         const networkInfoFile = JSON.parse(fs.readFileSync(networkInfoFileLoc, 'utf8'));
@@ -150,10 +150,10 @@ export async function ingestTokenList(listLocation: string, directory: string, b
             );
     
         if(newAssets.length > 0) {
-            await branch(directory, branchName);
-            await ingestNewAssets(newAssets, directory, source);
-            await needBeRegenerateTokenlist(directory);
-            await commit(directory, `Indexing ${listToIngest.tokens.length} new assets from ${listToIngest.name || source}`);
+            await branch(networkDirectory, branchName);
+            await ingestNewAssets(newAssets, networkDirectory, source);
+            await needBeRegenerateTokenlist(networkDirectory);
+            await commit(networkDirectory, `Indexing ${listToIngest.tokens.length} new assets from ${listToIngest.name || source}`);
         }
 
         return Promise.resolve();

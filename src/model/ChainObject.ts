@@ -61,7 +61,7 @@ export abstract class ChainObject extends RepoObject {
         this.version = this.version.toString();
         let parsed = JSON.parse(JSON.stringify(this));
 
-        parsed.logo = this.logo.deserialise();
+        parsed.logo = this.logo?.deserialise();
 
         // sort keys
         parsed = sortObjectKeys(parsed);
