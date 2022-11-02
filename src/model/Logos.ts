@@ -18,16 +18,14 @@ export class Logos {
     png?: string;
     svg?: string;
 
-    constructor(input?: LogoDownloadInputs | Partial<Logos>) {
+    constructor(input?: LogoDownloadInputs) {
         if(input) {
-            if(input.png) {
-                // @ts-ignore
-                this.png = input.png instanceof String? input.png : input.png.url || input.png.ipfs;
-            } 
+            if(input.png && (input.png.url || input.png.ipfs)) {
+                this.png = input.png.url || input.png.ipfs;
+            }
 
-            if(input.svg) {
-                // @ts-ignore
-                this.svg = input.svg instanceof String ? input.svg : input.svg.url || input.svg.ipfs;
+            if(input.svg && (input.svg.url || input.svg.ipfs)) {
+                this.svg = input.svg.url || input.svg.ipfs;
             }
         }
     }

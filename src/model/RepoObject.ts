@@ -11,6 +11,10 @@ export abstract class RepoObject {
     }
 
     addVerification(verification: Verification ) {
+        if(!verification) {
+            throw new Error('verification is required to add a verification to a RepoObject');
+        }
+        
         if(!this.verifications) {
             this.verifications = [];
         }
