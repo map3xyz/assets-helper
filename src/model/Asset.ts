@@ -1,13 +1,12 @@
-import { RepoObject } from "./RepoObject";
-import { TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
+import { ChainObject } from "./ChainObject";
+import {TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
 import { TagName } from "./Tag";
 import { getTwaTokenInfo } from "../trustwallet";
 import { getNetworkForChainId } from "../utils/chainId";
 import { formatAddress } from "../utils";
 import { Logos } from "./Logos";
 
-export class Asset extends RepoObject {
-
+export class Asset extends ChainObject {
     address: string;
     type: 'asset';
     identifiers: {
@@ -54,7 +53,6 @@ async function enhanceExtTokenInfoWithSourceData(baseToken: Asset, chainId: numb
     if(!source) {
         return baseToken;
     }
-
 
     switch(source) {
         case 'trustwallet': 

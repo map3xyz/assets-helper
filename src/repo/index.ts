@@ -48,17 +48,17 @@ export async function regenerateTokenlists(dir: string) {
 
 export function getGithubHostedFileUrl (dir: string, fileName: string) {
     
-    if(dir.includes('assets/networks')) {
-        const baseUrl = `${GITHUB_USER_CONTENT_BASE_URL}/assets/master`;
-        return `${baseUrl}/networks/${dir.split("/networks/")[1]}/${fileName}`;
-    }
-
     if(dir.includes('-tokenlist')) {
         const preTokenlistDir = dir.split("-tokenlist")[0];
         const network = preTokenlistDir.split("/")[preTokenlistDir.split('/').length - 1];
         const baseUrl = `${GITHUB_USER_CONTENT_BASE_URL}/${network}-tokenlist/master`;
         const address = dir.split('/')[dir.split('/').length -1]
         return `${baseUrl}/${address}/${fileName}`;
+    }
+    
+    if(dir.includes('assets/networks')) {
+        const baseUrl = `${GITHUB_USER_CONTENT_BASE_URL}/assets/master`;
+        return `${baseUrl}/networks/${dir.split("/networks/")[1]}/${fileName}`;
     }
 
     throw new Error('Cannot compute github hosted file url for directory ' + dir + ' and file name ' + fileName);

@@ -26,22 +26,8 @@ export const NetworkSchemaRules: ValidationRule[] = [
         name: `${baseName}:InfoFilesAreInstanceOfSchema`,
         network: 'all',
         validate: async (network: string, repoPath: string): Promise<ValidationResult> => {
-            
-            let directoryShouldHaveInfoFile = false;
 
-            // Note: this relies on the fact that in the case of 
-            // tokens such as ethereum/assets/{usdc_contract_address}
-            // the directory structure contains a '/' 
-            // before the variable token or testnet id/name
-
-            if(repoPath.endsWith(network) 
-                || repoPath.includes(`${network}/assets/`)
-                || repoPath.includes(`${network}/testnets/`)
-                ) {
-                    directoryShouldHaveInfoFile = true;
-            }
-
-            if(!directoryShouldHaveInfoFile) {
+            if(!repoPath.endsWith(network)) {
                 return { valid: true, errors: []};
             }
 
