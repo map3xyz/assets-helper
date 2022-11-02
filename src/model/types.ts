@@ -15,17 +15,3 @@ export interface Links {
     whitepaper?: string;
 }
 
-export interface Verification {
-    verified: boolean;
-    type: string; 
-    timestamp: string;
-    proof: VerificationProof; 
-}
-
-// TODO extend VerificationProof to include different types 
-type VerificationProof = AdminVerificationProof;
-
-interface AdminVerificationProof  {
-    signature: string;
-    assertion: string;
-}

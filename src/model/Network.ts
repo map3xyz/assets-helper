@@ -1,7 +1,7 @@
 import { toHyphenCase } from "../utils";
-import { RepoObject } from "./RepoObject";
+import { ChainObject } from "./ChainObject";
 
-export class Network extends RepoObject {
+export class Network extends ChainObject {
     identifiers: {
         bip44?: number;
         chainId?: number;

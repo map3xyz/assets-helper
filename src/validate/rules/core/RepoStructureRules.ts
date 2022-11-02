@@ -17,22 +17,21 @@ export const RepoStructureRules: ValidationRule[] = [
 
             return new Promise((resolve, reject) => {
 
-                if(!repoPath.endsWith('/assets')) {
-                    return resolve({ valid: true, errors: [] })
-                }
                 const errors = [];
                 let valid = true;
+                
+                if(repoPath.endsWith('/assets')) {
+                    directories.forEach(dir =>{
 
-                directories.forEach(dir =>{
-
-                    if(!fs.existsSync(path.join(repoPath, dir))){                    
-                        errors.push({
-                            source: `${repoPath}`,
-                            message: `Directory ${dir} is missing`
-                        });
-                        valid = false;
-                    }
-                })
+                            if(!fs.existsSync(path.join(repoPath, dir))){                    
+                                errors.push({
+                                    source: `${repoPath}`,
+                                    message: `Directory ${dir} is missing`
+                                });
+                                valid = false;
+                            }
+                    })
+                }
 
                 resolve({
                     valid: valid,

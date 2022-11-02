@@ -11,14 +11,15 @@ const networkFiles = [
 
 export const NetworkDirectoryRules: ValidationRule[] = [
     {
-        name: `${baseName}:FileNamesRule`,
+        name: `${baseName}:NetworkDirectoryRules`,
         network: 'all',
         validate: async (network: string, repoPath: string): Promise<ValidationResult> => {
             
             
             return new Promise((resolve, reject) => {
-
-                if(!network) {
+                const split = repoPath.split('/');
+                
+                if(!network || split[split.length - 2] !== 'networks') {
                     return resolve({valid: true, errors: []})
                 }
                 
@@ -28,8 +29,8 @@ export const NetworkDirectoryRules: ValidationRule[] = [
                 if(!fs.existsSync(path.join(repoPath, 'info.json'))){ 
                     console.log('Error: info.json not found on ' + path.join(repoPath, 'info.json'));                   
                     errors.push({
-                        source: `${repoPath}`,
-                        message: `${network} info.json is missing`
+                        source: `${baseName}:${path.join(repoPath, 'info.json')}`,
+                        message: `${network} network info.json is missing`
                     });
                     valid = false;
                 }

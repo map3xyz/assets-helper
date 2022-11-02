@@ -7,10 +7,14 @@ if (!isDev()) {
   shell.config.silent = true;
 }
 
-export async function commit(repo: string, message: string): Promise<void> {
+export async function commit(repo: string, message: string, branchName?: string): Promise<void> {
   try {
+    if(branchName) {
+      await branch(repo, branchName);
+    }
+
     console.log(`Committing ${repo} msg = ${message}`);
-    const cmd = `cd ${repo} ;` + ` git add . &&` + ` git commit -m "${message}"`;
+    const cmd = `cd ${repo} &&` + ` git add . &&` + ` git commit -m "${message}"`;
 
     return shell.exec(cmd);
   } catch (err) {
@@ -23,9 +27,9 @@ export async function branch(directory: string, branch: string, origin: string =
     const branchExists = await exists(directory, branch);
     const checkoutFlags = branchExists ? "" : "-b";
 
-    console.log(`Branching ${directory} to ${branch}`);
-    const checkBranchCmd = `cd ${directory} ;` + ` git rev-parse --abbrev-ref HEAD`;
-    const createBranchCmd = `cd ${directory} ;` + ` git checkout ${checkoutFlags} ${branch}`;
+    console.log(`Branching ${directory} to ${branchExists ? 'NEW' : 'EXISTING'} ${branch}`);
+    const checkBranchCmd = `cd ${directory} &&` + ` git rev-parse --abbrev-ref HEAD`;
+    const createBranchCmd = `cd ${directory} &&` + ` git checkout ${checkoutFlags} ${branch}`;
 
     const gitBranch = shell.exec(checkBranchCmd).stdout.trim();
 

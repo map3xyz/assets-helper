@@ -18,8 +18,7 @@ export async function getNestedFilesDirs(dir: string): Promise<string[]> {
 
 export async function getDirectories(dir: string): Promise<string[]> {
     try {
-            
-        if(await isDirectory(dir)) {
+        if(dir && await isDirectory(dir)) {
             const searchResults = 
                 await Promise.all(
                     (await readdir (dir))

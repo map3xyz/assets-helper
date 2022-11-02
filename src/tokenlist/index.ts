@@ -8,6 +8,7 @@ import { Version } from '../model/Version';
 import { getDirectories } from '../utils/filesystem';
 import { branch, commit } from '../utils/git';
 import { formatAddress } from '../utils';
+import { VerificationType } from '../model/Verification';
 
 async function prepareTokenlist(directory: string, previousTokenlist?: TokenList): Promise<TokenList> {
 
@@ -109,10 +110,12 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
    return Promise.resolve();
 }
 
-export async function ingestTokenList(listLocation: string, directory: string, branchName: string, source?: string): Promise<void> {
+export async function ingestTokenList(listLocation: string, networkDirectory: string, branchName: string, source?: string): Promise<void> {
 
     try {
-        const tokenlistLocation = path.join(directory, 'tokenlist.json');
+        const networkCode = networkDirectory.split('/')[networkDirectory.split('/').length - 1];
+        const assetsDir = path.join(networkDirectory, 'assets', `${networkCode}-tokenlist`);
+        const tokenlistLocation = path.join(assetsDir, 'tokenlist.json');
 
         const previousListToParse: TokenList = 
             fs.existsSync(tokenlistLocation) ?
@@ -126,8 +129,13 @@ export async function ingestTokenList(listLocation: string, directory: string, b
 
         let listToIngest: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
 
-        const networkCode = directory.split('/')[directory.split('/').length - 3];
-        const networkInfoFile = JSON.parse(fs.readFileSync(path.join(directory.split(networkCode)[0], networkCode, 'info.json'), 'utf8'));
+        const networkInfoFileLoc = path.join(networkDirectory, 'info.json');
+
+        if(!fs.existsSync(networkInfoFileLoc)) {
+            console.error(`Network info file does not exist. dir: ${networkDirectory} code: ${networkCode} file: ${networkInfoFileLoc}`);
+            return;
+        }
+        const networkInfoFile = JSON.parse(fs.readFileSync(networkInfoFileLoc, 'utf8'));
 
         const chainId = networkInfoFile?.identifiers.chainId;
 
@@ -143,10 +151,10 @@ export async function ingestTokenList(listLocation: string, directory: string, b
             );
     
         if(newAssets.length > 0) {
-            await branch(directory, branchName);
-            await ingestNewAssets(newAssets, directory, source);
-            await needBeRegenerateTokenlist(directory);
-            await commit(directory, `Indexing ${listToIngest.tokens.length} new assets from ${listToIngest.name || source}`);
+            await branch(assetsDir, branchName);
+            await ingestNewAssets(newAssets, assetsDir, source);
+            await needBeRegenerateTokenlist(assetsDir);
+            await commit(assetsDir, `Indexing ${listToIngest.tokens.length} new assets from ${listToIngest.name || source}`);
         }
 
         return Promise.resolve();

@@ -10,3 +10,4 @@ export const ASSETS_CSV_TMP_FILE = './tmp/assets.csv';
 export const ASSETS_REPO_CACHE_MINUTES = 60; // 60 minutes
 export const NETWORKS_SCHEMA_FILE_URL = 'https://raw.githubusercontent.com/map3xyz/assets/master/schema/networks.schema.json';
 export const ASSETS_SCHEMA_FILE_URL = 'https://raw.githubusercontent.com/map3xyz/assets/master/schema/assets.schema.json';
+export const MAP3_TCR_DEPLOYED_CHAIN_ID = 100; // gnosis chain
