@@ -7,8 +7,12 @@ if (!isDev()) {
   shell.config.silent = true;
 }
 
-export async function commit(repo: string, message: string): Promise<void> {
+export async function commit(repo: string, message: string, branchName?: string): Promise<void> {
   try {
+    if(branchName) {
+      await branch(repo, branchName);
+    }
+    
     console.log(`Committing ${repo} msg = ${message}`);
     const cmd = `cd ${repo} ;` + ` git add . &&` + ` git commit -m "${message}"`;
 
