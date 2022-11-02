@@ -15,3 +15,8 @@ export interface Links {
     whitepaper?: string;
 }
 
+
+type ConfigValue = string | number | boolean;
+export interface Config { 
+    [key: string]: ConfigValue;
+}
