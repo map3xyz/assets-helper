@@ -5,6 +5,7 @@ export class Network extends RepoObject {
     identifiers: {
         bip44?: number;
         chainId?: number;
+        coinmarketcap?: number;
     } | null
     regex: {
         address: string;

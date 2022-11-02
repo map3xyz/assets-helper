@@ -1,5 +1,5 @@
 import { RepoObject } from "./RepoObject";
-import {TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
+import { TokenInfo as TokenInfoExt } from '@uniswap/token-lists';
 import { TagName } from "./Tag";
 import { getTwaTokenInfo } from "../trustwallet";
 import { getNetworkForChainId } from "../utils/chainId";
@@ -10,6 +10,9 @@ export class Asset extends RepoObject {
 
     address: string;
     type: 'asset';
+    identifiers: {
+        coinmarketcap?: number;
+    } | null
 
     constructor(info: Partial<Asset>) {
         super(info);
@@ -20,6 +23,12 @@ export class Asset extends RepoObject {
 
         this.address = formatAddress(info.address);
         this.type = 'asset';
+
+        if(!info.identifiers) { 
+            this.identifiers = null;
+        } else {
+            this.identifiers = info.identifiers;
+        }
     }
 
     static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<Asset> {        
