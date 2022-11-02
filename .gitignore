@@ -4,6 +4,7 @@ exec/
 /tmp/**/
 tmp.csv
 tmp
+.yarn/install-state.gz
 
 # Logs
 logs

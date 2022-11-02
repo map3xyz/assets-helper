@@ -2,7 +2,7 @@ import { sortObjectKeys } from "../utils";
 import { Logos } from "./Logos";
 import { RepoObject } from "./RepoObject";
 import { TagName } from "./Tag";
-import { Description, Links } from "./types";
+import { Config, Description, Links } from "./types";
 import { getUUID } from "./UUID";
 
 export type ObjectType = 'network' | 'asset';
@@ -12,6 +12,7 @@ export abstract class ChainObject extends RepoObject {
     networkCode: string;
     active: boolean;
     color: string | null;
+    config: Config | null;
     decimals: number;
     description: Description | null;// foreign keys
     links: Links | null; // foreign keys
