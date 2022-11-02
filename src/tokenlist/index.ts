@@ -110,10 +110,12 @@ async function ingestNewAssets(newAssets: ExtTokenInfo[], directory: string, sou
    return Promise.resolve();
 }
 
-export async function ingestTokenList(listLocation: string, networkDirectory: string, branchName: string, source?: string, verificationType?: VerificationType): Promise<void> {
+export async function ingestTokenList(listLocation: string, networkDirectory: string, branchName: string, source?: string): Promise<void> {
 
     try {
-        const tokenlistLocation = path.join(networkDirectory, 'tokenlist.json');
+        const networkCode = networkDirectory.split('/')[networkDirectory.split('/').length - 1];
+        const assetsDir = path.join(networkDirectory, 'assets', `${networkCode}-tokenlist`);
+        const tokenlistLocation = path.join(assetsDir, 'tokenlist.json');
 
         const previousListToParse: TokenList = 
             fs.existsSync(tokenlistLocation) ?
@@ -127,7 +129,6 @@ export async function ingestTokenList(listLocation: string, networkDirectory: st
 
         let listToIngest: TokenList = JSON.parse(fs.readFileSync(listLocation, 'utf8'));
 
-        const networkCode = networkDirectory.split('/')[networkDirectory.split('/').length - 1];
         const networkInfoFileLoc = path.join(networkDirectory, 'info.json');
 
         if(!fs.existsSync(networkInfoFileLoc)) {
@@ -150,10 +151,10 @@ export async function ingestTokenList(listLocation: string, networkDirectory: st
             );
     
         if(newAssets.length > 0) {
-            await branch(networkDirectory, branchName);
-            await ingestNewAssets(newAssets, networkDirectory, source);
-            await needBeRegenerateTokenlist(networkDirectory);
-            await commit(networkDirectory, `Indexing ${listToIngest.tokens.length} new assets from ${listToIngest.name || source}`);
+            await branch(assetsDir, branchName);
+            await ingestNewAssets(newAssets, assetsDir, source);
+            await needBeRegenerateTokenlist(assetsDir);
+            await commit(assetsDir, `Indexing ${listToIngest.tokens.length} new assets from ${listToIngest.name || source}`);
         }
 
         return Promise.resolve();
