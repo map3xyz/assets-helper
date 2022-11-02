@@ -9,6 +9,9 @@ import { Logos } from "./Logos";
 export class Asset extends ChainObject {
     address: string;
     type: 'asset';
+    identifiers: {
+        coinmarketcap?: number;
+    } | null
 
     constructor(info: Partial<Asset>) {
         super(info);
@@ -19,6 +22,12 @@ export class Asset extends ChainObject {
 
         this.address = formatAddress(info.address);
         this.type = 'asset';
+
+        if(!info.identifiers) { 
+            this.identifiers = null;
+        } else {
+            this.identifiers = info.identifiers;
+        }
     }
 
     static async fromTokenlistTokenInfo(info: TokenInfoExt, source?: string): Promise<Asset> {        

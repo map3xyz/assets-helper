@@ -5,6 +5,7 @@ export class Network extends ChainObject {
     identifiers: {
         bip44?: number;
         chainId?: number;
+        coinmarketcap?: number;
     } | null
     regex: {
         address: string;

@@ -2,6 +2,8 @@
 import { GITHUB_USER_CONTENT_BASE_URL, REPO_CLONE_URL } from '../utils/constants';
 import { getDirectories } from '../utils/filesystem';
 import { push } from '../utils/git';
+import fs from 'fs';
+import { sortObjectKeys } from '../utils';
 
 export async function pushAssetsRepoModuleChangesAndCreatePullRequests(dir: string) {
     try {
@@ -60,4 +62,43 @@ export function getGithubHostedFileUrl (dir: string, fileName: string) {
     }
 
     throw new Error('Cannot compute github hosted file url for directory ' + dir + ' and file name ' + fileName);
+}
+
+export function getDirPathForNetworkCode (network: string) {
+    return `/networks/${network}`;
+}
+
+export function getDirPathForTokenlist (network: string, address?: string) {
+    return getDirPathForNetworkCode(network) + `/assets/${network}-tokenlist` + (address ? `/${address}` : '');
+}
+
+export async function addIdentifierToAsset(path: string, networkCode: string, address: string, identifierKey: string, identifierValue: string | number): Promise<{addedIdentifier: boolean}> {
+
+    const ALLOWED_IDENTIFIER_KEYS_FOR_ASSETS = [
+        'coinmarketcap'
+    ]
+
+    if(!ALLOWED_IDENTIFIER_KEYS_FOR_ASSETS.includes(identifierKey)) {
+        throw new Error('Identifier key ' + identifierKey + ' is not allowed for assets');
+    }
+    
+    const assetInfoFilePath = path + getDirPathForTokenlist(networkCode, address);
+
+    if(!fs.existsSync(assetInfoFilePath)) {
+        return { addedIdentifier: false };
+    }
+
+    const assetInfoFile = JSON.parse(fs.readFileSync(assetInfoFilePath, 'utf8'));
+
+    if(assetInfoFile.identifiers[identifierKey]) {
+        return { addedIdentifier: false };
+    }
+
+    assetInfoFile.identifiers[identifierKey] = identifierValue;
+    assetInfoFile.identifiers = sortObjectKeys(assetInfoFile.identifiers);
+    fs.writeFileSync(assetInfoFilePath, JSON.stringify(assetInfoFile, null, 2));
+
+    return {
+        addedIdentifier: true
+    }
 }
