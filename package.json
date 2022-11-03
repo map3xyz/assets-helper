@@ -21,7 +21,7 @@
     "build": "yarn clean && tsc",
     "preparePublish": "yarn build && npm version patch",
     "prepareTest": "yarn ts-node ./src/cache.ts",
-    "test": "yarn prepareTest && yarn build && ava --verbose",
+    "test": "yarn prepareTest && yarn build && ava",
     "bundle": "yarn build && pkg . --out-dir ./exec/"
   },
   "devDependencies": {

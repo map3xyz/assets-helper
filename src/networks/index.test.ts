@@ -23,7 +23,10 @@ test("networks with assets does not include Bitcoin", async (t) => {
 
 test("Get assets limits work", async t => {
   const assets = await getAssetsForNetwork("ethereum", undefined, 1);
-  t.truthy(assets.length === 1);
+  t.is(assets.length, 1);
+
+  const assets1 = await getAssetsForNetwork("ethereum", undefined, 2);
+  t.is(assets1.length, 2);
 })
 
 test("Get assets identifier limits works", async t => {
