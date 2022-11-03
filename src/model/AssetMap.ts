@@ -3,8 +3,10 @@
 
     export class AssetMap extends RepoObject {
     
-        from: string;
-        to: string;
+        fromAddress: string;
+        fromNetwork: string;
+        toAddress: string;
+        toNetwork: string;
         type: MapType;
 
         deserialise(): string {
@@ -14,4 +16,4 @@
         }
     }
 
-    export type MapType = 'direct_issuance' | 'bridged' | 'wrapped';
+    export type MapType = 'direct_issuance' | 'bridged' | 'wrapped' | 'coinmarketcap';

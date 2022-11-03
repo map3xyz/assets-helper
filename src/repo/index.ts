@@ -1,9 +1,11 @@
 
 import { GITHUB_USER_CONTENT_BASE_URL, REPO_CLONE_URL } from '../utils/constants';
-import { getDirectories } from '../utils/filesystem';
+import { getDirectories, readAndParseJson } from '../utils/filesystem';
 import { push } from '../utils/git';
 import fs from 'fs';
-import { sortObjectKeys } from '../utils';
+import { formatAddress, sortObjectKeys } from '../utils';
+import path from 'path';
+import { AssetMap } from '../model';
 
 export async function pushAssetsRepoModuleChangesAndCreatePullRequests(dir: string) {
     try {
@@ -101,4 +103,17 @@ export async function addIdentifierToAsset(path: string, networkCode: string, ad
     return {
         addedIdentifier: true
     }
+}
+
+export function getAssetMaps(networkCode: string, address: string): AssetMap[] {
+    const formattedAddress = formatAddress(address);
+
+    const assetMapInfoFile = path.join(getDirPathForTokenlist(networkCode, formattedAddress), 'maps.json');
+
+    if(!fs.existsSync(assetMapInfoFile)) {
+        return [];
+    }
+
+    return readAndParseJson(assetMapInfoFile)
+        .map(map => new AssetMap(map));
 }
