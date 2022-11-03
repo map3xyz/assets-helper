@@ -119,9 +119,10 @@ export function getAssetMaps(networkCode: string, address: string): AssetMap[] {
 }
 
 export function addAssetMap(map: AssetMap, repoPath: string = DEFAULT_REPO_DISK_LOCATION) {
-    const assetMapInfoFile = path.join(repoPath, getDirPathForTokenlist(map.fromNetwork, map.fromAddress), 'maps.json');
+    const assetDir = path.join(repoPath, getDirPathForTokenlist(map.fromNetwork, map.fromAddress));
+    const assetMapInfoFile = path.join(assetDir, 'maps.json');
 
-    if(!fs.existsSync(assetMapInfoFile)) {
+    if(fs.existsSync(assetDir) && !fs.existsSync(assetMapInfoFile)) {
         fs.writeFileSync(assetMapInfoFile, JSON.stringify([map], null, 2));
         return;
     }
