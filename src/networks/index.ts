@@ -75,7 +75,7 @@ export async function getNetworksWithAssets(dir?: string): Promise<Network[]> {
   }
 }
 
-export async function getAssetsForNetwork(network: string, dir?: string): Promise<Asset[]> {
+export async function getAssetsForNetwork(network: string, dir?: string, limit?: number, start: number = 0, identifiersToFilter: string[] = []): Promise<Asset[]> {
   if (!dir) {
     dir = DEFAULT_REPO_DISK_LOCATION;
   }
@@ -94,15 +94,28 @@ export async function getAssetsForNetwork(network: string, dir?: string): Promis
     // TODO, make it work for multiple tokenlists
     const assetDirs = await getDirectories(tokenlistDir);
 
-    assetDirs.forEach((directory) => {
+    let counter = 0;
+
+    for (const directory of assetDirs) {
+      if (counter >= start && counter < start + limit) {
+        break;
+      }
       const split = directory.split("/");
 
       if (split[split.length - 2] === `${network}-tokenlist` && !directory.includes(".git")) {
         if(fs.existsSync(`${directory}/info.json`)) {
-          res.push(readAndParseJson(`${directory}/info.json`));
+          const asset = readAndParseJson(`${directory}/info.json`);
+
+          if(identifiersToFilter.length === 0 || 
+            Object.keys(asset.identifiers)
+            .some(identifierKey => identifiersToFilter.includes(identifierKey))) {
+              
+              res.push(asset);
+              counter++;
+          } 
         }
       }
-    });
+    }
 
     return res;
   } catch (err) {
