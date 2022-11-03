@@ -16,11 +16,12 @@
     "!dist/**/*.test.js"
   ],
   "scripts": {
-    "index": "yarn ts-node ./src/index.ts",
+    "index": "ts-node ./src/index.ts",
     "clean": "rimraf ./dist/ ./exec/",
     "build": "yarn clean && tsc",
     "preparePublish": "yarn build && npm version patch",
-    "test": "yarn build && ava --verbose",
+    "prepareTest": "yarn ts-node ./src/cache.ts",
+    "test": "yarn prepareTest && yarn build && ava --verbose",
     "bundle": "yarn build && pkg . --out-dir ./exec/"
   },
   "devDependencies": {
