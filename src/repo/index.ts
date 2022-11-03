@@ -1,5 +1,5 @@
 
-import { GITHUB_USER_CONTENT_BASE_URL, REPO_CLONE_URL } from '../utils/constants';
+import { DEFAULT_REPO_DISK_LOCATION, GITHUB_USER_CONTENT_BASE_URL, REPO_CLONE_URL } from '../utils/constants';
 import { getDirectories, readAndParseJson } from '../utils/filesystem';
 import { push } from '../utils/git';
 import fs from 'fs';
@@ -116,4 +116,20 @@ export function getAssetMaps(networkCode: string, address: string): AssetMap[] {
 
     return readAndParseJson(assetMapInfoFile)
         .map(map => new AssetMap(map));
+}
+
+export function addAssetMap(map: AssetMap, repoPath: string = DEFAULT_REPO_DISK_LOCATION) {
+    const assetMapInfoFile = path.join(repoPath, getDirPathForTokenlist(map.fromNetwork, map.fromAddress), 'maps.json');
+
+    if(!fs.existsSync(assetMapInfoFile)) {
+        fs.writeFileSync(assetMapInfoFile, JSON.stringify([map], null, 2));
+        return;
+    }
+
+    const assetMaps = readAndParseJson(assetMapInfoFile)
+        .map(map => new AssetMap(map));
+
+    assetMaps.push(map);
+
+    fs.writeFileSync(assetMapInfoFile, JSON.stringify(assetMaps, null, 2));
 }
