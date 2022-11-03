@@ -9,13 +9,13 @@
         toNetwork: string;
         type: MapType;
 
-        constructor({ fromAddress, fromNetwork, toAddress, toNetwork, type }: AssetMap) {
-            super({});
-            this.fromAddress = fromAddress;
-            this.fromNetwork = fromNetwork;
-            this.toAddress = toAddress;
-            this.toNetwork = toNetwork;
-            this.type = type;
+        constructor(i: Partial<AssetMap>) {
+            super(i);
+            this.fromAddress = i.fromAddress;
+            this.fromNetwork = i.fromNetwork;
+            this.toAddress = i.toAddress;
+            this.toNetwork = i.toNetwork;
+            this.type = i.type;
         }
 
         deserialise(): string {
