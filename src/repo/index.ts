@@ -130,7 +130,10 @@ export function addAssetMap(map: AssetMap, repoPath: string = DEFAULT_REPO_DISK_
     const assetMaps = readAndParseJson(assetMapInfoFile)
         .map(map => new AssetMap(map));
 
-    assetMaps.push(map);
 
-    fs.writeFileSync(assetMapInfoFile, JSON.stringify(assetMaps, null, 2));
+    const existingMap = assetMaps.find(_map => _map.fromAddress === map.fromAddress && _map.fromNetwork === map.fromNetwork && _map.toAddress === map.toAddress && _map.toNetwork === map.toNetwork);
+    if(!existingMap) {
+        assetMaps.push(map);
+        fs.writeFileSync(assetMapInfoFile, JSON.stringify(assetMaps, null, 2));
+    }
 }
