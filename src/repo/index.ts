@@ -106,10 +106,10 @@ export async function addIdentifierToAsset(dir: string, networkCode: string, add
     }
 }
 
-export function getAssetMaps(networkCode: string, address: string): AssetMap[] {
+export function getAssetMaps(networkCode: string, address: string, repoPath: string = DEFAULT_REPO_DISK_LOCATION): AssetMap[] {
     const formattedAddress = formatAddress(address);
 
-    const assetMapInfoFile = path.join(getDirPathForTokenlist(networkCode, formattedAddress), 'maps.json');
+    const assetMapInfoFile = path.join(repoPath, getDirPathForTokenlist(networkCode, formattedAddress), 'maps.json');
 
     if(!fs.existsSync(assetMapInfoFile)) {
         return [];
