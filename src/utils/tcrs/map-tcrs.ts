@@ -7,7 +7,7 @@ export async function checkIfMapInMapsTcr(map: AssetMap): Promise<TcrCheckResult
         // TODO; 
         const url = 'https://console.map3.xyz/api/kleros/map'
 
-        const response = await axios.get(url + '/kleros-map3-map?from=' + map.from + '&to=' + map.to);
+        const response = await axios.get(url + '/kleros-map3-map?from=' + map.fromAddress + '&to=' + map.toAddress);
 
         return {
             inTcr: response.data.status === 'Registered',

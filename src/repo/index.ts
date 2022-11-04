@@ -1,10 +1,11 @@
 
-import { GITHUB_USER_CONTENT_BASE_URL, REPO_CLONE_URL } from '../utils/constants';
-import { getDirectories } from '../utils/filesystem';
+import { DEFAULT_REPO_DISK_LOCATION, GITHUB_USER_CONTENT_BASE_URL, REPO_CLONE_URL } from '../utils/constants';
+import { getDirectories, readAndParseJson } from '../utils/filesystem';
 import { push } from '../utils/git';
 import fs from 'fs';
-import { sortObjectKeys } from '../utils';
+import { formatAddress, sortObjectKeys } from '../utils';
 import path from 'path';
+import { AssetMap } from '../model';
 
 export async function pushAssetsRepoModuleChangesAndCreatePullRequests(dir: string) {
     try {
@@ -102,5 +103,38 @@ export async function addIdentifierToAsset(dir: string, networkCode: string, add
 
     return {
         addedIdentifier: true
+    }
+}
+
+export function getAssetMaps(networkCode: string, address: string): AssetMap[] {
+    const formattedAddress = formatAddress(address);
+
+    const assetMapInfoFile = path.join(getDirPathForTokenlist(networkCode, formattedAddress), 'maps.json');
+
+    if(!fs.existsSync(assetMapInfoFile)) {
+        return [];
+    }
+
+    return readAndParseJson(assetMapInfoFile)
+        .map(map => new AssetMap(map));
+}
+
+export function addAssetMap(map: AssetMap, repoPath: string = DEFAULT_REPO_DISK_LOCATION) {
+    const assetDir = path.join(repoPath, getDirPathForTokenlist(map.fromNetwork, map.fromAddress));
+    const assetMapInfoFile = path.join(assetDir, 'maps.json');
+
+    if(fs.existsSync(assetDir) && !fs.existsSync(assetMapInfoFile)) {
+        fs.writeFileSync(assetMapInfoFile, JSON.stringify([map], null, 2));
+        return;
+    }
+
+    const assetMaps = readAndParseJson(assetMapInfoFile)
+        .map(map => new AssetMap(map));
+
+
+    const existingMap = assetMaps.find(_map => _map.fromAddress === map.fromAddress && _map.fromNetwork === map.fromNetwork && _map.toAddress === map.toAddress && _map.toNetwork === map.toNetwork);
+    if(!existingMap) {
+        assetMaps.push(map);
+        fs.writeFileSync(assetMapInfoFile, JSON.stringify(assetMaps, null, 2));
     }
 }
