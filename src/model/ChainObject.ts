@@ -1,4 +1,5 @@
 import { sortObjectKeys } from "../utils";
+import { AssetMap } from "./AssetMap";
 import { Logos } from "./Logos";
 import { RepoObject } from "./RepoObject";
 import { TagName } from "./Tag";
@@ -17,7 +18,13 @@ export abstract class ChainObject extends RepoObject {
     description: Description | null;// foreign keys
     links: Links | null; // foreign keys
     logo: Logos | null; // foreign keys
+    maps: {
+        [type: string]: AssetMap[];
+    }
     name: string;
+    networks: {
+        [networkCode: string]: string; // addresses array
+    }
     spam: boolean;
     symbol: string;
     tags: TagName[]; // foreign keys
@@ -44,10 +51,23 @@ export abstract class ChainObject extends RepoObject {
         this.links = info.links || getEmptyBaseLinks();
         this.logo = info.logo || new Logos();
 
+        if(!info.maps && Object.keys(info.maps).length == 0) {
+            info.maps = {};
+        } else {
+            this.maps = info.maps;
+        }
+
         if(!info.name) {
             throw new Error('name is required to initialise an AssetsRepoObject Passed: ' + JSON.stringify(info));
         }
         this.name = info.name;
+
+        if(!info.networks && Object.keys(info.networks).length == 0) {
+            info.networks = {};
+        } else {
+            this.networks = info.networks;
+        }
+
         this.spam = info.spam === undefined ? false : info.spam;
 
         if(!info.symbol) {
