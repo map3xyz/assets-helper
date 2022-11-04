@@ -1,15 +1,22 @@
-import { toChecksumAddress, checkAddressChecksum } from 'ethereum-checksum-address';
+import { toChecksumAddress } from 'ethereum-checksum-address';
 
 export function formatAddress(address: string): string {
     if(!address) {
         return null;
     }
+
+    address = address.replace(/\s/g, "");
+    
     if(address.toLowerCase().startsWith('0x')) {
-        return toChecksumAddress(address);
+        try {
+            return toChecksumAddress(address);
+        } catch (err) {
+            return null;
+        }
     }
 
     // TODO; in future expand for other non EVM use cases
-    return address.toLowerCase();
+    return address.replace(/\s/g, "");
 }
 
 export function parseAssetId(assetId: string): { networkCode: string, address: string } {
