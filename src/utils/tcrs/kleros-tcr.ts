@@ -33,6 +33,7 @@ export async function checkIfAssetInKlerosTCR(address: string): Promise<TcrCheck
             }
         }
 
+        // console.log('checkIfAssetInKlerosTCR Token', JSON.stringify(token));
         return {
             inTcr: token.status === 'Registered',
             resolutionTxHash: token.requests[0].resolutionTx

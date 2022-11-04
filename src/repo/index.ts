@@ -67,14 +67,14 @@ export function getGithubHostedFileUrl (dir: string, fileName: string) {
 }
 
 export function getDirPathForNetworkCode (network: string) {
-    return `/networks/${network}`;
+    return path.join('networks', network);
 }
 
 export function getDirPathForTokenlist (network: string, address?: string) {
-    return getDirPathForNetworkCode(network) + `/assets/${network}-tokenlist` + (address ? `/${address}` : '');
+    return path.join(getDirPathForNetworkCode(network),'assets',`${network}-tokenlist`, (address ? `/${address}` : ''));
 }
 
-export async function addIdentifierToAsset(path: string, networkCode: string, address: string, identifierKey: string, identifierValue: string | number): Promise<{addedIdentifier: boolean}> {
+export async function addIdentifierToAsset(dir: string, networkCode: string, address: string, identifierKey: string, identifierValue: string | number): Promise<{addedIdentifier: boolean}> {
 
     const ALLOWED_IDENTIFIER_KEYS_FOR_ASSETS = [
         'coinmarketcap'
@@ -84,9 +84,10 @@ export async function addIdentifierToAsset(path: string, networkCode: string, ad
         throw new Error('Identifier key ' + identifierKey + ' is not allowed for assets');
     }
     
-    const assetInfoFilePath = path + getDirPathForTokenlist(networkCode, address);
+    const assetInfoFilePath = path.join(dir, getDirPathForTokenlist(networkCode, address), 'info.json');
 
     if(!fs.existsSync(assetInfoFilePath)) {
+        console.error('addIdentifierToAsset Cannot find asset info file for asset ' + address + ' in directory ' + dir);
         return { addedIdentifier: false };
     }
 
