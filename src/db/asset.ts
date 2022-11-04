@@ -2,7 +2,6 @@ import { Asset } from "../model";
 import { AssetMapping } from "../model/AssetMapping";
 import { getAssetMapping, getAssetsForNetwork, getNetworks } from "../networks";
 import { ETHEREUM_ASSETS, POLYGON_ASSETS } from "./assets.json";
-import { fetchAssetsCsv } from "./utils";
 
 type AssetInfoCallback = (assetInfo: Asset) => Promise<void>;
 type AssetMappingInfoCallback = (assetMapping: AssetMapping) => Promise<void>;
@@ -20,22 +19,6 @@ export async function assetsForEach(callback: AssetInfoCallback, complete?: () =
     if (complete) {
       await complete();
     }
-  } catch (err) {
-    throw err;
-  }
-}
-
-export async function assetForId(id: string, callback: AssetInfoCallback) {
-  try {
-    const assets = await fetchAssetsCsv();
-    const assetCsvRow = assets.get(`id:${id}`);
-
-    if (!assetCsvRow) {
-      return callback(null);
-    }
-    const asset = (await getAssetsForNetwork(assetCsvRow.primaryNetwork)).find((asset) => asset.id === id);
-
-    return callback(asset);
   } catch (err) {
     throw err;
   }
