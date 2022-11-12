@@ -3,9 +3,9 @@
 
     export class AssetMap extends RepoObject {
     
-        fromAddress: string;
+        fromAddress?: string;
         fromNetwork: string;
-        toAddress: string;
+        toAddress?: string;
         toNetwork: string;
         type: MapType;
 
