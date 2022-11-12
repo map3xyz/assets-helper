@@ -126,14 +126,17 @@ export function addAssetMap(map: AssetMap, repoPath: string = DEFAULT_REPO_DISK_
     const assetDir = path.join(repoPath, getDirPathForTokenlist(map.fromNetwork, map.fromAddress));
     const assetMapInfoFile = path.join(assetDir, 'maps.json');
 
-    if(fs.existsSync(assetDir) && !fs.existsSync(assetMapInfoFile)) {
-        fs.writeFileSync(assetMapInfoFile, JSON.stringify([map.deserialise()]), null, 2);
+    if(!fs.existsSync(assetDir)) {
+        throw new Error(`Cannot add map to ${assetDir} as it does not exist`)
+    }
+
+    if(!fs.existsSync(assetMapInfoFile)) {
+        fs.writeFileSync(assetMapInfoFile, JSON.stringify([map.deserialise()], null, 2));
         return;
     }
 
     const assetMaps = readAndParseJson(assetMapInfoFile)
         .map(map => new AssetMap(map));
-
 
     const existingMap = assetMaps.find(
         _map => _map.fromAddress === map.fromAddress 
