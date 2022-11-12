@@ -71,7 +71,12 @@ export function getDirPathForNetworkCode (network: string) {
 }
 
 export function getDirPathForTokenlist (network: string, address?: string) {
-    return path.join(getDirPathForNetworkCode(network),'assets',`${network}-tokenlist`, (address ? `/${address}` : ''));
+    let addr = address;
+
+    if(address) {
+        addr = formatAddress(addr);
+    }
+    return path.join(getDirPathForNetworkCode(network),'assets',`${network}-tokenlist`, (addr ? `/${addr}` : ''));
 }
 
 export async function addIdentifierToAsset(dir: string, networkCode: string, address: string, identifierKey: string, identifierValue: string | number): Promise<{addedIdentifier: boolean}> {
@@ -106,10 +111,8 @@ export async function addIdentifierToAsset(dir: string, networkCode: string, add
     }
 }
 
-export function getAssetMaps(networkCode: string, address: string, repoPath: string = DEFAULT_REPO_DISK_LOCATION): AssetMap[] {
-    const formattedAddress = formatAddress(address);
-
-    const assetMapInfoFile = path.join(repoPath, getDirPathForTokenlist(networkCode, formattedAddress), 'maps.json');
+export function getAssetMaps(networkCode: string, address?: string, repoPath: string = DEFAULT_REPO_DISK_LOCATION): AssetMap[] {
+    const assetMapInfoFile = path.join(repoPath, getDirPathForTokenlist(networkCode, address), 'maps.json');
 
     if(!fs.existsSync(assetMapInfoFile)) {
         return [];
