@@ -131,7 +131,7 @@ export function addAssetMap(map: AssetMap, repoPath: string = DEFAULT_REPO_DISK_
     }
 
     if(!fs.existsSync(assetMapInfoFile)) {
-        fs.writeFileSync(assetMapInfoFile, JSON.stringify([map.deserialise()], null, 2));
+        fs.writeFileSync(assetMapInfoFile, map.deserialise(true));
         return;
     }
 
@@ -146,6 +146,6 @@ export function addAssetMap(map: AssetMap, repoPath: string = DEFAULT_REPO_DISK_
 
     if(!existingMap) {
         assetMaps.push(map);
-        fs.writeFileSync(assetMapInfoFile, JSON.stringify(assetMaps.map(m => m.deserialise()), null, 2));
+        fs.writeFileSync(assetMapInfoFile, JSON.stringify(assetMaps, null, 2));
     }
 }
