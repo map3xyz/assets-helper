@@ -98,7 +98,9 @@ export async function addIdentifierToAsset(dir: string, networkCode: string, add
 
     const assetInfoFile = JSON.parse(fs.readFileSync(assetInfoFilePath, 'utf8'));
 
-    if(assetInfoFile.identifiers[identifierKey]) {
+    if(!assetInfoFile.identifiers 
+        || Object.keys(assetInfoFile.identifiers).length === 0 
+        || assetInfoFile.identifiers[identifierKey]) {
         return { addedIdentifier: false };
     }
 
