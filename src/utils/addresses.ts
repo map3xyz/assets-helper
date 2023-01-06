@@ -1,6 +1,6 @@
 import { toChecksumAddress } from 'ethereum-checksum-address';
 
-export function formatAddress(address: string): string {
+export function formatAddress(address?: string): string {
     if(!address) {
         return null;
     }

@@ -3,9 +3,9 @@
 
     export class AssetMap extends RepoObject {
     
-        fromAddress: string;
+        fromAddress?: string;
         fromNetwork: string;
-        toAddress: string;
+        toAddress?: string;
         toNetwork: string;
         type: MapType;
 
@@ -18,9 +18,13 @@
             this.type = i.type;
         }
 
-        deserialise(): string {
+        deserialise(array = false): string {
             let parsed = JSON.parse(JSON.stringify(this));
             parsed = sortObjectKeys(parsed);
+
+            if(array) {
+                parsed = [parsed];
+            }
             return JSON.stringify(parsed, undefined, 2);
         }
     }

@@ -71,7 +71,12 @@ export function getDirPathForNetworkCode (network: string) {
 }
 
 export function getDirPathForTokenlist (network: string, address?: string) {
-    return path.join(getDirPathForNetworkCode(network),'assets',`${network}-tokenlist`, (address ? `/${address}` : ''));
+    let addr = address;
+
+    if(address) {
+        addr = formatAddress(addr);
+    }
+    return path.join(getDirPathForNetworkCode(network),'assets',`${network}-tokenlist`, (addr ? `/${addr}` : ''));
 }
 
 export async function addIdentifierToAsset(dir: string, networkCode: string, address: string, identifierKey: string, identifierValue: string | number): Promise<{addedIdentifier: boolean}> {
@@ -93,7 +98,9 @@ export async function addIdentifierToAsset(dir: string, networkCode: string, add
 
     const assetInfoFile = JSON.parse(fs.readFileSync(assetInfoFilePath, 'utf8'));
 
-    if(assetInfoFile.identifiers[identifierKey]) {
+    if(!assetInfoFile.identifiers 
+        || Object.keys(assetInfoFile.identifiers).length === 0 
+        || assetInfoFile.identifiers[identifierKey]) {
         return { addedIdentifier: false };
     }
 
@@ -106,10 +113,8 @@ export async function addIdentifierToAsset(dir: string, networkCode: string, add
     }
 }
 
-export function getAssetMaps(networkCode: string, address: string, repoPath: string = DEFAULT_REPO_DISK_LOCATION): AssetMap[] {
-    const formattedAddress = formatAddress(address);
-
-    const assetMapInfoFile = path.join(repoPath, getDirPathForTokenlist(networkCode, formattedAddress), 'maps.json');
+export function getAssetMaps(networkCode: string, address?: string, repoPath: string = DEFAULT_REPO_DISK_LOCATION): AssetMap[] {
+    const assetMapInfoFile = path.join(repoPath, getDirPathForTokenlist(networkCode, address), 'maps.json');
 
     if(!fs.existsSync(assetMapInfoFile)) {
         return [];
@@ -123,16 +128,24 @@ export function addAssetMap(map: AssetMap, repoPath: string = DEFAULT_REPO_DISK_
     const assetDir = path.join(repoPath, getDirPathForTokenlist(map.fromNetwork, map.fromAddress));
     const assetMapInfoFile = path.join(assetDir, 'maps.json');
 
-    if(fs.existsSync(assetDir) && !fs.existsSync(assetMapInfoFile)) {
-        fs.writeFileSync(assetMapInfoFile, JSON.stringify([map], null, 2));
+    if(!fs.existsSync(assetDir)) {
+        throw new Error(`Cannot add map to ${assetDir} as it does not exist`)
+    }
+
+    if(!fs.existsSync(assetMapInfoFile)) {
+        fs.writeFileSync(assetMapInfoFile, map.deserialise(true));
         return;
     }
 
     const assetMaps = readAndParseJson(assetMapInfoFile)
         .map(map => new AssetMap(map));
 
+    const existingMap = assetMaps.find(
+        _map => _map.fromAddress === map.fromAddress 
+        && _map.fromNetwork === map.fromNetwork 
+        && _map.toAddress === map.toAddress 
+        && _map.toNetwork === map.toNetwork);
 
-    const existingMap = assetMaps.find(_map => _map.fromAddress === map.fromAddress && _map.fromNetwork === map.fromNetwork && _map.toAddress === map.toAddress && _map.toNetwork === map.toNetwork);
     if(!existingMap) {
         assetMaps.push(map);
         fs.writeFileSync(assetMapInfoFile, JSON.stringify(assetMaps, null, 2));
