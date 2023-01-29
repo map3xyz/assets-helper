@@ -13,6 +13,7 @@ export class Network extends ChainObject {
     }
 
     type: 'network';
+    networkName: string;
 
     constructor(info: Partial<Network>) {
         super(info);
@@ -45,5 +46,6 @@ export class Network extends ChainObject {
             } 
         }
         this.type = 'network';
+        this.networkName = info.networkName;
     }
 }
