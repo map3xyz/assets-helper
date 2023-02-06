@@ -70,3 +70,7 @@ async function getMockAssets(networkId?: string): Promise<Asset[]> {
   return res as Asset[];
 }
 
+export async function getAssetsByNetworkCodeAndSymbol(networkCode: string, symbol: string): Promise<Asset[]> {
+  const assets = await getAssetsForNetwork(networkCode);
+  return assets.filter((asset) => asset.symbol === symbol);
+}
