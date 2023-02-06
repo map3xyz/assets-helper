@@ -79,11 +79,42 @@ export function getDirPathForTokenlist (network: string, address?: string) {
     return path.join(getDirPathForNetworkCode(network),'assets',`${network}-tokenlist`, (addr ? `/${addr}` : ''));
 }
 
+const ALLOWED_IDENTIFIER_KEYS_FOR_ASSETS = [
+    'coinmarketcap',
+    'binance'
+]
+
+export async function addIdentifierToNetwork(dir: string, networkCode: string, identifierKey: string, identifierValue: string): Promise<{addedIdentifier: boolean}> {
+    if(!ALLOWED_IDENTIFIER_KEYS_FOR_ASSETS.includes(identifierKey)) {
+        throw new Error('Identifier key ' + identifierKey + ' is not allowed for networks');
+    }
+    
+    const networkInfoFilePath = path.join(dir, getDirPathForTokenlist(networkCode), 'info.json');
+
+    if(!fs.existsSync(networkInfoFilePath)) {
+        console.error('addIdentifierToNetwork Cannot find asset info file for network ' + networkCode + ' in directory ' + dir);
+        return { addedIdentifier: false };
+    }
+
+    const networkInfoFile = JSON.parse(fs.readFileSync(networkInfoFilePath, 'utf8'));
+
+    if(!networkInfoFile.identifiers 
+        || Object.keys(networkInfoFile.identifiers).length === 0 
+        || networkInfoFile.identifiers[identifierKey]) {
+        return { addedIdentifier: false };
+    }
+
+    networkInfoFile.identifiers[identifierKey] = identifierValue;
+    networkInfoFile.identifiers = sortObjectKeys(networkInfoFile.identifiers);
+    fs.writeFileSync(networkInfoFilePath, JSON.stringify(networkInfoFile, null, 2));
+
+    return {
+        addedIdentifier: true
+    }
+}
+
 export async function addIdentifierToAsset(dir: string, networkCode: string, address: string, identifierKey: string, identifierValue: string | number): Promise<{addedIdentifier: boolean}> {
 
-    const ALLOWED_IDENTIFIER_KEYS_FOR_ASSETS = [
-        'coinmarketcap'
-    ]
 
     if(!ALLOWED_IDENTIFIER_KEYS_FOR_ASSETS.includes(identifierKey)) {
         throw new Error('Identifier key ' + identifierKey + ' is not allowed for assets');

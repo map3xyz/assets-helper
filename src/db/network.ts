@@ -41,3 +41,8 @@ export async function findNetworkByNetworkId(networkCode: string, callback: Netw
     throw err;
   }
 }
+
+export async function getAssetsByNetworkCodeAndSymbol(networkCode: string, symbol: string) {
+  const assets = await getAssetsForNetwork(networkCode);
+  return assets.find((asset) => asset.symbol === symbol);
+}

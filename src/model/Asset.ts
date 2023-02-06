@@ -11,6 +11,7 @@ export class Asset extends ChainObject {
     type: 'asset';
     identifiers: {
         coinmarketcap?: number;
+        binance?: string;
     } | null
 
     constructor(info: Partial<Asset>) {
