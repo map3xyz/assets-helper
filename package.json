@@ -18,7 +18,7 @@
   "scripts": {
     "index": "ts-node ./src/index.ts",
     "clean": "rimraf ./dist/ ./exec/",
-    "build": "yarn clean && tsc",
+    "build": "yarn clean && tsc && cp -r ./src/releaser/schema ./dist/releaser/schema",
     "preparePublish": "yarn build && npm version patch",
     "prepareTest": "yarn ts-node ./src/cache.ts",
     "test": "yarn prepareTest && yarn build && ava",
