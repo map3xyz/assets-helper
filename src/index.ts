@@ -9,6 +9,7 @@ export * from './trustwallet';
 export * from './utils';
 export * from './validate';
 export * from './db';
+export * from './releaser';
 
 // const base = '/Users/ap/ama_dev/map3/indexer/tmp';
 // ingestTokenList(`${base}/kq.tokenlist.json`, `${base}/map3xyz-assets/networks/polygon/assets/polygon-tokenlist`, 'foo', 'polygon-manual-list' )
