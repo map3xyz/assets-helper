@@ -7,11 +7,11 @@ import { ETHEREUM_ASSETS, POLYGON_ASSETS } from "./assets.json";
 type AssetInfoCallback = (assetInfo: Asset) => Promise<void>;
 type AssetMappingInfoCallback = (assetMapping: AssetMapping) => Promise<void>;
 
-export async function assetsForEach(callback: AssetInfoCallback, complete?: () => Promise<void>) {
+export async function assetsForEach(callback: AssetInfoCallback, complete?: () => Promise<void>, dir?: string) {
   try {
-    const networks = await getNetworks();
+    const networks = await getNetworks(dir);
     for (const network of networks) {
-      const assets = await getAssetsForNetwork(network.networkCode);
+      const assets = await getAssetsForNetwork(network.networkCode, dir);
       for (const asset of assets) {
         await callback(asset);
       }

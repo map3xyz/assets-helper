@@ -4,9 +4,9 @@ import { MOCK_NETWORKS } from "./networks.json";
 
 type NetworkInfoCallback = (networkInfo: Network) => Promise<void>;
 
-export async function networksForEach(callback: NetworkInfoCallback, complete?: () => Promise<void>) {
+export async function networksForEach(callback: NetworkInfoCallback, complete?: () => Promise<void>, dir?: string) {
   try {
-    const networks = await getNetworks();
+    const networks = await getNetworks(dir);
     await Promise.all(networks.map(async network => {
       return callback(network);
     }));

@@ -15,13 +15,13 @@ const ASSET_REPO_OWNER = "map3xyz";
 const ASSET_REPO_NAME = "assets";
 
 dotenv.config();
-createAssetDb();
+
 interface AssetMapExt extends AssetMap {
   fromId: string;
   toId: string;
 }
 
-async function createAssetDb(assetRepo: string = "/tmp/assets", assetDb: string = "/tmp/assets.db"): Promise<void> {
+export async function createAssetDb(assetRepo: string = "/tmp/assets", assetDb: string = "/tmp/assets.db"): Promise<void> {
   if(!process.env.GITHUB_TOKEN) {
     throw new Error("GITHUB_TOKEN not set");
   }
