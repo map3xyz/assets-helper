@@ -1,6 +1,7 @@
 import { Asset } from "../model";
 import { AssetMapping } from "../model/AssetMapping";
 import { getAssetMapping, getAssetsForNetwork, getNetworks } from "../networks";
+import { DEFAULT_REPO_DISK_LOCATION } from "../utils/constants";
 import { ETHEREUM_ASSETS, POLYGON_ASSETS } from "./assets.json";
 
 type AssetInfoCallback = (assetInfo: Asset) => Promise<void>;
@@ -70,3 +71,7 @@ async function getMockAssets(networkId?: string): Promise<Asset[]> {
   return res as Asset[];
 }
 
+export async function getAssetsByNetworkCodeAndSymbol(networkCode: string, symbol: string, dir = DEFAULT_REPO_DISK_LOCATION): Promise<Asset[]> {
+  const assets = await getAssetsForNetwork(networkCode, dir);
+  return assets.filter((asset) => asset.symbol === symbol);
+}
