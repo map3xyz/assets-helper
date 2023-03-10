@@ -41,7 +41,17 @@
     "ethers": "^5.7.2",
     "jsonschema": "^1.4.1",
     "shelljs": "^0.8.5",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "@octokit/auth-token": "^3.0.0",
+    "@octokit/rest": "^19.0.3",
+    "@types/moment": "^2.13.0",
+    "@types/sqlite3": "^3.1.8",
+    "dotenv": "^16.0.1",
+    "ksuid": "^3.0.0",
+    "moment": "^2.29.4",
+    "octokit": "^2.0.5",
+    "promised-sqlite3": "^1.2.0",
+    "sqlite3": "^5.0.11"
   },
   "packageManager": "yarn@3.2.1",
   "repository": {
