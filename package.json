@@ -23,7 +23,7 @@
     "prepareTest": "yarn ts-node ./src/cache.ts",
     "test": "yarn prepareTest && yarn build && ava",
     "bundle": "yarn build && pkg . --out-dir ./exec/",
-    "release-db": "ts-node ./src/releaser/sync/sync-database.ts"
+    "release-db": "ts-node ./src/releaser/db/sync-database.ts"
   },
   "devDependencies": {
     "@types/ethereum-checksum-address": "^0.0.0",

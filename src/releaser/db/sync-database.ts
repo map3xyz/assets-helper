@@ -55,13 +55,29 @@ export async function createAssetDb(assetRepo: string = "/tmp/assets", assetDb: 
 
   await db.exec("COMMIT");
 
+  const assetsNumber = await getNumberOfAssetsInDb(db);
+
+  if(assetsNumber < (process.env.MIN_NUMBER_OF_ASSETS || 1000)) {
+    console.error(`Asset DB has only ${assetsNumber} assets, exiting`);
+    process.exit(1);
+  }
+
+  console.log(`Added ${assetsNumber} to Assets DB`);
+
   await db.close();
 
   await createRelease(octokit, commitId, assetDb);
 
+  console.log("Asset DB Released");
   return Promise.resolve();
 }
 
+createAssetDb();
+
+async function getNumberOfAssetsInDb(db): Promise<number> {
+  const result = await db.get("SELECT COUNT(*) AS count FROM asset");
+  return result.count;
+}
 async function getLatestRelease(octokit: Octokit): Promise<string | null> {
   let release = null;
 
