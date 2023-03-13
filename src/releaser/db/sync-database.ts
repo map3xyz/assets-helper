@@ -72,8 +72,6 @@ export async function createAssetDb(assetRepo: string = "/tmp/assets", assetDb: 
   return Promise.resolve();
 }
 
-createAssetDb();
-
 async function getNumberOfAssetsInDb(db): Promise<number> {
   const result = await db.get("SELECT COUNT(*) AS count FROM asset");
   return result.count;
