@@ -16,7 +16,7 @@ export async function commit(repo: string, message: string, branchName?: string)
     console.log(`Committing ${repo} msg = ${message}`);
     const cmd = `cd ${repo} &&` + ` git add . &&` + ` git commit -m "${message}"`;
 
-    return shell.exec(cmd);
+    return runAndLog(cmd);
   } catch (err) {
     throw err;
   }
@@ -31,10 +31,10 @@ export async function branch(directory: string, branch: string, origin: string =
     const checkBranchCmd = `cd ${directory} &&` + ` git rev-parse --abbrev-ref HEAD`;
     const createBranchCmd = `cd ${directory} &&` + ` git checkout ${checkoutFlags} ${branch}`;
 
-    const gitBranch = shell.exec(checkBranchCmd).stdout.trim();
+    const gitBranch = (await runAndLog(checkBranchCmd)).stdout.trim();
 
     if (gitBranch !== branch) {
-      return shell.exec(createBranchCmd);
+      return runAndLog(createBranchCmd);
     }
 
     return Promise.resolve();
@@ -46,7 +46,7 @@ export async function branch(directory: string, branch: string, origin: string =
 export async function exists(directory: string, branch: string): Promise<boolean> {
   try {
     const cmd = `cd ${directory} ;` + `git branch | grep ${branch}`;
-    const gitBranch = shell.exec(cmd).stdout.trim();
+    const gitBranch = (await runAndLog(cmd)).stdout.trim();
 
     return Promise.resolve(gitBranch.length > 0);
   } catch (err) {
@@ -59,7 +59,7 @@ export async function push(directory: string, origin?: string): Promise<void> {
     console.log(`Git pushing to ${origin}`);
     const cmd = `cd ${directory} ;` + `git push origin ${origin}`;
 
-    return shell.exec(cmd);
+    return runAndLog(cmd);
   } catch (err) {
     throw err;
   }
@@ -76,7 +76,7 @@ export async function clone(repo: string, directory: string): Promise<void> {
   try {
     console.log(`Cloning ${repo} to ${directory}`);
     const cmd = `git clone ${repo} ${directory}`;
-    return shell.exec(cmd);
+    return runAndLog(cmd);
   } catch (err) {
     throw err;
   }
@@ -88,17 +88,18 @@ export async function updateSubmodulesRecursive(directory: string): Promise<void
     
     const gifConfigPath = `${directory}/.git/config`;
     if (!fs.existsSync(gifConfigPath)) {
-      await shell.exec(`cd ${directory} ; git submodule update --init --recursive`);
-    }
-    
-    const gitConfig = fs.readFileSync(`${directory}/.git/config`, "utf8");
+      await runAndLog(`cd ${directory} ; git submodule update --init --recursive`);
+    } else {
+      const gitConfig = fs.readFileSync(`${directory}/.git/config`, "utf8");
 
-    if (!gitConfig.includes("submodule")) {
-      // initialise it
-      await shell.exec(`cd ${directory} ; git submodule update --init --recursive`);
+      if (!gitConfig.includes("submodule")) {
+        // initialise it
+        await runAndLog(`cd ${directory} ; git submodule update --init --recursive`);
+      }
     }
+
     const cmd = `cd ${directory} ;` + ` git submodule update --recursive --remote`;
-    return shell.exec(cmd);
+    return runAndLog(cmd);
   } catch (err) {
     throw err;
   }
@@ -108,7 +109,7 @@ export async function pull(directory: string, origin: string): Promise<void> {
   try {
     console.log(`Git pulling dir ${directory} from ${origin}`);
     const cmd = `cd ${directory} ;` + ` git pull origin ${origin}`;
-    return shell.exec(cmd);
+    return runAndLog(cmd);
   } catch (err) {
     throw err;
   }
@@ -118,7 +119,7 @@ export async function forceCheckoutBranch(directory: string, branch: string) {
   try {
     console.log(`Checking out branch ${branch} in ${directory}`);
     const cmd = `cd ${directory} ;` + ` git stash ;` + ` git checkout ${branch} ;` + ` git pull origin ${branch} ;`;
-    return shell.exec(cmd);
+    return runAndLog(cmd);
   } catch (err) {
     throw err;
   }
@@ -133,7 +134,7 @@ export async function cloneOrPullRepoAndUpdateSubmodules(
     if (fs.existsSync(dir)) {
       const lastPullDate = new Date(
         fs.existsSync(`${dir}/.git/FETCH_HEAD`)
-          ? (await shell.exec(`cd ${dir} ; stat -f "%Sm" .git/FETCH_HEAD`)).stdout.trim()
+          ? (await runAndLog(`cd ${dir} ; stat -f "%Sm" .git/FETCH_HEAD`)).stdout.trim()
           : "1970-01-01T00:00:00.000Z"
       );
       const configuredMinutesUntilCacheBursting = new Date(Date.now() - 1000 * (60 * ASSETS_REPO_CACHE_MINUTES));
@@ -157,7 +158,12 @@ export async function cloneOrPullRepoAndUpdateSubmodules(
 }
 
 export async function getCommitId(dir: string, tag: string = "HEAD"): Promise<string> {
-  const commitId = (await shell.exec(`cd ${dir}; git rev-parse --short=8 ${tag}`)).stdout.trim();
+  const commitId = (await runAndLog(`cd ${dir}; git rev-parse --short=8 ${tag}`)).stdout.trim();
   return Promise.resolve(commitId);
+}
+
+async function runAndLog(cmd: string): Promise<any> {
+  console.log(`${cmd}`);
+  return shell.exec(cmd);
 }
 
