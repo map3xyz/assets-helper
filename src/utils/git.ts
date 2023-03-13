@@ -85,6 +85,12 @@ export async function clone(repo: string, directory: string): Promise<void> {
 export async function updateSubmodulesRecursive(directory: string): Promise<void> {
   try {
     console.log(`Updating submodules in ${directory}`);
+    
+    const gifConfigPath = `${directory}/.git/config`;
+    if (!fs.existsSync(gifConfigPath)) {
+      await shell.exec(`cd ${directory} ; git submodule update --init --recursive`);
+    }
+    
     const gitConfig = fs.readFileSync(`${directory}/.git/config`, "utf8");
 
     if (!gitConfig.includes("submodule")) {
