@@ -10,6 +10,7 @@ declare interface IndexedAsset {
   objectID: string;
   address?: string;
   networkCode: string;
+  networkName: string;
   type: ObjectType;
   name: string;
   symbol: string;
@@ -20,6 +21,7 @@ declare interface IndexedAsset {
 function transform({
   id: objectID,
   networkCode,
+  networkName,
   type,
   name,
   symbol,
@@ -33,6 +35,7 @@ function transform({
   return {
     objectID,
     networkCode,
+    networkName,
     type,
     name,
     symbol,
