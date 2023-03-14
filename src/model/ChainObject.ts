@@ -11,6 +11,7 @@ export type ObjectType = 'network' | 'asset';
 export abstract class ChainObject extends RepoObject {
     id: string;
     networkCode: string;
+    networkName: string;
     active: boolean;
     color: string | null;
     config: Config | null;
