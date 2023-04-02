@@ -92,7 +92,7 @@ export async function addIdentifierToNetwork(dir: string, networkCode: string, i
     const networkInfoFilePath = path.join(dir, getDirPathForTokenlist(networkCode), 'info.json');
 
     if(!fs.existsSync(networkInfoFilePath)) {
-        console.error('addIdentifierToNetwork Cannot find asset info file for network ' + networkCode + ' in directory ' + dir);
+        console.error('addIdentifierToNetwork Cannot find asset info file for network ' + networkCode + ' in location ' + networkInfoFilePath);
         return { addedIdentifier: false };
     }
 
