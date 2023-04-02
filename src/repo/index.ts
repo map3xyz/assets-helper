@@ -89,7 +89,7 @@ export async function addIdentifierToNetwork(dir: string, networkCode: string, i
         throw new Error('Identifier key ' + identifierKey + ' is not allowed for networks');
     }
     
-    const networkInfoFilePath = path.join(dir, getDirPathForTokenlist(networkCode), 'info.json');
+    const networkInfoFilePath = path.join(dir, getDirPathForNetworkCode(networkCode), 'info.json');
 
     if(!fs.existsSync(networkInfoFilePath)) {
         console.error('addIdentifierToNetwork Cannot find asset info file for network ' + networkCode + ' in location ' + networkInfoFilePath);
