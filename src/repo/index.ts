@@ -123,7 +123,7 @@ export async function addIdentifierToAsset(dir: string, networkCode: string, add
     const assetInfoFilePath = path.join(dir, getDirPathForTokenlist(networkCode, address), 'info.json');
 
     if(!fs.existsSync(assetInfoFilePath)) {
-        console.error('addIdentifierToAsset Cannot find asset info file for asset ' + address + ' in directory ' + dir);
+        console.error('addIdentifierToAsset Cannot find asset info file for asset ' + address + ' in location ' + assetInfoFilePath);
         return { addedIdentifier: false };
     }
 

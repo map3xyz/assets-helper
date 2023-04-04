@@ -39,6 +39,7 @@ export function readAndParseJson(file: string): any {
     try {
         return JSON.parse(fs.readFileSync(file, 'utf8'));
     } catch (err) {
+        console.error('readAndParseJson Error on file: ', file);
         throw err;
     }
 }
